@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Crect width='3' height='1' y='0' fill='%23000000'/%3E%3Crect width='3' height='1' y='1' fill='%23DD0000'/%3E%3Crect width='3' height='1' y='2' fill='%23FFCE00'/%3E%3C/svg%3E">
+  <title>A2 Hören — Praxis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/base.css">
+  <style>
+    @media (max-width: 600px) { .container { padding: 1rem; } }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      padding: 1rem 0 2rem; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem;
+    }
+
+    .counter { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .module-nav { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.75rem; overflow-x: auto; scrollbar-width: none; }
+
+    .section-header { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; margin-bottom: 2.5rem; }
+    @media (max-width: 600px) { .section-header { grid-template-columns: 1fr; gap: 0.75rem; } }
+    .big-num { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(5.5rem, 13vw, 10rem); line-height: 0.82; color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 60; letter-spacing: -0.05em; }
+    .section-meta h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.4rem, 2.8vw, 2.25rem); line-height: 1.1; margin-bottom: 0.65rem; letter-spacing: -0.015em; }
+    .section-meta h1 em { font-style: italic; font-weight: 300; color: var(--text-dim); }
+    .section-meta .hint { color: var(--text-dim); font-size: 0.95rem; max-width: 62ch; }
+    .section-meta .hint strong { color: var(--text); font-weight: 600; }
+    /* Modul-Intro: kompakt, ohne Riesen-Zähler — die großen Zähler tragen die Teile (wie bei Lesen) */
+
+    /* Auswahl-Leiste: schlanke Steuerzeile wie .controls in den anderen Modulen (kein Kasten) */
+    .picker { display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 2rem; }
+    .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; max-width: 100%; }
+    /* Test-Picker: feste, ruhige Breite; mobil volle Breite. Rest für Marquee. */
+    .picker > .field:first-child { flex: 0 1 300px; min-width: min(300px, 100%); }
+    .field label { font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+    .field select { background: var(--bg); border: 1px solid var(--border-strong); color: var(--text); padding: 0.6rem 0.8rem; font-family: 'Bricolage Grotesque', sans-serif; font-size: 0.95rem; min-width: min(280px, 100%); }
+    .field select:focus { border-color: var(--accent); }
+    /* Custom dropdown (site-styled, replaces native select) */
+    .dd { position: relative; width: 100%; }
+    .dd-trigger { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; width: 100%; background: var(--bg); border: 1px solid var(--border-strong); color: var(--text); padding: 0.6rem 0.8rem; font-family: 'Bricolage Grotesque', sans-serif; font-size: 0.95rem; cursor: pointer; text-align: left; }
+    .dd-trigger:hover { border-color: var(--text-dim); }
+    .dd.open .dd-trigger, .dd-trigger:focus-visible { border-color: var(--accent); }
+    .dd-value { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dd-value.dd-empty { color: var(--text-dim); }
+    .dd-caret { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent-warm); transition: transform 0.18s; flex-shrink: 0; }
+    .dd.open .dd-caret { transform: rotate(180deg); }
+    .dd-panel { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50; max-height: 340px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border-strong); box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
+    .dd-panel::-webkit-scrollbar { width: 10px; }
+    .dd-panel::-webkit-scrollbar-track { background: var(--surface); }
+    .dd-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border: 2px solid var(--surface); }
+    .dd-opt { display: flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.8rem; font-size: 0.92rem; color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); border-left: 3px solid transparent; }
+    .dd-opt:last-child { border-bottom: none; }
+    .dd-opt .dd-check { width: 0.9rem; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent-cool); }
+    .dd-opt .dd-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dd-opt:hover, .dd-opt.hl { background: var(--surface-alt); }
+    .dd-opt.active { border-left-color: var(--accent); color: var(--accent); }
+    .dd-opt.done .dd-label { color: var(--text-dim); }
+    .dd-opt.mix { color: var(--accent-warm); font-weight: 600; border-bottom: 1px solid var(--border-strong); position: sticky; top: 0; background: var(--surface); }
+    .dd-opt.mix:hover, .dd-opt.mix.hl { background: var(--surface-alt); }
+
+    .btn { padding: 0.85rem 1.4rem; background: var(--accent); color: var(--bg); border: none; font-family: inherit; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: transform 0.12s, box-shadow 0.12s, background 0.2s; letter-spacing: -0.005em; }
+    .btn:hover { background: #FF7055; transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--text); }
+    .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--text); }
+    .btn:disabled { background: var(--border-strong); color: var(--text-faint); cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-done { background: transparent; color: var(--accent-cool); border: 1px solid var(--accent-cool); display: inline-flex; align-items: center; gap: 0.4rem; transition: background 0.15s, color 0.15s, filter 0.15s; }
+    .btn-done:hover:not(:disabled) { background: rgba(127,163,148,0.22); color: var(--text); transform: none; box-shadow: none; }
+    .btn-done:disabled { color: var(--text-faint); border-color: var(--border-strong); cursor: not-allowed; }
+    .btn-done.is-done { background: var(--accent-cool); color: var(--bg); border-color: var(--accent-cool); font-weight: 700; }
+    .btn-done.is-done:hover:not(:disabled) { background: var(--accent-cool); color: var(--bg); filter: brightness(1.08); transform: none; box-shadow: none; }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border-strong); }
+    .btn-ghost:hover { background: var(--surface); border-color: var(--text); box-shadow: none; transform: none; }
+
+    /* Master-Lautstärke: sitzt in der Picker-Zeile, rechtsbündig (margin-left: auto) */
+    .vol-field { margin-left: auto; }
+    .vol-row { display: flex; align-items: center; gap: 0.55rem; min-height: 3rem; }
+    .vol-mute { background: transparent; border: none; color: var(--text-dim); cursor: pointer; padding: 0; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    .vol-mute:hover { color: var(--text); }
+    .vol-range { width: 130px; -webkit-appearance: none; appearance: none; height: 4px; background: var(--surface-alt); border: 1px solid var(--border); cursor: pointer; }
+    .vol-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; background: var(--accent-warm); border: 1px solid var(--bg); cursor: grab; }
+    .vol-range::-moz-range-thumb { width: 12px; height: 12px; border-radius: 0; background: var(--accent-warm); border: 1px solid var(--bg); cursor: grab; }
+    .vol-range:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+    .vol-val { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); min-width: 4ch; text-align: right; }
+
+    .strat-link { display: inline-block; margin-top: 0.5rem; color: var(--accent-cool); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.02em; }
+    .strat-link:hover { text-decoration: underline; }
+
+    /* TEIL-TABS (wie in den anderen Modulen) — erst nach Test-Auswahl aktiv */
+    nav.tabs { display: flex; gap: 0; margin-bottom: 3rem; border: 1px solid var(--border); background: var(--surface); }
+    @media (max-width: 860px) { nav.tabs { flex-direction: column; } }
+    .tab { flex: 1; padding: 1.1rem 1.25rem; background: transparent; border: none; border-right: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: color 0.2s, background 0.2s, opacity 0.2s; text-align: left; position: relative; font-family: inherit; }
+    @media (max-width: 860px) { .tab { border-right: none; border-bottom: 1px solid var(--border); } }
+    /* Spalten-Modus: letzter Tab ohne sichtbaren Trenner, aber gleiche Höhe (transparent statt none) */
+    @media (max-width: 860px) { nav.tabs .tab:last-child { border-bottom: 1px solid transparent; } }
+    .tab:last-child { border-right: none; border-bottom: none; }
+    .tab:hover:not(:disabled) { color: var(--text); background: var(--surface-alt); }
+    .tab.active { color: var(--text); background: var(--surface-alt); }
+    .tab.active::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--accent); }
+    @media (max-width: 860px) { .tab.active::before { width: 2px; height: 100%; } }
+    .tab:disabled { cursor: not-allowed; opacity: 0.4; }
+    .tab .tab-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-faint); display: block; margin-bottom: 0.35rem; }
+    .tab.active .tab-num { color: var(--accent); }
+    .tab .tab-title { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em; display: block; margin-bottom: 0.15rem; }
+    .tab .tab-sub { font-size: 0.78rem; color: var(--text-faint); line-height: 1.3; }
+    /* TYPESET: aktiver Tab liegt auf surface-alt — Sub eine Stufe heller (dim ≈ 4.5:1) */
+    .tab.active .tab-sub, .tab:hover:not(:disabled) .tab-sub { color: var(--text-dim); }
+    /* Wie oft wird dieser Teil abgespielt? (Prüfungsregel) — 1× braucht mehr Konzentration */
+    /* Sub + Badge in einer Flex-Zeile: Badge klebt am Sub wie früher, aber der Tab
+       wächst nie — zur Not kürzt der Sub mit Ellipse, der Badge bleibt ganz */
+    .tab { min-width: 0; }
+    .tab-line { display: flex; align-items: center; gap: 0.4rem; min-width: 0; }
+    .tab .tab-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .tab .tab-listens { flex-shrink: 0; white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-warm); border: 1px solid currentColor; padding: 0.08rem 0.4rem; border-radius: 2px; }
+    .tab .tab-listens.once { color: var(--accent); }
+
+    /* Teil sitzt jetzt „nackt“ auf dem Seitenhintergrund (wie eine Lesen-Section), kein Kasten */
+    .teil-panel { margin-bottom: 1.75rem; }
+    .teil-panel.hidden { display: none; }
+    /* Teil-Intro: großer Akzent-Zähler (01–04) wie bei den anderen Modulen */
+    #test-area .section-header { margin-bottom: 1.4rem; }
+
+    /* Transkript wohnt im Player-Kasten: leiser Toggle rechts in der Player-Zeile, Text klappt darunter auf */
+    .ap-text { flex-shrink: 0; background: transparent; border: none; padding: 0 0.25rem; min-height: 44px; display: inline-flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); cursor: pointer; transition: color 0.15s; }
+    .ap-text:hover { color: var(--text); }
+    .ap-text.open { color: var(--accent-warm); }
+    .ap-transcript { margin-top: 0.55rem; padding-top: 0.7rem; border-top: 1px solid var(--border); padding-left: 0.25rem; padding-right: 0.25rem; font-size: 0.95rem; color: var(--text); line-height: 1.7; }
+    .ap-transcript p { margin-bottom: 0.55rem; }
+    .ap-transcript p:last-child { margin-bottom: 0; }
+    .ap-transcript em { color: var(--accent-cool); font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.05em; margin-right: 0.4rem; }
+    /* Audio-Player: eigener Play-Button + Scrubber im Seitenstil (kein nativer Balken) */
+    .audio-player { background: var(--bg); border: 1px solid var(--border-strong); padding: 0.45rem 0.6rem; margin-bottom: 1.2rem; }
+    .ap-row { display: flex; align-items: center; gap: 0.7rem; }
+    /* Farben wie der Player im alten Trainings-Site: salbeigrüner Play-Button, goldener Fortschritt */
+    .ap-play { flex-shrink: 0; width: 44px; height: 44px; border: none; background: var(--accent-cool); color: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s; }
+    .ap-play:hover { background: #97BBAC; }
+    .ap-play:active { transform: scale(0.94); }
+    .ap-play svg { display: block; width: 13px; height: 15px; }
+    .ap-seek { flex: 1; min-width: 80px; -webkit-appearance: none; appearance: none; height: 4px; background: var(--surface-alt); border: 1px solid var(--border); cursor: pointer; }
+    .ap-seek::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; background: var(--accent-warm); border: 1px solid var(--bg); cursor: grab; }
+    .ap-seek::-moz-range-thumb { width: 12px; height: 12px; border-radius: 0; background: var(--accent-warm); border: 1px solid var(--bg); cursor: grab; }
+    .ap-seek:active::-webkit-slider-thumb { cursor: grabbing; }
+    .ap-seek:active::-moz-range-thumb { cursor: grabbing; }
+    .ap-seek:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+    .ap-time { flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; color: var(--text-dim); min-width: 9ch; text-align: right; letter-spacing: 0.03em; }
+    .a-missing { margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent); }
+
+    .match-options { background: var(--bg); border: 1px solid var(--border-strong); padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; }
+    .match-options h2 { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-cool); margin-bottom: 0.6rem; }
+    .match-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1rem; }
+    @media (max-width: 600px) { .match-options-grid { grid-template-columns: 1fr; } }
+    .match-opt { display: flex; gap: 0.7rem; align-items: center; font-size: 0.9rem; color: var(--text); padding: 0.3rem 0; }
+    .match-opt .letter { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent-warm); min-width: 1.2rem; }
+    .match-opt .mo-img { width: 52px; height: 52px; object-fit: cover; border: 1px solid var(--border-strong); background: #faf6ee; flex-shrink: 0; }
+    .match-opt .mo-cap { display: flex; gap: 0.5rem; align-items: baseline; }
+    /* image mode: switch the option list into a picture-card grid */
+    .match-options-grid.has-images { grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+    @media (max-width: 600px) { .match-options-grid.has-images { grid-template-columns: repeat(2, 1fr); } }
+    .match-options-grid.has-images .match-opt { flex-direction: column; align-items: center; text-align: center; gap: 0.45rem; padding: 0; }
+    .match-options-grid.has-images .match-opt .mo-img { width: 100%; height: auto; aspect-ratio: 1 / 1; }
+    .match-options-grid.has-images .match-opt .mo-cap { justify-content: center; flex-wrap: wrap; }
+    .match-select { background-color: var(--bg); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23E5C158' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.6rem center; border: 1px solid var(--border-strong); border-radius: 0; color: var(--text); padding: 0.4rem 1.7rem 0.4rem 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.92rem; min-width: 80px; min-height: 44px; margin-top: 0.4rem; appearance: none; -webkit-appearance: none; -moz-appearance: none; }
+    .match-select:focus { border-color: var(--accent); }
+
+    /* Aufgaben-Karte: Nummer + Frage in einer Zeile — gleiches Muster wie die Fragen in Lesen */
+    .qcard { background: var(--surface-alt); border: 1px solid var(--border); padding: 1rem 1.15rem; margin-bottom: 0.8rem; }
+    .qcard .q-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.7rem; }
+    .qcard .q-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .qcard .q-text { font-family: 'Fraunces', serif; font-size: 1.02rem; line-height: 1.3; font-weight: 500; letter-spacing: -0.005em; }
+    .opts { display: flex; flex-direction: column; gap: 0.4rem; }
+    .opt { display: flex; align-items: center; gap: 0.7rem; cursor: pointer; padding: 0.55rem 0.8rem; border: 1px solid var(--border); background: var(--bg); font-size: 0.92rem; transition: border-color 0.15s, background 0.15s; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+    /* Hide native radio; we draw our own square indicator */
+    .opt input[type="radio"] {
+      appearance: none; -webkit-appearance: none;
+      width: 1.1rem; height: 1.1rem;
+      border: 1px solid var(--border-strong); background: var(--bg);
+      cursor: pointer; flex-shrink: 0; margin: 0; padding: 0;
+      position: relative;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .opt:hover input[type="radio"] { border-color: var(--text-dim); }
+    .opt input[type="radio"]:checked { background: var(--accent); border-color: var(--accent); }
+    .opt input[type="radio"]:checked::after {
+      content: ''; position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.45rem; height: 0.45rem; background: var(--bg);
+    }
+    .opt:hover { border-color: var(--text-dim); }
+    .opt.sel { border-color: var(--accent); background: rgba(232,93,68,0.08); }
+    .opt.sol { border-color: var(--accent-cool); box-shadow: inset 0 0 0 1px var(--accent-cool); }
+    .opt.sol input[type="radio"] { border-color: var(--accent-cool); }
+    .opt .letter { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--text-dim); min-width: 1.4rem; }
+    .opt.sel .letter { color: var(--accent); }
+    .opt.sol .letter { color: var(--accent-cool); }
+    .opt.sol > span:last-child { color: var(--accent-cool); }
+    .qcard .verdict { margin-top: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+    .qcard.correct .verdict { color: var(--accent-cool); }
+    .qcard.wrong .verdict { color: var(--accent); }
+
+    .checkbar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin: 1.5rem 0; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+    .result { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent); padding: 1.5rem 1.75rem; margin-top: 1.5rem; }
+    .result.hidden { display: none; }
+    .result-score { display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .big-score { font-family: 'Fraunces', serif; font-size: 3.5rem; line-height: 1; color: var(--accent); font-weight: 300; }
+    .big-score span { font-size: 1.5rem; color: var(--text-dim); }
+    .per-teil { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .pt-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; padding: 0.35rem 0.7rem; border: 1px solid var(--border-strong); color: var(--text-dim); }
+    .pt-chip b { color: var(--text); }
+
+    .placeholder { padding: 3.5rem 2rem; text-align: center; border: 1px dashed var(--border); color: var(--text-dim); font-style: italic; font-family: 'Fraunces', serif; font-size: 1rem; }
+    .placeholder p { margin-bottom: 0.6rem; }
+    .placeholder strong { color: var(--text-dim); font-weight: 600; }
+    .placeholder .strat-link { font-style: normal; margin-top: 0; }
+    .placeholder .big-arrow { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 300; color: var(--accent); display: block; margin-bottom: 0.75rem; font-style: normal; }
+
+    footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-faint); letter-spacing: 0.02em; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    footer .keys { display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; }
+    footer kbd { font-family: inherit; color: var(--accent-warm); background: var(--surface); padding: 0.15em 0.45em; border: 1px solid var(--border); font-size: 0.75rem; }
+  </style>
+  <link rel="stylesheet" href="assets/progress.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <b><span class="b-num">A2</span><span class="b-cap"><span>Goethe-Zertifikat</span><span>Deutsch</span></span></b>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <span class="brand-tag">H&ouml;ren</span>
+        <span class="flag" aria-label="Deutschland"><span></span><span></span><span></span></span>
+      </div>
+      <div class="counter"><span id="counter-label"></span><button type="button" class="reset-progress" id="reset-progress" title="Fortschritt in diesem Modul zur&uuml;cksetzen">&#8634; Reset</button></div>
+    </header>
+
+    <nav class="module-nav">
+      <a href="index.html">A2</a>
+      <a href="lesen.html">Lesen</a>
+      <a href="hoeren.html" class="current">H&ouml;ren</a>
+      <a href="schreiben.html">Schreiben</a>
+      <a href="sprechen.html">Sprechen</a>
+      <a href="hilfen.html">Hilfen</a>
+    </nav>
+
+    <nav class="tabs" id="teil-tabs" role="tablist" aria-label="Hören-Teile">
+      <button class="tab" data-teil="0" type="button" disabled>
+        <span class="tab-num">TEIL 01</span>
+        <span class="tab-title">F&uuml;nf kurze Texte</span>
+        <span class="tab-line"><span class="tab-sub">Auswahl a/b/c &middot; 5 Fragen</span>
+        <span class="tab-listens">2&times; h&ouml;ren</span></span>
+      </button>
+      <button class="tab" data-teil="1" type="button" disabled>
+        <span class="tab-num">TEIL 02</span>
+        <span class="tab-title">Ein Gespr&auml;ch</span>
+        <span class="tab-line"><span class="tab-sub">Zuordnen (a&ndash;i) &middot; 5 Personen</span>
+        <span class="tab-listens once">1&times; h&ouml;ren</span></span>
+      </button>
+      <button class="tab" data-teil="2" type="button" disabled>
+        <span class="tab-num">TEIL 03</span>
+        <span class="tab-title">F&uuml;nf kurze Gespr&auml;che</span>
+        <span class="tab-line"><span class="tab-sub">Auswahl a/b/c &middot; 5 Fragen</span>
+        <span class="tab-listens once">1&times; h&ouml;ren</span></span>
+      </button>
+      <button class="tab" data-teil="3" type="button" disabled>
+        <span class="tab-num">TEIL 04</span>
+        <span class="tab-title">Interview</span>
+        <span class="tab-line"><span class="tab-sub">Ja / Nein &middot; 5 Aussagen</span>
+        <span class="tab-listens">2&times; h&ouml;ren</span></span>
+      </button>
+    </nav>
+
+    <div class="picker">
+      <div class="field">
+        <label for="dd-trigger">Test w&auml;hlen</label>
+        <div class="dd" id="test-dd">
+          <button type="button" class="dd-trigger" id="dd-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span class="dd-value dd-empty" id="dd-value">&mdash; Test ausw&auml;hlen &mdash;</span>
+            <span class="dd-caret" aria-hidden="true">&#9662;</span>
+          </button>
+          <div class="dd-panel" id="dd-panel" role="listbox" tabindex="-1" hidden></div>
+        </div>
+      </div>
+      <button class="btn" id="load-btn" type="button">&rarr; Test laden</button>
+      <div class="field vol-field">
+        <label for="master-vol">Lautst&auml;rke</label>
+        <div class="vol-row">
+          <button class="vol-mute" id="vol-mute" type="button" aria-label="Stummschalten" title="Stummschalten"></button>
+          <input class="vol-range" id="master-vol" type="range" min="0" max="100" step="1" value="100" aria-label="Gesamtlautstärke">
+          <span class="vol-val" id="vol-val">100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="test-area">
+      <div class="placeholder">
+        <span class="big-arrow">↓</span>
+        Dr&uuml;cke <strong>&bdquo;Test laden&ldquo;</strong> &mdash; du h&ouml;rst vier Teile und beantwortest 20 Aufgaben.
+      </div>
+    </div>
+
+    <footer>
+      <div>KI-generierte Aufgaben &amp; Audio &middot; 4 Teile</div>
+      <div class="keys">
+        <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> <span>— Teile</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <kbd>N</kbd> <span>— Test laden</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <span>v1.0</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="assets/progress.js"></script>
+  <script src="assets/data/hoeren-index.js"></script>
+  <script>
+    // ============ AUDIO (mp3 only, no Web Speech fallback) ============
+    // Jede Aufgabe hat einen eigenen Player: Play-Button + Scrubber im Seitenstil.
+    // Fehlt die MP3, erscheint ein Hinweis — wir fallen bewusst NICHT auf die
+    // Roboterstimme des Browsers zurück.
+    const AP_PLAY = '<svg width="13" height="15" viewBox="0 0 13 15" aria-hidden="true"><path d="M1.5 1 12 7.5 1.5 14Z" fill="currentColor"/></svg>';
+    const AP_PAUSE = '<svg width="12" height="15" viewBox="0 0 12 15" aria-hidden="true"><rect x="1" y="1" width="3.4" height="13" fill="currentColor"/><rect x="7.6" y="1" width="3.4" height="13" fill="currentColor"/></svg>';
+
+    function stopAudio() {
+      document.querySelectorAll('audio').forEach(a => a.pause());
+    }
+
+    // Master-Lautstärke: gilt für alle Player; wird gespeichert (localStorage).
+    const VOL_KEY = 'hoeren-master-volume';
+    const VOL_ICON = '<svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.5 5.5v4h2.8L8 12.5v-10L4.3 5.5H1.5z" fill="currentColor"/><path d="M10 5.2c1.3 1.3 1.3 3.3 0 4.6M11.8 3.4c2.1 2.1 2.1 6.1 0 8.2" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>';
+    const VOL_MUTED_ICON = '<svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.5 5.5v4h2.8L8 12.5v-10L4.3 5.5H1.5z" fill="currentColor"/><path d="M10.2 6.2l3.3 3.3m0-3.3l-3.3 3.3" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>';
+    let masterVolume = 1;
+    try {
+      const saved = parseFloat(localStorage.getItem(VOL_KEY));
+      if (isFinite(saved)) masterVolume = Math.min(1, Math.max(0, saved));
+    } catch (e) { /* localStorage nicht verfügbar */ }
+    function applyVolume() {
+      document.querySelectorAll('audio').forEach(a => { a.volume = masterVolume; });
+    }
+    function refreshVolumeUI() {
+      const slider = document.getElementById('master-vol');
+      const val = document.getElementById('vol-val');
+      const mute = document.getElementById('vol-mute');
+      if (slider) slider.value = String(Math.round(masterVolume * 100));
+      if (val) val.textContent = Math.round(masterVolume * 100) + '%';
+      if (mute) {
+        mute.innerHTML = masterVolume === 0 ? VOL_MUTED_ICON : VOL_ICON;
+        mute.setAttribute('aria-label', masterVolume === 0 ? 'Stummschaltung aufheben' : 'Stummschalten');
+        mute.title = masterVolume === 0 ? 'Stummschaltung aufheben' : 'Stummschalten';
+      }
+    }
+    // Natürliche Geschwindigkeit: Dateien sind mit −5 % generiert — keine
+    // Browser-Zeitdehnung nötig (Tonhöhe bleibt ohnehin unangetastet).
+    const PLAYBACK_RATE = 1.0;
+    // Startet ein Clip, werden alle anderen pausiert ('play' bubbelt nicht → capture).
+    document.addEventListener('play', (e) => {
+      if (e.target instanceof HTMLAudioElement) e.target.playbackRate = PLAYBACK_RATE;
+      document.querySelectorAll('audio').forEach(a => { if (a !== e.target) a.pause(); });
+    }, true);
+
+    function fmtTime(t) {
+      if (!isFinite(t) || t < 0) t = 0;
+      const m = Math.floor(t / 60), s = Math.floor(t % 60);
+      return m + ':' + String(s).padStart(2, '0');
+    }
+
+    function makeAudioPlayer(audioPath) {
+      const box = document.createElement('div');
+      box.className = 'audio-player';
+
+      const audio = document.createElement('audio');
+      audio.preload = 'none';
+      audio.src = audioPath;
+      audio.volume = masterVolume;
+      audio.playbackRate = PLAYBACK_RATE;
+      audio.preservesPitch = true;
+
+      const play = document.createElement('button');
+      play.type = 'button';
+      play.className = 'ap-play';
+      play.innerHTML = AP_PLAY;
+      play.setAttribute('aria-label', 'Abspielen');
+
+      const seek = document.createElement('input');
+      seek.type = 'range';
+      seek.className = 'ap-seek';
+      seek.min = '0'; seek.max = '100'; seek.step = '0.1'; seek.value = '0';
+      seek.setAttribute('aria-label', 'Wiedergabeposition');
+
+      const time = document.createElement('span');
+      time.className = 'ap-time';
+      time.textContent = '0:00 / 0:00';
+
+      const warn = document.createElement('div');
+      warn.className = 'a-missing';
+      warn.textContent = '⚠ Audio nicht verfügbar';
+      warn.hidden = true;
+
+      function fill(p) {
+        seek.style.background = 'linear-gradient(to right, var(--accent-warm) ' + p + '%, var(--surface-alt) ' + p + '%)';
+      }
+      function paint() {
+        const p = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        seek.value = String(p);
+        fill(p);
+        time.textContent = fmtTime(audio.currentTime) + ' / ' + fmtTime(audio.duration || 0);
+      }
+      play.addEventListener('click', () => { audio.paused ? audio.play() : audio.pause(); });
+      audio.addEventListener('play', () => { play.innerHTML = AP_PAUSE; play.setAttribute('aria-label', 'Pause'); });
+      audio.addEventListener('pause', () => { play.innerHTML = AP_PLAY; play.setAttribute('aria-label', 'Abspielen'); });
+      audio.addEventListener('ended', () => { play.innerHTML = AP_PLAY; });
+      audio.addEventListener('timeupdate', paint);
+      audio.addEventListener('loadedmetadata', paint);
+      audio.addEventListener('error', () => { warn.hidden = false; });
+      seek.addEventListener('input', () => {
+        if (audio.duration) audio.currentTime = (parseFloat(seek.value) / 100) * audio.duration;
+        fill(parseFloat(seek.value));
+      });
+      fill(0);
+
+      const row = document.createElement('div');
+      row.className = 'ap-row';
+      row.append(play, seek, time);
+      box.append(row, audio, warn);
+      return box;
+    }
+
+    // Stop audio when leaving page
+    window.addEventListener('beforeunload', stopAudio);
+
+    // ============ DATA ============
+    // Each test has 4 Teile, exam-style (Goethe A2 Fit in Deutsch 2):
+    //   Teil 1: 5 short texts (~60-80 words each), MC a/b/c
+    //   Teil 2: 1 longer conversation, 5 matching items, 9 options (a-i)
+    //   Teil 3: 5 short dialogues, MC a/b/c
+    //   Teil 4: 1 interview (~250-300 words), 5 Ja/Nein items
+    // Question types: 'mc', 'match', 'jn'.
+    // Dialog/interview lines are arrays of {speaker, text} for multi-voice TTS.
+    const TINDEX = window.HOEREN_INDEX || []; // [{name, id, file}] — 10 KB, sofort da
+    const TESTS = window.HOEREN_TESTS = window.HOEREN_TESTS || []; // volle Tests, lazy per Chunk
+
+    // Lädt genau einen Test-Chunk (~16 KB) bei Bedarf; Mix lädt alle (einmalig, dann Cache)
+    const _chunkLoading = {};
+    function ensureTest(i) {
+      if (TESTS[i]) return Promise.resolve(TESTS[i]);
+      if (!_chunkLoading[i]) _chunkLoading[i] = new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'assets/data/hoeren/' + TINDEX[i].file;
+        s.onload = () => {
+          if (TESTS[i] && !TESTS[i].id) TESTS[i].id = TINDEX[i].id;
+          res(TESTS[i] || null);
+        };
+        s.onerror = () => rej(new Error('chunk ' + i));
+        document.head.appendChild(s);
+      });
+      return _chunkLoading[i];
+    }
+    const ensureAllTests = () => Promise.all(TINDEX.map((_, i) => ensureTest(i)));
+
+    // ============ STATE ============
+    let current = null;
+    const responses = {}; // teilIdx -> { itemIdx -> value }
+    let checked = false;
+
+    // escapeHtml() теперь общий — см. assets/progress.js
+
+    // ============ PICKER ============
+    Progress.setTotal('hoeren', TINDEX.length);
+    // Custom site-styled dropdown (replaces the native <select>)
+    const dd = document.getElementById('test-dd');
+    const ddTrigger = document.getElementById('dd-trigger');
+    const ddPanel = document.getElementById('dd-panel');
+    const ddValue = document.getElementById('dd-value');
+    const PLACEHOLDER = '— Test auswählen —';
+    let pickerValue = '';   // '' | '__mix__' | '0'..'99'
+    let ddActive = -1;      // highlighted option while the panel is open
+
+    function pickerOptions() {
+      const opts = [{ value: '__mix__', label: '🎲 Zufälliger Mix-Test', mix: true }];
+      TINDEX.forEach((t, i) => opts.push({ value: String(i), label: t.name, done: Progress.is('hoeren', t.id) }));
+      return opts;
+    }
+    function labelFor(value) {
+      if (value === '__mix__') return '🎲 Zufälliger Mix-Test';
+      if (value === '') return PLACEHOLDER;
+      const t = TINDEX[Number(value)];
+      return t ? t.name : PLACEHOLDER;
+    }
+    function renderPicker() {
+      ddPanel.innerHTML = '';
+      pickerOptions().forEach((o, idx) => {
+        const el = document.createElement('div');
+        el.className = 'dd-opt' + (o.mix ? ' mix' : '') + (o.done ? ' done' : '') +
+          (o.value === pickerValue ? ' active' : '');
+        el.setAttribute('role', 'option');
+        el.setAttribute('aria-selected', o.value === pickerValue ? 'true' : 'false');
+        el.dataset.value = o.value; el.dataset.idx = idx;
+        el.title = o.label;
+        el.innerHTML = `<span class="dd-check">${o.done ? '✓' : ''}</span><span class="dd-label">${escapeHtml(o.label)}</span>`;
+        el.addEventListener('click', () => choose(o.value));
+        ddPanel.appendChild(el);
+      });
+      ddValue.textContent = labelFor(pickerValue);
+      ddValue.title = ddValue.textContent;
+      ddValue.classList.toggle('dd-empty', pickerValue === '');
+    }
+    function refreshPickerLabels() { renderPicker(); }  // legacy name used elsewhere
+
+    function choose(value) { pickerValue = value; renderPicker(); closeDD(); ddTrigger.focus(); }
+    function openDD() {
+      if (!ddPanel.hidden) return;
+      ddPanel.hidden = false; dd.classList.add('open');
+      ddTrigger.setAttribute('aria-expanded', 'true');
+      const opts = Array.from(ddPanel.children);
+      ddActive = Math.max(0, opts.findIndex(o => o.dataset.value === pickerValue));
+      highlight(ddActive);
+    }
+    function closeDD() {
+      if (ddPanel.hidden) return;
+      ddPanel.hidden = true; dd.classList.remove('open');
+      ddTrigger.setAttribute('aria-expanded', 'false'); ddActive = -1;
+    }
+    function highlight(i) {
+      const opts = Array.from(ddPanel.children);
+      if (!opts.length) return;
+      ddActive = (i + opts.length) % opts.length;
+      opts.forEach((o, k) => o.classList.toggle('hl', k === ddActive));
+      opts[ddActive].scrollIntoView({ block: 'nearest' });
+    }
+
+    ddTrigger.addEventListener('click', () => { ddPanel.hidden ? openDD() : closeDD(); });
+    ddTrigger.addEventListener('keydown', e => {
+      if (!ddPanel.hidden) return;
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDD(); }
+    });
+    document.addEventListener('keydown', e => {
+      if (ddPanel.hidden) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeDD(); ddTrigger.focus(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); highlight(ddActive + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); highlight(ddActive - 1); }
+      else if (e.key === 'Enter') { e.preventDefault(); const o = ddPanel.children[ddActive]; if (o) choose(o.dataset.value); }
+    });
+    document.addEventListener('click', e => { if (!dd.contains(e.target)) closeDD(); });
+
+    renderPicker();
+
+    // Marquee bei Hover/Fokus: abgeschnittener dd-Text scrollt rechts-nach-links frei,
+    // damit auch der längste Name voll lesbar ist (overflow ist hidden, scrollLeft geht trotzdem)
+    function marqueeStart(el) {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!el || el.scrollWidth <= el.clientWidth + 2 || el._mq) return;
+      const max = el.scrollWidth - el.clientWidth;
+      el._mqTimer = setTimeout(() => {
+        const t0 = performance.now();
+        el._mq = true;
+        const step = (now) => {
+          const t = Math.min(1, (now - t0) / Math.max(600, max * 20));
+          el.scrollLeft = max * t;
+          if (t < 1 && el._mq) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }, 350);
+    }
+    function marqueeStop(el) {
+      if (!el) return;
+      el._mq = false;
+      clearTimeout(el._mqTimer);
+      el.scrollLeft = 0;
+    }
+    ddPanel.addEventListener('mouseover', (e) => {
+      const label = e.target.closest('.dd-label');
+      if (label) marqueeStart(label);
+    });
+    ddPanel.addEventListener('mouseout', (e) => {
+      const label = e.target.closest('.dd-label');
+      if (label && !label.contains(e.relatedTarget)) marqueeStop(label);
+    });
+    ddValue.addEventListener('mouseenter', () => marqueeStart(ddValue));
+    ddValue.addEventListener('mouseleave', () => marqueeStop(ddValue));
+    ddTrigger.addEventListener('focus', () => marqueeStart(ddValue));
+    ddTrigger.addEventListener('blur', () => marqueeStop(ddValue));
+
+    document.getElementById('load-btn').addEventListener('click', async () => {
+      if (pickerValue === '') return;
+      if (pickerValue === '__mix__') {
+        await ensureAllTests().catch(() => {});
+        loadTest(buildMixedTest());
+      } else {
+        const t = await ensureTest(Number(pickerValue)).catch(() => null);
+        if (t) loadTest(t);
+      }
+    });
+
+    // ============ TEIL-TABS ============
+    // The four tabs stay locked (disabled) until a test is loaded; then they
+    // switch which Teil-panel is visible (only one Teil shown at a time).
+    const teilTabs = Array.from(document.querySelectorAll('#teil-tabs .tab'));
+    function setActiveTeil(idx) {
+      teilTabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+      document.querySelectorAll('#test-area .teil-panel').forEach(p => {
+        p.classList.toggle('hidden', Number(p.dataset.teil) !== idx);
+      });
+    }
+    teilTabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        if (tab.disabled) return;
+        stopAudio();
+        setActiveTeil(i);
+      });
+    });
+
+    // ============ MIXED / RANDOM TEST ============
+    // Build a fresh exam from random pieces of all tests: Teil 1 = 5 random
+    // monologues, Teil 3 = 5 random dialogues (each item keeps its own source
+    // audio), Teil 2 = one random whole conversation, Teil 4 = one random whole
+    // interview. Re-runs on every load, so each click gives a new test.
+    function buildMixedTest() {
+      const clone = x => JSON.parse(JSON.stringify(x));
+      const rand = n => Math.floor(Math.random() * n);
+      const sample = (pool, n) => {
+        const a = pool.slice(), out = [];
+        while (out.length < n && a.length) out.push(a.splice(rand(a.length), 1)[0]);
+        return out;
+      };
+      const t1pool = [], t3pool = [], t2pool = [], t4pool = [];
+      TESTS.forEach(t => {
+        ((t.teile[0] || {}).items || []).forEach((it, k) => t1pool.push({ id: t.id, k: k + 1, it }));
+        ((t.teile[2] || {}).items || []).forEach((it, k) => t3pool.push({ id: t.id, k: k + 1, it }));
+        if (t.teile[1]) t2pool.push(t);
+        if (t.teile[3]) t4pool.push(t);
+      });
+      const mkMc = (picks, teilNo) => picks.map(p => {
+        const it = clone(p.it);
+        it.audio = `assets/audio/${p.id}/t${teilNo}-${p.k}.mp3`;
+        return it;
+      });
+      const t1 = { type: 'mc', title: 'Teil 1: Fünf kurze Texte',
+        instruction: 'Sie hören fünf kurze Texte. Sie hören jeden Text zweimal. Wählen Sie a, b oder c.',
+        items: mkMc(sample(t1pool, 5), 1) };
+      const t3 = { type: 'mc', title: 'Teil 3: Fünf kurze Gespräche',
+        instruction: 'Sie hören fünf kurze Gespräche. Sie hören jedes Gespräch einmal. Wählen Sie a, b oder c.',
+        items: mkMc(sample(t3pool, 5), 3) };
+      const s2 = t2pool[rand(t2pool.length)];
+      const t2 = clone(s2.teile[1]); t2.audio = `assets/audio/${s2.id}/t2.mp3`;
+      const s4 = t4pool[rand(t4pool.length)];
+      const t4 = clone(s4.teile[3]); t4.audio = `assets/audio/${s4.id}/t4.mp3`;
+      return { id: 'mix', name: '🎲 Zufälliger Mix-Test', mixed: true, teile: [t1, t2, t3, t4] };
+    }
+
+    // ============ RENDER ============
+    // Build a transcript display block: string OR array of {speaker, text}
+    function buildTranscriptBlock(transcriptData, audioPath, toggleLabel) {
+      const box = makeAudioPlayer(audioPath);
+
+      const ts = document.createElement('div');
+      ts.className = 'ap-transcript';
+      ts.hidden = true;  // text hidden by default
+      if (Array.isArray(transcriptData)) {
+        transcriptData.forEach(line => {
+          const p = document.createElement('p');
+          p.innerHTML = `<em>${escapeHtml(line.speaker)}:</em>${escapeHtml(line.text)}`;
+          ts.appendChild(p);
+        });
+      } else {
+        ts.innerHTML = `<p>${escapeHtml(transcriptData)}</p>`;
+      }
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ap-text';
+      const label = toggleLabel || 'Text';
+      const paint = () => {
+        btn.textContent = label + (ts.hidden ? ' ▾' : ' ▴');
+        btn.classList.toggle('open', !ts.hidden);
+        btn.setAttribute('aria-expanded', String(!ts.hidden));
+      };
+      btn.addEventListener('click', () => { ts.hidden = !ts.hidden; paint(); });
+      paint();
+
+      box.querySelector('.ap-row').appendChild(btn);
+      box.appendChild(ts);
+      return box;
+    }
+
+    // Kладёт управляющую кнопку в .picker рядом с «Test laden»:
+    // обычный тест → «Als erledigt» (toggle прогресса), Mix-Test → «Neu mischen».
+    // Важно: вставляем ДО блока громкости (.vol-field держится у правого края).
+    function placeTestControl(test) {
+      const picker = document.querySelector('.picker');
+      if (!picker) return;
+      picker.querySelectorAll('.btn-done, .picker-extra').forEach(el => el.remove());
+      const anchor = picker.querySelector('.vol-field');
+      if (test.mixed) {
+        const reshuffle = document.createElement('button');
+        reshuffle.className = 'btn picker-extra';
+        reshuffle.type = 'button';
+        reshuffle.textContent = '🎲 Neu mischen';
+        reshuffle.addEventListener('click', () => loadTest(buildMixedTest()));
+        picker.insertBefore(reshuffle, anchor);
+      } else {
+        const btn = Progress.placeDoneButton(picker, {
+          module: 'hoeren',
+          taskId: test.id,
+          label: 'Test als erledigt markieren',
+          onChange: () => { refreshPickerLabels(); updateCounter(); }
+        });
+        if (btn && anchor && btn.parentElement === picker) picker.insertBefore(btn, anchor);
+      }
+    }
+
+    function loadTest(test) {
+      stopAudio();
+      current = test;
+      checked = false;
+      Object.keys(responses).forEach(k => delete responses[k]);
+      test.teile.forEach((_, i) => responses[i] = {});
+
+      const area = document.getElementById('test-area');
+      area.innerHTML = '';
+
+      // Steuer-Button (Erledigt / Neu mischen) sitzt im Picker neben „Test laden“.
+      placeTestControl(test);
+
+      test.teile.forEach((teil, ti) => {
+        const card = document.createElement('div');
+        card.className = 'teil-panel' + (ti === 0 ? '' : ' hidden');
+        card.dataset.teil = ti;
+        const head = document.createElement('div');
+        head.className = 'section-header';
+        const shortTitle = (teil.title || '').replace(/^Teil\s*\d+:\s*/, '');
+        const stratLabel = ['kurze Texte verstehen', 'Gespräch zuordnen', 'kurze Gespräche verstehen', 'Interview: Ja oder Nein'][ti] || 'alle vier Hören-Teile';
+        head.innerHTML = `<div class="big-num">0${ti + 1}</div><div class="section-meta"><h1>${escapeHtml(shortTitle)}</h1><p class="hint">${escapeHtml(teil.instruction || '')}</p><a class="strat-link" href="hilfen.html#hoeren-t${ti + 1}">→ Strategie · ${stratLabel}</a></div>`;
+        card.appendChild(head);
+
+        const body = document.createElement('div');
+        body.className = 'teil-body';
+        const audioBase = `assets/audio/${test.id}`;
+
+        if (teil.type === 'jn') {
+          // Whole interview with multi-voice audio
+          body.appendChild(buildTranscriptBlock(teil.transcript, teil.audio || `${audioBase}/t${ti + 1}.mp3`, 'Text'));
+
+          teil.items.forEach((it, ii) => {
+            const card2 = document.createElement('div');
+            card2.className = 'qcard';
+            card2.dataset.teil = ti; card2.dataset.item = ii;
+            card2.innerHTML = `<div class="q-head"><span class="q-num">${16 + ii}</span><span class="q-text">${escapeHtml(it.q)}</span></div>`;
+            const opts = document.createElement('div');
+            opts.className = 'opts';
+            ['ja','nein'].forEach(val => {
+              const o = document.createElement('label');
+              o.className = 'opt';
+              o.innerHTML = `<input type="radio" name="q-${ti}-${ii}" value="${val}"><span class="letter">${val === 'ja' ? 'Ja' : 'Nein'}</span>`;
+              o.querySelector('input').addEventListener('change', e => {
+                responses[ti][ii] = e.target.value;
+                opts.querySelectorAll('.opt').forEach(x => x.classList.remove('sel'));
+                o.classList.add('sel');
+              });
+              opts.appendChild(o);
+            });
+            card2.appendChild(opts);
+            body.appendChild(card2);
+          });
+
+        } else if (teil.type === 'match') {
+          // Long conversation
+          body.appendChild(buildTranscriptBlock(teil.lines, teil.audio || `${audioBase}/t${ti + 1}.mp3`, 'Text'));
+
+          // 9 options (a-i) reference box
+          const optsBox = document.createElement('div');
+          optsBox.className = 'match-options';
+          optsBox.innerHTML = '<h2>Möglichkeiten (a–i)</h2>';
+          const grid = document.createElement('div');
+          grid.className = 'match-options-grid';
+          // image dir mirrors the audio path (works for normal + mixed tests)
+          const imgBase = teil.audio
+            ? teil.audio.replace('assets/audio/', 'assets/images/').replace(/\/t\d+\.mp3$/, '')
+            : `assets/images/${test.id}`;
+          teil.options.forEach(opt => {
+            const row = document.createElement('div');
+            row.className = 'match-opt';
+            const img = document.createElement('img');
+            img.className = 'mo-img';
+            img.alt = opt.text;
+            img.loading = 'lazy';
+            // graceful fallback: if the picture isn't generated, drop the img
+            // and the row stays a plain letter+text option (current behaviour)
+            img.addEventListener('load', () => grid.classList.add('has-images'));
+            img.addEventListener('error', () => img.remove());
+            img.src = `${imgBase}/t2/${opt.letter}.png`;
+            row.appendChild(img);
+            const cap = document.createElement('div');
+            cap.className = 'mo-cap';
+            cap.innerHTML = `<span class="letter">${opt.letter}</span><span>${escapeHtml(opt.text)}</span>`;
+            row.appendChild(cap);
+            grid.appendChild(row);
+          });
+          optsBox.appendChild(grid);
+          body.appendChild(optsBox);
+
+          // 5 question items, each with dropdown
+          teil.items.forEach((it, ii) => {
+            const card2 = document.createElement('div');
+            card2.className = 'qcard';
+            card2.dataset.teil = ti; card2.dataset.item = ii;
+            const baseNum = 6 + ii;
+            card2.innerHTML = `<div class="q-head"><span class="q-num">${String(baseNum).padStart(2, '0')}</span><span class="q-text">${escapeHtml(it.person)}</span></div>`;
+            const selEl = document.createElement('select');
+            selEl.className = 'match-select';
+            selEl.innerHTML = '<option value="">—</option>' + teil.options.map(o => `<option value="${o.letter}">${o.letter}</option>`).join('');
+            selEl.addEventListener('change', e => { responses[ti][ii] = e.target.value; });
+            card2.appendChild(selEl);
+            body.appendChild(card2);
+          });
+
+        } else {
+          // mc: each item has its own transcript (string or {lines: [...]})
+          teil.items.forEach((it, ii) => {
+            const card2 = document.createElement('div');
+            card2.className = 'qcard';
+            card2.dataset.teil = ti; card2.dataset.item = ii;
+            const baseNum = (ti === 0 ? 1 : ti === 2 ? 11 : 1) + ii;
+            const itemTranscript = it.lines || it.transcript;
+            const audioPath = it.audio || `${audioBase}/t${ti + 1}-${ii + 1}.mp3`;
+            card2.appendChild(buildTranscriptBlock(itemTranscript, audioPath, 'Text'));
+            card2.insertAdjacentHTML('beforeend', `<div class="q-head"><span class="q-num">${String(baseNum).padStart(2, '0')}</span><span class="q-text">${escapeHtml(it.q)}</span></div>`);
+            const opts = document.createElement('div');
+            opts.className = 'opts';
+            const letters = ['a','b','c'];
+            it.opts.forEach((txt, vi) => {
+              const o = document.createElement('label');
+              o.className = 'opt';
+              o.innerHTML = `<input type="radio" name="q-${ti}-${ii}" value="${vi}"><span class="letter">${letters[vi]}</span><span>${escapeHtml(txt)}</span>`;
+              o.querySelector('input').addEventListener('change', e => {
+                responses[ti][ii] = Number(e.target.value);
+                opts.querySelectorAll('.opt').forEach(x => x.classList.remove('sel'));
+                o.classList.add('sel');
+              });
+              opts.appendChild(o);
+            });
+            card2.appendChild(opts);
+            body.appendChild(card2);
+          });
+        }
+
+        card.appendChild(body);
+        area.appendChild(card);
+      });
+
+      // Unlock the Teil-tabs and show Teil 1
+      teilTabs.forEach(t => t.disabled = false);
+      setActiveTeil(0);
+
+      const bar = document.createElement('div');
+      bar.className = 'checkbar';
+      bar.innerHTML = `
+        <button class="btn" id="check-btn" type="button">Auswerten</button>
+        <button class="btn btn-ghost" id="reset-btn" type="button">Zurücksetzen</button>
+      `;
+      area.appendChild(bar);
+
+      const res = document.createElement('div');
+      res.className = 'result hidden';
+      res.id = 'result';
+      area.appendChild(res);
+
+      document.getElementById('check-btn').addEventListener('click', evaluate);
+      document.getElementById('reset-btn').addEventListener('click', () => loadTest(current));
+    }
+
+    function evaluate() {
+      if (!current) return;
+      checked = true;
+      let total = 0, correct = 0;
+      const perTeil = [];
+      current.teile.forEach((teil, ti) => {
+        let tCorrect = 0, tTotal = teil.items.length;
+        teil.items.forEach((it, ii) => {
+          total++;
+          const ans = responses[ti][ii];
+          const ok = ans === it.correct;
+          if (ok) { correct++; tCorrect++; }
+          const card = document.querySelector(`.qcard[data-teil="${ti}"][data-item="${ii}"]`);
+          if (!card) return;
+          card.classList.toggle('correct', ok);
+          card.classList.toggle('wrong', !ok);
+          // verdict line
+          const old = card.querySelector('.verdict');
+          if (old) old.remove();
+          const vd = document.createElement('div');
+          vd.className = 'verdict';
+          let displayUser = ans == null ? '—' : ans;
+          let displayCorrect = it.correct;
+          if (teil.type !== 'jn' && teil.type !== 'match') {
+            displayUser = ans == null ? '—' : ['a','b','c'][ans];
+            displayCorrect = ['a','b','c'][it.correct];
+          }
+          vd.textContent = ok ? '✓ richtig' : `✗ deine Antwort: ${displayUser}  |  richtig: ${displayCorrect}`;
+          card.appendChild(vd);
+          // visual highlight on options
+          card.querySelectorAll('.opt').forEach(o => o.classList.remove('sol'));
+          if (teil.type === 'jn') {
+            card.querySelectorAll('.opt').forEach(o => {
+              if (o.querySelector('input').value === it.correct) o.classList.add('sol');
+            });
+          } else if (teil.type === 'match') {
+            const selEl = card.querySelector('.match-select');
+            if (selEl && !ok) selEl.style.borderColor = 'var(--accent)';
+            else if (selEl && ok) selEl.style.borderColor = 'var(--accent-cool)';
+          } else {
+            const sols = card.querySelectorAll('.opt');
+            if (sols[it.correct]) sols[it.correct].classList.add('sol');
+          }
+        });
+        perTeil.push({ ti: ti + 1, c: tCorrect, t: tTotal });
+      });
+
+      if (!current.mixed) Progress.set('hoeren', current.id, true);
+      refreshPickerLabels();
+      updateCounter();
+      placeTestControl(current);  // Erledigt-Button auf den neuen Stand bringen
+
+      const res = document.getElementById('result');
+      res.classList.remove('hidden');
+      res.innerHTML = `
+        <div class="result-score">
+          <div class="big-score">${correct}<span>/${total}</span></div>
+          <div class="per-teil">
+            ${perTeil.map(p => `<div class="pt-chip">Teil ${p.ti}: <b>${p.c}/${p.t}</b></div>`).join('')}
+          </div>
+        </div>
+      `;
+      res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateCounter() {
+      const label = document.getElementById('counter-label');
+      const done = Progress.count('hoeren');
+      const total = Progress.total('hoeren');
+      label.innerHTML = `<b>${done}</b> <span class="ps-sep">/</span> <span class="ps-total">${total}</span> erledigt`;
+    }
+    updateCounter();
+    Progress.subscribe(updateCounter);
+
+    // ====== Fortschritt-Reset (nur dieses Modul) ======
+    (function () {
+      const rp = document.getElementById('reset-progress');
+      if (!rp) return;
+      function sync() { rp.disabled = (Progress.count('hoeren') === 0); }
+      rp.addEventListener('click', () => {
+        if (Progress.count('hoeren') === 0) return;
+        if (confirm('Den Fortschritt im Modul „Hören“ wirklich zurücksetzen?')) {
+          Progress.reset('hoeren');
+          refreshPickerLabels();
+        }
+      });
+      Progress.subscribe(sync);
+      sync();
+    })();
+
+    // Master-Lautstärke verdrahten (Slider + Mute); gilt sofort für alle Player.
+    (function () {
+      const slider = document.getElementById('master-vol');
+      const mute = document.getElementById('vol-mute');
+      let lastAudible = masterVolume > 0 ? masterVolume : 1;
+      if (slider) {
+        slider.addEventListener('input', () => {
+          masterVolume = Math.min(1, Math.max(0, Number(slider.value) / 100));
+          if (masterVolume > 0) lastAudible = masterVolume;
+          try { localStorage.setItem(VOL_KEY, String(masterVolume)); } catch (e) { /* ignore */ }
+          applyVolume();
+          refreshVolumeUI();
+        });
+      }
+      if (mute) {
+        mute.addEventListener('click', () => {
+          masterVolume = masterVolume === 0 ? lastAudible : 0;
+          try { localStorage.setItem(VOL_KEY, String(masterVolume)); } catch (e) { /* ignore */ }
+          applyVolume();
+          refreshVolumeUI();
+        });
+      }
+      refreshVolumeUI();
+      applyVolume();
+    })();
+
+    // Tastatur: 1–4 Teil wählen, N Test laden
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea, select, summary')) return;
+      if (!ddPanel.hidden) return;
+      if (e.key >= '1' && e.key <= '4') {
+        const tab = teilTabs[Number(e.key) - 1];
+        if (tab && !tab.disabled) { tab.click(); e.preventDefault(); }
+      } else if (e.key.toLowerCase() === 'n') {
+        document.getElementById('load-btn').click(); e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

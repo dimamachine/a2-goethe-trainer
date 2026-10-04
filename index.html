@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Crect width='3' height='1' y='0' fill='%23000000'/%3E%3Crect width='3' height='1' y='1' fill='%23DD0000'/%3E%3Crect width='3' height='1' y='2' fill='%23FFCE00'/%3E%3C/svg%3E">
+  <title>Goethe A2 — Prüfungstraining</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/base.css">
+  <style>
+@media (max-width: 600px) { .container { padding: 1rem; } }
+
+/* HEADER + MODULE NAV */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+
+.counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* MODULE NAV (between header and content) */
+.module-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.module-nav a.disabled { color: var(--text-faint); pointer-events: none; }
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: var(--text-faint);
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+footer .keys { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+footer .keys span { color: var(--text-faint); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+/* Kopf wie in den Modulen: große Akzent-Zahl + Titel (einheitliches Format) */
+.section-header { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem; }
+@media (max-width: 600px) { .section-header { grid-template-columns: 1fr; gap: 0.75rem; } }
+.big-num { font-family: 'Fraunces', serif; font-weight: 300; font-size: clamp(5.5rem, 13vw, 10rem); line-height: 0.82; color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 60; letter-spacing: -0.05em; }
+.section-meta h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.4rem, 2.8vw, 2.25rem); line-height: 1.1; margin-bottom: 0.65rem; letter-spacing: -0.015em; }
+.section-meta h1 em { font-style: italic; font-weight: 300; color: var(--text-dim); }
+.section-meta .hint { color: var(--text-dim); font-size: 1.05rem; max-width: 62ch; line-height: 1.55; }
+.section-meta .hint strong { color: var(--text); font-weight: 600; }
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+.module-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.75rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.15s, transform 0.1s, background 0.15s;
+  position: relative;
+}
+.module-card:hover {
+  border-color: var(--accent);
+  background: var(--surface-alt);
+}
+.module-card:active { transform: translateY(1px); }
+.module-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.module-card .mc-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.69rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.module-card .mc-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.module-card .mc-title em { font-style: italic; color: var(--accent-warm); font-weight: 300; }
+.module-card .mc-desc {
+  font-size: 0.92rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+.module-card .mc-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-cool);
+  margin-top: 0.5rem;
+}
+.module-card .mc-meta.warm { color: var(--accent-warm); }
+.module-card .mc-meta.faint { color: var(--text-faint); }
+
+.info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 800px) { .info-row { grid-template-columns: 1fr; } }
+
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+.info-card h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-warm);
+  margin-bottom: 0.85rem;
+  font-weight: 500;
+}
+.info-card .big {
+  font-family: 'Fraunces', serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+.info-card .big small {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-left: 0.3rem;
+  letter-spacing: 0;
+}
+.info-card p {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.tips-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+}
+.tips-row h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+.tips-row h2 em { font-style: italic; color: var(--accent-warm); }
+.tips-row ol {
+  padding-left: 1.5rem;
+  color: var(--text-dim);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+.tips-row ol li { padding: 0.25rem 0; }
+.tips-row ol li strong { color: var(--text); font-weight: 600; }
+.tips-row ol li code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82em;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  padding: 0.05em 0.4em;
+  color: var(--accent-warm);
+}
+</style>
+  <link rel="stylesheet" href="assets/progress.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <b><span class="b-num">A2</span><span class="b-cap"><span>Goethe-Zertifikat</span><span>Deutsch</span></span></b>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <span class="brand-tag">Prüfungstraining</span>
+        <span class="flag" aria-label="Deutschland"><span></span><span></span><span></span></span>
+      </div>
+      <div class="counter"><span id="counter-label"></span></div>
+    </header>
+
+    <nav class="module-nav">
+      <a href="index.html" class="current">A2</a>
+      <a href="lesen.html">Lesen</a>
+      <a href="hoeren.html">Hören</a>
+      <a href="schreiben.html">Schreiben</a>
+      <a href="sprechen.html">Sprechen</a>
+      <a href="hilfen.html">Hilfen</a>
+    </nav>
+
+    <div class="section-header">
+      <div class="big-num">A2</div>
+      <div class="section-meta">
+        <h1>Goethe-Zertifikat <em>&mdash; Pr&uuml;fungstraining</em></h1>
+        <p class="hint">Selbstständiges Training für das A2-Niveau. Vier Module mit KI-generierten Aufgaben, eingebaute Timer, zweisprachige Lösungen (DE / RU).</p>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-card">
+        <h2>Bestanden ab</h2>
+        <div class="big">60<small>%</small></div>
+        <p>Mindestens 60 % in jedem Modul nötig. Lesen + Hören + Schreiben + Sprechen werden einzeln bewertet.</p>
+      </div>
+      <div class="info-card">
+        <h2>Dauer Prüfung</h2>
+        <div class="big">~90<small>Min.</small></div>
+        <p>Lesen 30 · Hören 30 · Schreiben 30 · Sprechen 15 (zu zweit). Pausen zwischen den Modulen.</p>
+      </div>
+      <div class="info-card">
+        <h2>Niveau</h2>
+        <div class="big">A2</div>
+        <p>Alltagsthemen, einfache Texte, eigene Person beschreiben, kurze Pläne aushandeln.</p>
+      </div>
+    </div>
+
+    <div class="module-grid">
+      <a class="module-card" href="lesen.html">
+        <div class="mc-num">Modul 01</div>
+        <div class="mc-title">Lesen <em>— 4 Teile</em></div>
+        <div class="mc-desc">Texte, Informationstafel, E-Mail und Anzeigen. Auswahl + Zuordnung, mit Richtzeit pro Teil.</div>
+        <div class="progress-stat" data-module="lesen"></div>
+        <div class="progress-bar" data-module="lesen"><span></span></div>
+        <div class="mc-meta">Aufgabensätze laden →</div>
+      </a>
+
+      <a class="module-card" href="hoeren.html">
+        <div class="mc-num">Modul 02</div>
+        <div class="mc-title">Hören <em>— 4 Teile</em></div>
+        <div class="mc-desc">100 komplette Tests, je 20 Aufgaben. Audio anhören, Antworten ankreuzen — Ablauf streng wie in der Prüfung.</div>
+        <div class="progress-stat" data-module="hoeren"></div>
+        <div class="progress-bar" data-module="hoeren"><span></span></div>
+        <div class="mc-meta">Test laden →</div>
+      </a>
+
+      <a class="module-card" href="schreiben.html">
+        <div class="mc-num">Modul 03</div>
+        <div class="mc-title">Schreiben <em>— 2 Teile</em></div>
+        <div class="mc-desc">SMS und E-Mail auf Zeit schreiben. KI-Prüfung nach Goethe-Kriterien: Punkte, Fehler, Korrektur — per API oder manuell.</div>
+        <div class="progress-stat" data-module="schreiben"></div>
+        <div class="progress-bar" data-module="schreiben"><span></span></div>
+        <div class="mc-meta">Texte üben →</div>
+      </a>
+
+      <a class="module-card" href="sprechen.html">
+        <div class="mc-num">Modul 04</div>
+        <div class="mc-title">Sprechen <em>— 3 Teile</em></div>
+        <div class="mc-desc">Fragen stellen, Monolog, gemeinsam planen. Stichwörter, Themen, Wochenpläne mit garantiertem freien Termin.</div>
+        <div class="progress-stat" data-module="sprechen"></div>
+        <div class="progress-bar" data-module="sprechen"><span></span></div>
+        <div class="mc-meta">Aufgaben ziehen →</div>
+      </a>
+
+      <a class="module-card" href="hilfen.html">
+        <div class="mc-num">Modul 05</div>
+        <div class="mc-title">Hilfen <em>— Spickzettel</em></div>
+        <div class="mc-desc">Redemittel zum Auswendiglernen, Strategie-Tipps pro Aufgabe, Grammatik-Basics, Zahlen und Uhrzeit, Beispielprofil.</div>
+        <div class="mc-meta warm">Phrasen pauken →</div>
+      </a>
+    </div>
+
+    <div class="tips-row">
+      <h2>Tastatur — <em>im jedem Modul</em></h2>
+      <ol>
+        <li><code>1</code> <code>2</code> <code>3</code> <code>4</code> — zwischen Aufgaben (Teilen) wechseln</li>
+        <li><code>N</code> — neue Aufgabe / neuen Satz ziehen</li>
+        <li><code>Space</code> — Timer Start / Pause (wo vorhanden)</li>
+        <li><code>C</code> — Antworten prüfen (in Lesen-Aufgaben)</li>
+      </ol>
+    </div>
+
+    <footer>
+      <div>Aufgaben, Texte &amp; Audio sind KI-generiert (Azure Neural TTS) · kein offizielles Goethe-Material</div>
+      <div class="keys">
+        <span>v1.0</span>
+      </div>
+    </footer>
+  </div>
+  <script src="assets/progress.js"></script>
+  <script>
+    // Подписи модулей для UI
+    const MODULE_LABELS = { lesen: 'Lesen', hoeren: 'Hören', schreiben: 'Schreiben', sprechen: 'Sprechen' };
+    function refreshProgress() {
+      let totalDone = 0, totalAll = 0;
+      Object.keys(MODULE_LABELS).forEach(m => {
+        const done = Progress.count(m);
+        const tot = Progress.total(m);
+        totalDone += done; totalAll += tot;
+        const stat = document.querySelector('.progress-stat[data-module="' + m + '"]');
+        if (stat) {
+          if (tot > 0) {
+            stat.innerHTML = '<b>' + done + '</b> <span class="ps-sep">/</span> <span class="ps-total">' + tot + '</span> erledigt';
+          } else {
+            stat.innerHTML = '<span class="ps-total">noch nicht geöffnet</span>';
+          }
+        }
+        const bar = document.querySelector('.progress-bar[data-module="' + m + '"] span');
+        if (bar) bar.style.width = (tot > 0 ? Math.round(done / tot * 100) : 0) + '%';
+      });
+      const overall = document.getElementById('counter-label');
+      if (overall) {
+        if (totalAll > 0) {
+          overall.innerHTML = '<b>' + totalDone + '</b> <span class="ps-sep">/</span> <span class="ps-total">' + totalAll + '</span> erledigt';
+        } else {
+          overall.textContent = 'noch keine Fortschritte';
+        }
+      }
+    }
+    refreshProgress();
+    Progress.subscribe(refreshProgress);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Crect width='3' height='1' y='0' fill='%23000000'/%3E%3Crect width='3' height='1' y='1' fill='%23DD0000'/%3E%3Crect width='3' height='1' y='2' fill='%23FFCE00'/%3E%3C/svg%3E">
+  <title>A2 Schreiben — Praxis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/base.css">
+  <style>
+
+    @media (max-width: 600px) { .container { padding: 1rem; } }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+
+    .counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--text-dim);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+
+    /* MODULE NAV */
+    .module-nav {
+      display: flex; gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.75rem;
+      overflow-x: auto; scrollbar-width: none;
+    }
+
+    .module-nav a.disabled { color: var(--text-faint); pointer-events: none; }
+
+    /* TABS */
+    nav.tabs {
+      display: flex; gap: 0;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    @media (max-width: 860px) { nav.tabs { flex-direction: column; } }
+    .tab {
+      flex: 1; padding: 1.1rem 1.25rem;
+      background: transparent; border: none;
+      border-right: 1px solid var(--border);
+      color: var(--text-dim); cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      text-align: left; position: relative; font-family: inherit;
+    }
+    @media (max-width: 640px) { .tab { border-right: none; border-bottom: 1px solid var(--border); } }
+    .tab:last-child { border-right: none; border-bottom: none; }
+    .tab:hover { color: var(--text); background: var(--surface-alt); }
+    .tab.active { color: var(--text); background: var(--surface-alt); }
+    .tab.active::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 2px; background: var(--accent);
+    }
+    @media (max-width: 640px) { .tab.active::before { width: 2px; height: 100%; } }
+    .tab .tab-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.1em;
+      color: var(--text-faint); display: block; margin-bottom: 0.35rem;
+    }
+    .tab.active .tab-num { color: var(--accent); }
+    .tab .tab-title {
+      font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 500;
+      letter-spacing: -0.01em; display: block; margin-bottom: 0.15rem;
+    }
+    .tab .tab-sub { font-size: 0.78rem; color: var(--text-faint); line-height: 1.3; }
+
+    /* SETTINGS */
+    .settings { background: var(--surface); border: 1px solid var(--border); margin-bottom: 2.5rem; }
+    .settings summary {
+      cursor: pointer; padding: 0.9rem 1.15rem; list-style: none;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .settings summary::-webkit-details-marker { display: none; }
+    .settings summary::before { content: '+ '; color: var(--accent-warm); }
+    .settings[open] summary::before { content: '\2212 '; }
+    .settings summary:hover { color: var(--text); }
+    .settings[open] summary { border-bottom: 1px solid var(--border); color: var(--text); }
+    .settings-body { padding: 1.25rem 1.15rem; display: flex; flex-direction: column; gap: 0.9rem; }
+    .settings-note {
+      font-size: 0.82rem; color: var(--text-faint); line-height: 1.55;
+      border-left: 2px solid var(--border-strong); padding-left: 0.8rem;
+    }
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.69rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .field input, .field select {
+      background: var(--bg); border: 1px solid var(--border-strong);
+      color: var(--text); padding: 0.55rem 0.7rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    }
+    .field input:focus, .field select:focus { border-color: var(--accent); }
+    .settings-actions { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+    #set-status { font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; }
+
+    /* SECTION */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .section-header {
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 2rem; align-items: center; margin-bottom: 2.5rem;
+    }
+    @media (max-width: 600px) { .section-header { grid-template-columns: 1fr; gap: 0.75rem; } }
+    .big-num {
+      font-family: 'Fraunces', serif; font-weight: 300;
+      font-size: clamp(5.5rem, 13vw, 10rem); line-height: 0.82;
+      color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 60; letter-spacing: -0.05em;
+    }
+    @media (max-width: 600px) { .big-num { font-size: 4.5rem; } }
+    .section-meta h1 {
+      font-family: 'Fraunces', serif; font-weight: 500;
+      font-size: clamp(1.4rem, 2.8vw, 2.25rem); line-height: 1.1;
+      margin-bottom: 0.65rem; letter-spacing: -0.015em;
+    }
+    .section-meta h1 em { font-style: italic; font-weight: 300; color: var(--text-dim); }
+    .section-meta .hint { color: var(--text-dim); font-size: 0.95rem; max-width: 62ch; }
+    .section-meta .hint strong { color: var(--text); font-weight: 600; }
+
+    /* CONTROLS */
+    .controls { display: flex; gap: 0.75rem; align-items: stretch; flex-wrap: wrap; margin-bottom: 2rem; }
+    .btn {
+      padding: 0.85rem 1.4rem; background: var(--accent); color: var(--bg);
+      border: none; font-family: inherit; font-weight: 600; font-size: 0.95rem;
+      cursor: pointer; transition: transform 0.12s, box-shadow 0.12s, background 0.2s;
+      letter-spacing: -0.005em;
+    }
+    .btn:hover { background: #FF7055; transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--text); }
+    .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--text); }
+    .btn:disabled { background: var(--border-strong); color: var(--text-faint); cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-done { background: transparent; color: var(--accent-cool); border: 1px solid var(--accent-cool); display: inline-flex; align-items: center; gap: 0.4rem; transition: background 0.15s, color 0.15s, filter 0.15s; }
+    .btn-done:hover:not(:disabled) { background: rgba(127,163,148,0.22); color: var(--text); transform: none; box-shadow: none; }
+    .btn-done:disabled { color: var(--text-faint); border-color: var(--border-strong); cursor: not-allowed; }
+    .btn-done.is-done { background: var(--accent-cool); color: var(--bg); border-color: var(--accent-cool); font-weight: 700; }
+    .btn-done.is-done:hover:not(:disabled) { background: var(--accent-cool); color: var(--bg); filter: brightness(1.08); transform: none; box-shadow: none; }
+    .strat-link { display: inline-block; margin-top: 0.5rem; color: var(--accent-cool); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.02em; }
+    .strat-link:hover { text-decoration: underline; }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border-strong); }
+    .btn-ghost:hover { background: var(--surface); border-color: var(--text); box-shadow: none; transform: none; }
+
+    /* TIMER */
+    .timer {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.45rem 0.9rem; background: var(--surface); border: 1px solid var(--border);
+    }
+    .timer-display {
+      font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700;
+      color: var(--text); min-width: 5ch; font-variant-numeric: tabular-nums; transition: color 0.3s;
+    }
+    .timer.running .timer-display { color: var(--accent-warm); }
+    .timer.done .timer-display { color: var(--accent); animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+    .timer button {
+      padding: 0.3rem 0.65rem; font-size: 0.7rem; background: transparent;
+      border: 1px solid var(--border-strong); color: var(--text-dim); cursor: pointer;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .timer button:hover { color: var(--text); border-color: var(--text); }
+
+    /* TASK CARD */
+    .task-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-warm);
+      padding: 1.5rem 1.75rem; margin-bottom: 1.5rem;
+    }
+    .task-card.is-empty { background: transparent; border: none; padding: 0; }
+    .task-card .placeholder { padding: 3.5rem 2rem; text-align: center; border: 1px dashed var(--border); color: var(--text-dim); font-style: italic; font-family: 'Fraunces', serif; font-size: 1rem; }
+    .task-card .placeholder .big-arrow { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 300; color: var(--accent); display: block; margin-bottom: 0.75rem; font-style: normal; }
+    .task-context { font-family: 'Fraunces', serif; font-size: 1.2rem; line-height: 1.35; margin-bottom: 1.1rem; }
+    .task-points { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .task-points li { position: relative; padding-left: 2rem; color: var(--text-dim); }
+    .pt-num {
+      position: absolute; left: 0; top: 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700;
+      color: var(--bg); background: var(--accent-warm);
+      width: 1.3rem; height: 1.3rem; display: inline-flex;
+      align-items: center; justify-content: center;
+    }
+    .task-meta {
+      margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+      letter-spacing: 0.04em; color: var(--text-faint);
+    }
+    .task-source {
+      display: inline-block; margin-bottom: 0.9rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--bg); background: var(--accent-cool);
+      padding: 0.28rem 0.6rem;
+    }
+
+    /* WRITE AREA */
+    .write-area {
+      width: 100%; min-height: 190px;
+      background: var(--surface); border: 1px solid var(--border-strong);
+      color: var(--text); font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem; line-height: 1.6; padding: 1rem 1.15rem; resize: vertical;
+    }
+    .write-area:focus { border-color: var(--accent); }
+    .write-area.small { min-height: 130px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; }
+    .write-foot { display: flex; justify-content: flex-end; margin-top: 0.4rem; }
+    .word-count { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-dim); }
+    .word-count.ok { color: var(--accent-cool); }
+    .word-count.warn { color: var(--accent); }
+
+    /* CHECK BAR */
+    .check-bar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin: 1.25rem 0; }
+    .check-bar[hidden], .write-wrap[hidden], .help-panel[hidden] { display: none; }
+    .seg { display: inline-flex; border: 1px solid var(--border-strong); }
+    .seg-btn {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; letter-spacing: 0.05em;
+      padding: 0.6rem 0.9rem; min-height: 44px; background: transparent; color: var(--text-dim);
+      border: none; cursor: pointer;
+    }
+    .seg-btn + .seg-btn { border-left: 1px solid var(--border-strong); }
+    .seg-btn.active { background: var(--accent); color: var(--bg); }
+
+    .manual-box {
+      background: var(--surface-alt); border: 1px dashed var(--border-strong);
+      padding: 1.25rem; margin-bottom: 1.5rem;
+    }
+    .manual-step { font-size: 0.9rem; color: var(--text-dim); margin: 0.9rem 0 0.5rem; }
+    .manual-step:first-child { margin-top: 0; }
+    .manual-step b { color: var(--accent-warm); }
+
+    /* RESULT */
+    .result {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 3px solid var(--accent); padding: 1.5rem 1.75rem; margin-top: 1.5rem;
+    }
+    .result h2 {
+      font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.05rem;
+      margin: 1.6rem 0 0.6rem;
+    }
+    .result-score { display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .big-score { font-family: 'Fraunces', serif; font-size: 3.5rem; line-height: 1; color: var(--accent); font-weight: 300; }
+    .big-score span { font-size: 1.5rem; color: var(--text-dim); }
+    .wz { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+    .wz.ok { color: var(--accent-cool); }
+    .wz.warn { color: var(--accent); }
+    .crit { margin-bottom: 1rem; }
+    .crit-head { display: flex; justify-content: space-between; font-size: 0.92rem; margin-bottom: 0.35rem; }
+    .crit-bar { height: 6px; background: var(--surface-alt); border: 1px solid var(--border); }
+    .crit-bar i { display: block; height: 100%; background: var(--accent-warm); }
+    .crit p { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.35rem; }
+    .lp-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; }
+    .lp { font-size: 0.88rem; color: var(--text-dim); }
+    .lp span { font-weight: 700; margin-right: 0.45rem; }
+    .lp.yes span { color: var(--accent-cool); }
+    .lp.no span { color: var(--accent); }
+    .err-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .err { background: var(--surface-alt); border: 1px solid var(--border); padding: 0.7rem 0.9rem; }
+    .err-line s { color: var(--accent); text-decoration-thickness: 1px; }
+    .err-line b { color: var(--accent-cool); }
+    .err-typ {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; color: var(--text-faint);
+      border: 1px solid var(--border-strong); padding: 0.1rem 0.4rem; margin-left: 0.4rem;
+    }
+    .err-expl { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.35rem; }
+    .no-err { color: var(--accent-cool); font-size: 0.9rem; }
+    .corrected {
+      background: var(--surface-alt); border: 1px solid var(--border);
+      padding: 0.9rem 1.1rem; line-height: 1.6; white-space: pre-wrap;
+    }
+    .feedback { font-size: 0.94rem; line-height: 1.65; }
+    .result-error { color: var(--accent); font-size: 0.9rem; line-height: 1.5; }
+    .result-info { color: var(--text-dim); font-size: 0.9rem; }
+
+    /* FOOTER */
+    footer {
+      margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+      color: var(--text-faint); letter-spacing: 0.02em;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    /* Hilfe & Selbstcheck panel (offline writing help per Teil) */
+    .help-panel { margin: 0.5rem 0 1.25rem; background: var(--surface); border: 1px solid var(--border-strong); }
+    .help-panel > summary { cursor: pointer; list-style: none; padding: 0.7rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-warm); }
+    .help-panel > summary::-webkit-details-marker { display: none; }
+    .help-panel[open] > summary { border-bottom: 1px solid var(--border); }
+    .help-body { padding: 1rem 1.1rem; display: grid; gap: 1.2rem; }
+    @media (min-width: 720px) { .help-body { grid-template-columns: 1fr 1fr; } }
+    .help-block h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1rem; color: var(--text); margin-bottom: 0.5rem; }
+    .help-check { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; color: var(--text-dim); }
+    .help-check li { line-height: 1.4; }
+    .help-muster-task { font-size: 0.82rem; color: var(--text-faint); margin-bottom: 0.45rem; }
+    .help-muster { background: var(--bg); border-left: 2px solid var(--accent-cool); padding: 0.7rem 0.9rem; font-size: 0.92rem; color: var(--text); line-height: 1.65; }
+    .help-check label { display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; color: var(--text-dim); transition: color 0.15s; }
+    .help-check label:hover { color: var(--text); }
+    .help-check input { appearance: none; -webkit-appearance: none; width: 1.05rem; height: 1.05rem; margin: 0.08rem 0 0; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border-strong); cursor: pointer; position: relative; transition: background 0.15s, border-color 0.15s; }
+    .help-check input:hover { border-color: var(--accent-cool); }
+    .help-check input:checked { background: var(--accent-cool); border-color: var(--accent-cool); }
+    .help-check input:checked::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--bg); }
+    .help-check label:has(input:checked) { color: var(--text); }
+    .help-check b { color: var(--text); }
+    /* Readable (non-JSON) manual-check output */
+    .readable-result { background: var(--surface); border: 1px solid var(--border-strong); border-left: 3px solid var(--accent-cool); padding: 1rem 1.2rem; white-space: pre-wrap; word-break: break-word; font-family: 'Bricolage Grotesque', sans-serif; font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+    .readable-result strong { color: var(--accent-warm); font-weight: 600; }
+    footer .keys { display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; }
+    footer kbd { font-family: inherit; color: var(--accent-warm); background: var(--surface); padding: 0.15em 0.45em; border: 1px solid var(--border); font-size: 0.75rem; }
+  </style>
+  <link rel="stylesheet" href="assets/progress.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <b><span class="b-num">A2</span><span class="b-cap"><span>Goethe-Zertifikat</span><span>Deutsch</span></span></b>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <span class="brand-tag">Schreiben</span>
+        <span class="flag" aria-label="Deutschland"><span></span><span></span><span></span></span>
+      </div>
+      <div class="counter"><span id="counter-label"></span><button type="button" class="reset-progress" id="reset-progress" title="Fortschritt in diesem Modul zur&uuml;cksetzen">&#8634; Reset</button></div>
+    </header>
+
+    <nav class="module-nav">
+      <a href="index.html">A2</a>
+      <a href="lesen.html">Lesen</a>
+      <a href="hoeren.html">H&ouml;ren</a>
+      <a href="schreiben.html" class="current">Schreiben</a>
+      <a href="sprechen.html">Sprechen</a>
+      <a href="hilfen.html">Hilfen</a>
+    </nav>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="t1">
+        <span class="tab-num">TEIL 01</span>
+        <span class="tab-title">Kurznachricht</span>
+        <span class="tab-sub">SMS an eine Freundin &middot; 20&ndash;30 W&ouml;rter</span>
+      </button>
+      <button class="tab" data-tab="t2">
+        <span class="tab-num">TEIL 02</span>
+        <span class="tab-title">E-Mail</span>
+        <span class="tab-sub">Halb-offiziell &middot; 30&ndash;40 W&ouml;rter</span>
+      </button>
+    </nav>
+    <!-- TEIL 1 -->
+    <section class="section active" id="t1">
+      <div class="section-header">
+        <div class="big-num">01</div>
+        <div class="section-meta">
+          <h1>Kurznachricht <em>&mdash; eine SMS schreiben</em></h1>
+          <p class="hint">Schreibe eine <strong>informelle SMS</strong> an eine Freundin oder einen Freund (Ton: &bdquo;du&ldquo;).
+          <strong>20&ndash;30 W&ouml;rter</strong>, alle <strong>3 Punkte</strong>. Im Examen: 30 Min. f&uuml;r beide Teile zusammen.</p>
+          <a class="strat-link" href="hilfen.html#schreiben-t1">&rarr; Redemittel &middot; informelle SMS schreiben</a>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="t1-draw" type="button">&rarr; Neue Aufgabe</button>
+        <div class="timer" id="t1-timer">
+          <span class="timer-display" id="t1-display">10:00</span>
+          <button data-action="start" type="button">&#9654; Start</button>
+          <button data-action="pause" type="button">Pause</button>
+          <button data-action="reset" type="button">Zurücksetzen</button>
+        </div>
+      </div>
+      <div class="task-card" id="t1-task">
+        <div class="placeholder"><span class="big-arrow">↓</span>Dr&uuml;cke <strong>&bdquo;Neue Aufgabe&ldquo;</strong> &mdash; du bekommst ein Schreibthema mit 3 Punkten.</div>
+      </div>
+      <div class="write-wrap">
+        <textarea class="write-area" id="t1-text" placeholder="Schreibe hier deine SMS &hellip;"></textarea>
+        <div class="write-foot"><span class="word-count" id="t1-words">0 W&ouml;rter</span></div>
+      </div>
+      <details class="help-panel">
+        <summary>&#128221; Hilfe &amp; Selbstcheck</summary>
+        <div class="help-body">
+          <div class="help-block">
+            <h2>Beispiel-Musterl&ouml;sung</h2>
+            <p class="help-muster-task"><i>Aufgabe: Du kommst zu sp&auml;t &mdash; entschuldigen, Grund nennen, neue Uhrzeit.</i></p>
+            <p class="help-muster">Hallo Lena,<br>es tut mir leid, ich komme leider zu sp&auml;t. Mein Bus hatte Versp&auml;tung. K&ouml;nnen wir uns um 18 Uhr treffen statt um 17? Liebe Gr&uuml;&szlig;e, Tom</p>
+          </div>
+          <div class="help-block">
+            <h2>Selbstcheck</h2>
+            <ul class="help-check">
+              <li><label><input type="checkbox"> Alle <b>3 Punkte</b> behandelt</label></li>
+              <li><label><input type="checkbox"> <b>Anrede</b> und <b>Gru&szlig;</b> vorhanden</label></li>
+              <li><label><input type="checkbox"> <b>20&ndash;30 W&ouml;rter</b> (Z&auml;hler gr&uuml;n)</label></li>
+              <li><label><input type="checkbox"> Ton <b>&bdquo;du&ldquo;</b> (Freund/in)</label></li>
+              <li><label><input type="checkbox"> Verben konjugiert, Satzzeichen gesetzt</label></li>
+            </ul>
+          </div>
+        </div>
+      </details>
+      <div class="check-bar">
+        <div class="seg" id="t1-mode">
+          <button class="seg-btn active" data-mode="auto" type="button">Automatisch</button>
+          <button class="seg-btn" data-mode="manual" type="button">Manuell</button>
+        </div>
+        <button class="btn" id="t1-check" type="button">Text pr&uuml;fen</button>
+      </div>
+      <div class="manual-box" id="t1-manual" hidden>
+        <p class="manual-step"><b>1.</b> Prompt kopieren und in claude.ai (oder eine andere KI) einf&uuml;gen:</p>
+        <button class="btn btn-ghost" id="t1-copy" type="button">Prompt kopieren</button>
+        <p class="manual-step"><b>2.</b> Antwort der KI hier einf&uuml;gen und auswerten:</p>
+        <textarea class="write-area small" id="t1-paste" placeholder="Antwort der KI hier einf&uuml;gen &hellip;"></textarea>
+        <div style="margin-top:0.6rem"><button class="btn" id="t1-show" type="button">Ergebnis anzeigen</button></div>
+      </div>
+      <div class="result" id="t1-result" hidden></div>
+    </section>
+
+    <!-- TEIL 2 -->
+    <section class="section" id="t2">
+      <div class="section-header">
+        <div class="big-num">02</div>
+        <div class="section-meta">
+          <h1>E-Mail <em>&mdash; halb-offiziell schreiben</em></h1>
+          <p class="hint">Schreibe eine <strong>halb-offizielle E-Mail</strong> (Ton: &bdquo;Sie&ldquo;, mit Anrede und Gru&szlig;).
+          <strong>30&ndash;40 W&ouml;rter</strong>, alle <strong>3 Punkte</strong>. Im Examen: 30 Min. f&uuml;r beide Teile zusammen.</p>
+          <a class="strat-link" href="hilfen.html#schreiben-t2">&rarr; Redemittel &middot; halb-offizielle E-Mail</a>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="t2-draw" type="button">&rarr; Neue Aufgabe</button>
+        <div class="timer" id="t2-timer">
+          <span class="timer-display" id="t2-display">20:00</span>
+          <button data-action="start" type="button">&#9654; Start</button>
+          <button data-action="pause" type="button">Pause</button>
+          <button data-action="reset" type="button">Zurücksetzen</button>
+        </div>
+      </div>
+      <div class="task-card" id="t2-task">
+        <div class="placeholder"><span class="big-arrow">↓</span>Dr&uuml;cke <strong>&bdquo;Neue Aufgabe&ldquo;</strong> &mdash; du bekommst ein Schreibthema mit 3 Punkten.</div>
+      </div>
+      <div class="write-wrap">
+        <textarea class="write-area" id="t2-text" placeholder="Schreibe hier deine E-Mail &hellip;"></textarea>
+        <div class="write-foot"><span class="word-count" id="t2-words">0 W&ouml;rter</span></div>
+      </div>
+      <details class="help-panel">
+        <summary>&#128221; Hilfe &amp; Selbstcheck</summary>
+        <div class="help-body">
+          <div class="help-block">
+            <h2>Beispiel-Musterl&ouml;sung</h2>
+            <p class="help-muster-task"><i>Aufgabe: online gekaufte Lampe kam kaputt an &mdash; Problem, Wunsch, schnelle Antwort.</i></p>
+            <p class="help-muster">Sehr geehrte Damen und Herren,<br>ich habe bei Ihnen eine Lampe gekauft, aber sie ist leider kaputt angekommen. Ich m&ouml;chte eine neue Lampe oder mein Geld zur&uuml;ck. Bitte antworten Sie mir bald. Mit freundlichen Gr&uuml;&szlig;en, Anna Berg</p>
+          </div>
+          <div class="help-block">
+            <h2>Selbstcheck</h2>
+            <ul class="help-check">
+              <li><label><input type="checkbox"> Alle <b>3 Punkte</b> behandelt</label></li>
+              <li><label><input type="checkbox"> <b>Anrede</b> (Sehr geehrte&hellip; / Liebe&hellip;) und <b>Gru&szlig;</b></label></li>
+              <li><label><input type="checkbox"> <b>30&ndash;40 W&ouml;rter</b> (Z&auml;hler gr&uuml;n)</label></li>
+              <li><label><input type="checkbox"> Ton <b>&bdquo;Sie&ldquo;</b> durchgehend</label></li>
+              <li><label><input type="checkbox"> Gro&szlig;-/Kleinschreibung, Satzzeichen gepr&uuml;ft</label></li>
+            </ul>
+          </div>
+        </div>
+      </details>
+      <div class="check-bar">
+        <div class="seg" id="t2-mode">
+          <button class="seg-btn active" data-mode="auto" type="button">Automatisch</button>
+          <button class="seg-btn" data-mode="manual" type="button">Manuell</button>
+        </div>
+        <button class="btn" id="t2-check" type="button">Text pr&uuml;fen</button>
+      </div>
+      <div class="manual-box" id="t2-manual" hidden>
+        <p class="manual-step"><b>1.</b> Prompt kopieren und in claude.ai (oder eine andere KI) einf&uuml;gen:</p>
+        <button class="btn btn-ghost" id="t2-copy" type="button">Prompt kopieren</button>
+        <p class="manual-step"><b>2.</b> Antwort der KI hier einf&uuml;gen und auswerten:</p>
+        <textarea class="write-area small" id="t2-paste" placeholder="Antwort der KI hier einf&uuml;gen &hellip;"></textarea>
+        <div style="margin-top:0.6rem"><button class="btn" id="t2-show" type="button">Ergebnis anzeigen</button></div>
+      </div>
+      <div class="result" id="t2-result" hidden></div>
+    </section>
+
+    <details class="settings" id="settings">
+      <summary>KI-Verbindung einrichten</summary>
+      <div class="settings-body">
+        <p class="settings-note">
+          Die Pr&uuml;fung l&auml;uft &uuml;ber eine KI. <b>Automatisch</b>: API-Schl&uuml;ssel eintragen (Anthropic oder
+          OpenAI-kompatibel wie OpenRouter) &mdash; der Schl&uuml;ssel wird nur lokal in deinem Browser gespeichert
+          (localStorage, im Klartext) und direkt an den Anbieter gesendet. Nutze das nur auf deinem eigenen Ger&auml;t.
+          <b>Manuell</b>: ohne Schl&uuml;ssel &mdash; Prompt kopieren, in claude.ai einf&uuml;gen, Antwort zur&uuml;ckkopieren.
+        </p>
+        <div class="field">
+          <label for="set-provider">Anbieter</label>
+          <select id="set-provider">
+            <option value="anthropic">Anthropic (Claude API)</option>
+            <option value="openai">OpenAI-kompatibel (OpenRouter u. a.)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-base">Endpoint (Basis-URL)</label>
+          <input id="set-base" type="text" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="set-key">API-Schl&uuml;ssel</label>
+          <input id="set-key" type="password" autocomplete="off" placeholder="sk-...">
+        </div>
+        <div class="field">
+          <label for="set-model">Modell</label>
+          <input id="set-model" type="text" autocomplete="off" spellcheck="false" placeholder="z. B. claude-sonnet-4-6">
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-ghost" id="set-save" type="button">Speichern</button>
+          <button class="btn btn-ghost" id="set-test" type="button">Verbindung testen</button>
+          <span id="set-status"></span>
+        </div>
+      </div>
+    </details>
+
+    <footer>
+      <div>KI-generierte Aufgaben &middot; 2 Teile &middot; KI-Bewertung</div>
+      <div class="keys">
+        <kbd>1</kbd><kbd>2</kbd> <span>— Teile</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <kbd>N</kbd> <span>— neue Aufgabe</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <kbd>Space</kbd> <span>— Timer</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <span>v1.0</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="assets/progress.js"></script>
+
+  <script src="assets/data/schreiben-tests.js"></script>
+  <script>
+    // ============ DATA ============
+    const T1_TASKS = window.SCHREIBEN_T1_TASKS || [];
+    const T2_TASKS = window.SCHREIBEN_T2_TASKS || [];
+
+    const TEILE = {
+      t1: { tasks: T1_TASKS, num: 1, kind: "SMS", words: [20, 30], minWords: 10,
+            ton: "informell, mit „du“", timer: 600 },
+      t2: { tasks: T2_TASKS, num: 2, kind: "E-Mail", words: [30, 40], minWords: 15,
+            ton: "halb-offiziell, mit „Sie“, mit Anrede und Gruß", timer: 1200 }
+    };
+
+    const state = { t1: { task: null, idx: -1 }, t2: { task: null, idx: -1 } };
+
+    // ============ HELPERS ============
+    function wordCount(t) { return (String(t).trim().match(/\S+/g) || []).length; }
+    // pick() и escapeHtml() теперь общие — см. assets/progress.js
+
+    // Stabile IDs für jede Aufgabe (source-slug oder context-slug)
+    function makeId(prefix, task) {
+      const base = task.source || task.context || '';
+      return prefix + ':' + Progress.slug(base);
+    }
+    T1_TASKS.forEach(t => { t._id = makeId('t1', t); });
+    T2_TASKS.forEach(t => { t._id = makeId('t2', t); });
+    const SCHREIBEN_TOTAL = T1_TASKS.length + T2_TASKS.length;
+    Progress.setTotal('schreiben', SCHREIBEN_TOTAL);
+
+    function bumpCounter(key) {
+      if (key && state[key] && state[key].task && state[key].task._id) {
+        Progress.set('schreiben', state[key].task._id, true);
+      }
+      updateSchreibenCounter();
+    }
+    function updateSchreibenCounter() {
+      const done = Progress.count('schreiben');
+      document.getElementById('counter-label').innerHTML =
+        '<b>' + done + '</b> <span class="ps-sep">/</span> <span class="ps-total">' + SCHREIBEN_TOTAL + '</span> erledigt';
+    }
+    Progress.subscribe(m => { if (m === 'schreiben') updateSchreibenCounter(); });
+
+    // ====== Fortschritt-Reset (nur dieses Modul) ======
+    (function () {
+      const rp = document.getElementById('reset-progress');
+      if (!rp) return;
+      function sync() { rp.disabled = (Progress.count('schreiben') === 0); }
+      rp.addEventListener('click', () => {
+        if (Progress.count('schreiben') === 0) return;
+        if (confirm('Den Fortschritt im Modul „Schreiben“ wirklich zurücksetzen?')) Progress.reset('schreiben');
+      });
+      Progress.subscribe(sync);
+      sync();
+    })();
+
+    // ============ SETTINGS ============
+    const DEFAULTS = {
+      anthropic: { base: 'https://api.anthropic.com', model: '' },
+      openai:    { base: 'https://openrouter.ai/api/v1', model: '' }
+    };
+    const setP = document.getElementById('set-provider');
+    const setB = document.getElementById('set-base');
+    const setK = document.getElementById('set-key');
+    const setM = document.getElementById('set-model');
+    const setStatus = document.getElementById('set-status');
+
+    function currentSettings() {
+      return { provider: setP.value, base: setB.value.trim(), key: setK.value.trim(), model: setM.value.trim() };
+    }
+    function fillSettings() {
+      let s = null;
+      try { s = JSON.parse(localStorage.getItem('a2_schr_settings') || 'null'); } catch (e) {}
+      if (!s) s = Object.assign({ provider: 'anthropic', key: '' }, DEFAULTS.anthropic);
+      setP.value = s.provider || 'anthropic';
+      setB.value = s.base || DEFAULTS[setP.value].base;
+      setK.value = s.key || '';
+      setM.value = s.model || DEFAULTS[setP.value].model;
+    }
+    setP.addEventListener('change', () => {
+      const d = DEFAULTS[setP.value];
+      setB.value = d.base;
+      setM.value = d.model;
+    });
+    function persistSettings() {
+      try { localStorage.setItem('a2_schr_settings', JSON.stringify(currentSettings())); return true; }
+      catch (e) { return false; }
+    }
+    document.getElementById('set-save').addEventListener('click', () => {
+      if (persistSettings()) {
+        setStatus.textContent = 'Gespeichert'; setStatus.style.color = 'var(--accent-cool)';
+      } else {
+        setStatus.textContent = 'Speichern nicht möglich (Browser-Speicher gesperrt)'; setStatus.style.color = 'var(--accent)';
+      }
+      setTimeout(() => { setStatus.textContent = ''; }, 2000);
+    });
+    document.getElementById('set-test').addEventListener('click', async () => {
+      persistSettings();  // Test liest aus dem DOM, läuft auch ohne Persistenz
+      setStatus.textContent = 'Teste …'; setStatus.style.color = 'var(--text-dim)';
+      try {
+        await callLLM('Antworte nur mit dem Wort: OK');
+        setStatus.textContent = 'Verbindung OK'; setStatus.style.color = 'var(--accent-cool)';
+      } catch (e) {
+        setStatus.textContent = 'Fehler: ' + e.message.slice(0, 90); setStatus.style.color = 'var(--accent)';
+      }
+    });
+
+    // ============ PROMPT ============
+    function buildPrompt(t, task, text) {
+      const wr = t.words[0] + '–' + t.words[1];
+      return [
+'Du bist erfahrene/r Prüfer/in für das Goethe-Zertifikat A2, Modul SCHREIBEN. Bewerte den Text einer/eines Lernenden streng und fair nach den offiziellen Goethe-Kriterien.',
+'',
+'## AUFGABE (Teil ' + t.num + ' — ' + t.kind + ')',
+'Kontext: ' + task.context,
+'Der/die Lernende muss zu ALLEN drei Leitpunkten schreiben:',
+'1. ' + task.points[0],
+'2. ' + task.points[1],
+'3. ' + task.points[2],
+'Geforderte Länge: ' + wr + ' Wörter. Ton: ' + t.ton + '.',
+'',
+'## TEXT DER/DES LERNENDEN',
+'"""',
+text,
+'"""',
+'',
+'## BEWERTUNG (offizielle Goethe-A2-Kriterien)',
+'Zwei Kriterien, je eine Note A–E. Notenpunkte: A=5 · B=3,5 · C=2 · D=0,5 · E=0.',
+'- "Aufgabenerfüllung": Werden alle 3 Leitpunkte inhaltlich angemessen behandelt? Passt das Register (Ton)? Bei weniger als ' + t.minWords + ' Wörtern oder verfehltem Thema: Note E (0 Punkte). Ist die Aufgabenerfüllung E, ist die ganze Aufgabe 0 Punkte.',
+'- "Sprache": Wortschatz, Strukturen (Grammatik), Kohärenz (Verbindung der Sätze).',
+'Maximale Punktzahl dieser Aufgabe: 10 (5 + 5).',
+'',
+'## ANTWORTFORMAT',
+'Antworte AUSSCHLIESSLICH mit einem gültigen JSON-Objekt — kein Text davor oder danach, kein Markdown-Codeblock. Genau diese Felder:',
+'{',
+'  "wortzahl": <Ganzzahl>,',
+'  "leitpunkte": [',
+'    {"nr": 1, "erfuellt": <true|false>, "kommentar": "<kurz, auf Russisch>"},',
+'    {"nr": 2, "erfuellt": <true|false>, "kommentar": "<kurz, auf Russisch>"},',
+'    {"nr": 3, "erfuellt": <true|false>, "kommentar": "<kurz, auf Russisch>"}',
+'  ],',
+'  "aufgabenerfuellung": {"note": "<A-E>", "punkte": <Zahl>, "begruendung": "<1-2 Sätze, auf Russisch>"},',
+'  "sprache": {"note": "<A-E>", "punkte": <Zahl>, "begruendung": "<1-2 Sätze, auf Russisch>"},',
+'  "punkte_gesamt": <Zahl 0-10>,',
+'  "fehler": [',
+'    {"original": "<Textstelle mit Fehler>", "korrektur": "<korrekt>", "typ": "<Grammatik|Wortschatz|Rechtschreibung|Stil>", "erklaerung": "<kurze Erklärung auf Russisch>"}',
+'  ],',
+'  "korrigierter_text": "<vollständiger Text, alle Fehler korrigiert>",',
+'  "feedback": "<2-4 Sätze Gesamtfeedback auf Russisch: was gut ist, was zu verbessern ist>"',
+'}',
+'Gibt es keine Fehler, ist "fehler" eine leere Liste. "begruendung", "kommentar", "erklaerung" und "feedback" auf RUSSISCH; "original", "korrektur" und "korrigierter_text" auf DEUTSCH.'
+      ].join('\n');
+    }
+
+    // Human-readable prompt for MANUAL mode: asks for plain, well-formatted
+    // German/Russian feedback (no JSON) so the AI's reply reads nicely as-is.
+    function buildPromptReadable(t, task, text) {
+      const wr = t.words[0] + '–' + t.words[1];
+      return [
+'Du bist erfahrene/r Prüfer/in für das Goethe-Zertifikat A2, Modul SCHREIBEN. Bewerte den Text einer/eines Lernenden streng und fair nach den offiziellen Goethe-Kriterien.',
+'',
+'## AUFGABE (Teil ' + t.num + ' — ' + t.kind + ')',
+'Kontext: ' + task.context,
+'Der/die Lernende muss zu ALLEN drei Leitpunkten schreiben:',
+'1. ' + task.points[0],
+'2. ' + task.points[1],
+'3. ' + task.points[2],
+'Geforderte Länge: ' + wr + ' Wörter. Ton: ' + t.ton + '.',
+'',
+'## TEXT DER/DES LERNENDEN',
+'"""',
+text,
+'"""',
+'',
+'## BEWERTUNG',
+'Zwei Kriterien, je eine Note A–E (Punkte: A=5 · B=3,5 · C=2 · D=0,5 · E=0):',
+'- Aufgabenerfüllung: Werden alle 3 Leitpunkte behandelt? Passt das Register? Unter ' + t.minWords + ' Wörtern oder Thema verfehlt = Note E = ganze Aufgabe 0 Punkte.',
+'- Sprache: Wortschatz, Grammatik, Verbindung der Sätze.',
+'Maximal 10 Punkte (5 + 5).',
+'',
+'## SO ANTWORTEST DU',
+'Antworte in gut lesbarem, übersichtlichem Text — KEIN JSON, KEIN Code-Block. Genau diese Abschnitte, jede Überschrift in **Fettschrift**:',
+'',
+'**Ergebnis:** X von 10 Punkten — Aufgabenerfüllung: Note (Punkte) · Sprache: Note (Punkte)',
+'',
+'**Die 3 Leitpunkte:**',
+'- Punkt 1: ✅ oder ❌ — kurzer Kommentar',
+'- Punkt 2: ✅ oder ❌ — kurzer Kommentar',
+'- Punkt 3: ✅ oder ❌ — kurzer Kommentar',
+'',
+'**Wortzahl:** <Zahl> (Ziel ' + wr + ')',
+'',
+'**Fehler & Korrekturen:**',
+'- «<Fehler>» → «<Korrektur>» (Typ) — kurze Erklärung',
+'(Wenn es keine wichtigen Fehler gibt: schreibe „Keine wichtigen Fehler.")',
+'',
+'**Korrigierte Version:**',
+'<der vollständige Text, alle Fehler korrigiert>',
+'',
+'**Feedback:**',
+'<2–4 Sätze: was gut ist und was du verbessern solltest>',
+'',
+'Wichtig: Kommentare, Erklärungen und Feedback auf RUSSISCH; die korrigierte Version und die Korrekturen auf DEUTSCH.'
+      ].join('\n');
+    }
+
+    // ============ API ============
+    async function callLLM(prompt) {
+      const s = currentSettings();
+      if (!s.key) throw new Error('Kein API-Schlüssel. Bitte unten unter „KI-Verbindung“ eintragen.');
+      if (!s.model) throw new Error('Kein Modell angegeben. Bitte unten eintragen.');
+      const base = s.base.replace(/\/+$/, '');
+      if (s.provider === 'anthropic') {
+        const r = await fetch(base + '/v1/messages', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': s.key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({ model: s.model, max_tokens: 2000, messages: [{ role: 'user', content: prompt }] })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + (await r.text()).slice(0, 300));
+        const d = await r.json();
+        return (d.content || []).map(c => c.text || '').join('');
+      } else {
+        const r = await fetch(base + '/chat/completions', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + s.key },
+          body: JSON.stringify({ model: s.model, messages: [{ role: 'user', content: prompt }] })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + (await r.text()).slice(0, 300));
+        const d = await r.json();
+        return d.choices[0].message.content;
+      }
+    }
+
+    function parseResult(raw) {
+      let s = String(raw).trim();
+      s = s.replace(/^```[a-zA-Z]*\s*/, '').replace(/```\s*$/, '').trim();
+      const a = s.indexOf('{'), b = s.lastIndexOf('}');
+      if (a < 0 || b < 0) throw new Error('Keine JSON-Antwort gefunden.');
+      return JSON.parse(s.slice(a, b + 1));
+    }
+
+    // ============ RENDER RESULT ============
+    function renderResult(el, d, t) {
+      const noteColor = n => ({ A: 'var(--accent-cool)', B: 'var(--accent-cool)', C: 'var(--accent-warm)', D: 'var(--accent)', E: 'var(--accent)' }[n] || 'var(--text)');
+      const ae = d.aufgabenerfuellung || {}, sp = d.sprache || {};
+      const total = (typeof d.punkte_gesamt === 'number') ? d.punkte_gesamt
+        : ((Number(ae.punkte) || 0) + (Number(sp.punkte) || 0));
+      const wz = (typeof d.wortzahl === 'number') ? d.wortzahl : wordCount('');
+      const wzOk = (typeof d.wortzahl === 'number') && d.wortzahl >= t.words[0] && d.wortzahl <= t.words[1];
+      const crit = (label, c) => {
+        const pk = Number(c.punkte) || 0;
+        return '<div class="crit">'
+          + '<div class="crit-head"><span>' + label + '</span><b style="color:' + noteColor(c.note) + '">'
+          + escapeHtml(c.note || '?') + ' · ' + pk + ' P.</b></div>'
+          + '<div class="crit-bar"><i style="width:' + Math.max(0, Math.min(100, pk / 5 * 100)) + '%"></i></div>'
+          + '<p>' + escapeHtml(c.begruendung || '') + '</p></div>';
+      };
+      let html = '<div class="result-score">'
+        + '<div class="big-score">' + total + '<span>/10</span></div>'
+        + '<span class="wz ' + (wzOk ? 'ok' : 'warn') + '">' + wz + ' Wörter · Ziel ' + t.words[0] + '–' + t.words[1] + '</span>'
+        + '</div>';
+      html += crit('Aufgabenerfüllung', ae);
+      html += crit('Sprache', sp);
+      if (Array.isArray(d.leitpunkte) && d.leitpunkte.length) {
+        html += '<div class="lp-list">' + d.leitpunkte.map(l =>
+          '<div class="lp ' + (l.erfuellt ? 'yes' : 'no') + '"><span>' + (l.erfuellt ? '✓' : '✗')
+          + '</span>Punkt ' + escapeHtml(l.nr) + ': ' + escapeHtml(l.kommentar || '') + '</div>').join('') + '</div>';
+      }
+      const fehler = Array.isArray(d.fehler) ? d.fehler : [];
+      if (fehler.length) {
+        html += '<h2>Fehler (' + fehler.length + ')</h2><div class="err-list">'
+          + fehler.map(f => '<div class="err"><div class="err-line"><s>' + escapeHtml(f.original || '')
+            + '</s> &rarr; <b>' + escapeHtml(f.korrektur || '') + '</b><span class="err-typ">'
+            + escapeHtml(f.typ || '') + '</span></div><div class="err-expl">' + escapeHtml(f.erklaerung || '')
+            + '</div></div>').join('') + '</div>';
+      } else {
+        html += '<h2>Fehler</h2><p class="no-err">Keine Fehler gefunden.</p>';
+      }
+      if (d.korrigierter_text) html += '<h2>Korrigierter Text</h2><div class="corrected">' + escapeHtml(d.korrigierter_text) + '</div>';
+      if (d.feedback) html += '<h2>Feedback</h2><div class="feedback">' + escapeHtml(d.feedback) + '</div>';
+      el.innerHTML = html;
+      el.hidden = false;
+    }
+
+    // ============ TIMER ============
+    function setupTimer(key, total) {
+      const root = document.getElementById(key + '-timer');
+      const disp = document.getElementById(key + '-display');
+      const st = { total: total, rem: total, iv: null };
+      function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+      function upd() { disp.textContent = fmt(Math.max(0, st.rem)); }
+      root.querySelector('[data-action=start]').addEventListener('click', () => {
+        if (st.iv) return;
+        root.classList.add('running'); root.classList.remove('done');
+        st.iv = setInterval(() => {
+          st.rem--; upd();
+          if (st.rem <= 0) { clearInterval(st.iv); st.iv = null; root.classList.remove('running'); root.classList.add('done'); }
+        }, 1000);
+      });
+      root.querySelector('[data-action=pause]').addEventListener('click', () => {
+        if (st.iv) { clearInterval(st.iv); st.iv = null; root.classList.remove('running'); }
+      });
+      root.querySelector('[data-action=reset]').addEventListener('click', () => {
+        if (st.iv) clearInterval(st.iv);
+        st.iv = null; st.rem = st.total; root.classList.remove('running', 'done'); upd();
+      });
+      upd();
+    }
+
+    // ============ KI-Verbindung nur im Automatisch-Modus zeigen ============
+    const SCHR_MODE = { t1: 'auto', t2: 'auto' };
+    function updateKIVisibility() {
+      const active = document.querySelector('.tab.active');
+      const k = active ? active.dataset.tab : 't1';
+      const box = document.getElementById('settings');
+      // KI-Box nur bei gezogenem Task (sonst ist die Section leer wie in Hören/Lesen)
+      if (box) box.style.display = (SCHR_MODE[k] === 'auto' && state[k].task) ? '' : 'none';
+    }
+
+    // ============ PER-TEIL SETUP ============
+    function setupTeil(key) {
+      const t = TEILE[key];
+      const taskEl = document.getElementById(key + '-task');
+      const textEl = document.getElementById(key + '-text');
+      const wordsEl = document.getElementById(key + '-words');
+      const resultEl = document.getElementById(key + '-result');
+      const checkBtn = document.getElementById(key + '-check');
+      const manualBox = document.getElementById(key + '-manual');
+      const root = document.getElementById(key);
+      let mode = 'auto';
+
+      // Arbeitsbereich (Textfeld, Hilfe, Prüfung) nur bei gezogenem Task;
+      // Manual-Box zusätzlich nur im Manual-Modus, Result steuert der Check-Flow
+      function syncWorkVisibility() {
+        const has = !!state[key].task;
+        root.querySelectorAll('.write-wrap, .help-panel, .check-bar')
+          .forEach(el => { el.hidden = !has; });
+        manualBox.hidden = !(has && mode === 'manual');
+        updateKIVisibility();
+      }
+
+      function renderTask() {
+        const task = state[key].task;
+        if (!task) {
+          taskEl.classList.add('is-empty');
+          taskEl.innerHTML = '<div class="placeholder"><span class="big-arrow">↓</span>Drücke <strong>„Neue Aufgabe“</strong> — du bekommst ein Schreibthema mit 3 Punkten.</div>';
+          Progress.placeDoneButton(taskEl.closest('section').querySelector('.controls'), null);
+          syncWorkVisibility();
+          return;
+        }
+        taskEl.classList.remove('is-empty');
+        const srcBadge = task.source
+          ? '<div class="task-source">★ Original · ' + escapeHtml(task.source) + '</div>'
+          : '';
+        taskEl.innerHTML = srcBadge
+          + '<div class="task-context">' + escapeHtml(task.context) + '</div>'
+          + '<ul class="task-points">'
+          + task.points.map((p, i) => '<li><span class="pt-num">' + (i + 1) + '</span>' + escapeHtml(p) + '</li>').join('')
+          + '</ul>'
+          + '<div class="task-meta">' + t.kind + ' · ' + t.words[0] + '–' + t.words[1]
+          + ' Wörter · alle 3 Punkte · Ton: ' + t.ton + '</div>';
+        const controls = taskEl.closest('section').querySelector('.controls');
+        Progress.placeDoneButton(controls, task._id ? {
+          module: 'schreiben', taskId: task._id,
+          label: 'Diese Aufgabe als erledigt markieren'
+        } : null);
+        syncWorkVisibility();
+      }
+      function updWords() {
+        const n = wordCount(textEl.value);
+        wordsEl.textContent = n + ' ' + (n === 1 ? 'Wort' : 'Wörter');
+        wordsEl.className = 'word-count ' + (n === 0 ? '' : (n >= t.words[0] && n <= t.words[1] ? 'ok' : 'warn'));
+      }
+
+      document.getElementById(key + '-draw').addEventListener('click', () => {
+        state[key].task = pick(t.tasks);
+        state[key].idx = t.tasks.indexOf(state[key].task);
+        textEl.value = '';
+        resultEl.hidden = true; resultEl.innerHTML = '';
+        document.getElementById(key + '-paste').value = '';
+        renderTask(); updWords();
+      });
+
+      textEl.addEventListener('input', () => { updWords(); });
+
+      document.querySelectorAll('#' + key + '-mode .seg-btn').forEach(b => {
+        b.addEventListener('click', () => {
+          mode = b.dataset.mode;
+          document.querySelectorAll('#' + key + '-mode .seg-btn').forEach(x => x.classList.toggle('active', x === b));
+          manualBox.hidden = (mode !== 'manual');
+          checkBtn.hidden = (mode === 'manual');
+          SCHR_MODE[key] = mode;
+          updateKIVisibility();
+        });
+      });
+
+      checkBtn.addEventListener('click', async () => {
+        if (!state[key].task) { resultEl.hidden = false; resultEl.innerHTML = '<p class="result-info">Bitte zuerst eine Aufgabe ziehen.</p>'; return; }
+        if (!textEl.value.trim()) { resultEl.hidden = false; resultEl.innerHTML = '<p class="result-info">Bitte zuerst einen Text schreiben.</p>'; return; }
+        const prompt = buildPrompt(t, state[key].task, textEl.value.trim());
+        const orig = checkBtn.textContent;
+        checkBtn.disabled = true; checkBtn.textContent = 'Prüfe …';
+        resultEl.hidden = false; resultEl.innerHTML = '<p class="result-info">Die KI prüft den Text …</p>';
+        try {
+          const data = parseResult(await callLLM(prompt));
+          renderResult(resultEl, data, t);
+          bumpCounter(key);
+        } catch (e) {
+          resultEl.innerHTML = '<p class="result-error">Fehler: ' + escapeHtml(e.message) + '</p>'
+            + '<p class="result-info">Prüfe die KI-Verbindung unten — oder nutze den manuellen Modus.</p>';
+        } finally {
+          checkBtn.disabled = false; checkBtn.textContent = orig;
+        }
+      });
+
+      document.getElementById(key + '-copy').addEventListener('click', () => {
+        if (!state[key].task) { resultEl.hidden = false; resultEl.innerHTML = '<p class="result-info">Bitte zuerst eine Aufgabe ziehen.</p>'; return; }
+        const prompt = buildPromptReadable(t, state[key].task, textEl.value.trim() || '(noch kein Text geschrieben)');
+        const btn = document.getElementById(key + '-copy');
+        navigator.clipboard.writeText(prompt).then(() => {
+          const o = btn.textContent; btn.textContent = 'Kopiert ✓';
+          setTimeout(() => { btn.textContent = o; }, 1600);
+        }, () => {
+          resultEl.hidden = false;
+          resultEl.innerHTML = '<p class="result-info">Kopieren nicht möglich. Öffne die Konsole oder kopiere manuell.</p>';
+        });
+      });
+
+      document.getElementById(key + '-show').addEventListener('click', () => {
+        const raw = document.getElementById(key + '-paste').value;
+        if (!raw.trim()) { resultEl.hidden = false; resultEl.innerHTML = '<p class="result-info">Bitte zuerst die KI-Antwort einfügen.</p>'; return; }
+        // Manual answers are plain readable text — show them formatted (bold
+        // headings, line breaks preserved), not parsed as JSON.
+        const html = escapeHtml(raw.trim()).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        resultEl.hidden = false;
+        resultEl.innerHTML = '<div class="readable-result">' + html + '</div>';
+        bumpCounter(key);
+      });
+
+      setupTimer(key, t.timer);
+      renderTask();
+      updWords();
+    }
+
+    // ============ TABS ============
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === btn));
+        document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === id));
+        updateKIVisibility();
+      });
+    });
+    updateKIVisibility();
+    document.addEventListener('keydown', e => {
+      if (e.target.matches('input, textarea, summary, select, button')) return;
+      if (e.key === '1') document.querySelector('[data-tab="t1"]').click();
+      else if (e.key === '2') document.querySelector('[data-tab="t2"]').click();
+      else if (e.key.toLowerCase() === 'n') {
+        const a = document.querySelector('.tab.active'); const key = a && a.dataset.tab;
+        if (key) document.getElementById(key + '-draw').click();
+        e.preventDefault();
+      } else if (e.key === ' ') {
+        const a = document.querySelector('.tab.active'); const key = a && a.dataset.tab;
+        if (key) {
+          const root = document.getElementById(key + '-timer');
+          const btn = root.classList.contains('running') ? root.querySelector('[data-action=pause]') : root.querySelector('[data-action=start]');
+          if (btn) btn.click();
+        }
+        e.preventDefault();
+      }
+    });
+
+    // ============ INIT ============
+    fillSettings();
+    document.getElementById('settings').open = false;
+    setupTeil('t1');
+    setupTeil('t2');
+    updateSchreibenCounter();
+  </script>
+</body>
+</html>

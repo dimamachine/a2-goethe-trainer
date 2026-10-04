@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Crect width='3' height='1' y='0' fill='%23000000'/%3E%3Crect width='3' height='1' y='1' fill='%23DD0000'/%3E%3Crect width='3' height='1' y='2' fill='%23FFCE00'/%3E%3C/svg%3E">
+  <title>A2 Sprechen — Praxis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/base.css">
+  <style>
+    @media (max-width: 600px) { .container { padding: 1rem; } }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+
+    .counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* TABS */
+    nav.tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    @media (max-width: 640px) {
+      nav.tabs { flex-direction: column; }
+    }
+
+    .tab {
+      flex: 1;
+      padding: 1.1rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      text-align: left;
+      position: relative;
+      font-family: inherit;
+    }
+    @media (max-width: 640px) {
+      .tab { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+    .tab:last-child { border-right: none; border-bottom: none; }
+    .tab:hover { color: var(--text); background: var(--surface-alt); }
+    .tab.active { color: var(--text); background: var(--surface-alt); }
+    .tab.active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--accent);
+    }
+    @media (max-width: 640px) {
+      .tab.active::before { width: 2px; height: 100%; }
+    }
+
+    .tab .tab-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .tab.active .tab-num { color: var(--accent); }
+
+    .tab .tab-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+    .tab .tab-sub {
+      font-size: 0.78rem;
+      color: var(--text-faint);
+      line-height: 1.3;
+    }
+    /* TYPESET: aktiver Tab liegt auf surface-alt — Sub eine Stufe heller (dim ≈ 4.5:1) */
+    .tab.active .tab-sub, .tab:hover:not(:disabled) .tab-sub { color: var(--text-dim); }
+
+    /* SECTION */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 600px) {
+      .section-header { grid-template-columns: 1fr; gap: 0.75rem; }
+    }
+
+    .big-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 300;
+      font-size: clamp(5.5rem, 13vw, 10rem);
+      line-height: 0.82;
+      color: var(--accent);
+      font-variation-settings: "opsz" 144, "SOFT" 60;
+      letter-spacing: -0.05em;
+    }
+    @media (max-width: 600px) { .big-num { font-size: 4.5rem; } }
+
+    .section-meta h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: clamp(1.4rem, 2.8vw, 2.25rem);
+      line-height: 1.1;
+      margin-bottom: 0.65rem;
+      letter-spacing: -0.015em;
+    }
+    .section-meta h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-dim);
+    }
+    .section-meta .hint {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      max-width: 62ch;
+    }
+    .section-meta .hint strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: stretch;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    /* keep the Termin/Planen toggle at its own height, don't stretch it */
+    .controls > .t3-mode { align-self: center; }
+
+    .btn {
+      padding: 0.85rem 1.4rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.2s;
+      letter-spacing: -0.005em;
+    }
+    .btn:hover {
+      background: #FF7055;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--text);
+    }
+    .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--text); }
+    .btn-done { background: transparent; color: var(--accent-cool); border: 1px solid var(--accent-cool); display: inline-flex; align-items: center; gap: 0.4rem; transition: background 0.15s, color 0.15s, filter 0.15s; }
+    .btn-done:hover:not(:disabled) { background: rgba(127,163,148,0.22); color: var(--text); transform: none; box-shadow: none; }
+    .btn-done:disabled { color: var(--text-faint); border-color: var(--border-strong); cursor: not-allowed; }
+    .btn-done.is-done { background: var(--accent-cool); color: var(--bg); border-color: var(--accent-cool); font-weight: 700; }
+    .btn-done.is-done:hover:not(:disabled) { background: var(--accent-cool); color: var(--bg); filter: brightness(1.08); transform: none; box-shadow: none; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover {
+      background: var(--surface);
+      border-color: var(--text);
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* TIMER */
+    .timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .timer-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 5ch;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.3s;
+    }
+    .timer.running .timer-display { color: var(--accent-warm); }
+    .timer.done .timer-display { color: var(--accent); animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+
+    .timer button {
+      padding: 0.3rem 0.65rem;
+      font-size: 0.7rem;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-dim);
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .timer button:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    /* TEIL 1 CARDS */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 900px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } }
+
+    .kw-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.4rem;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .kw-card:hover { border-color: var(--border-strong); }
+
+    .kw-card .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      color: var(--text-faint);
+      letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+    }
+    .kw-card .kw {
+      font-family: 'Fraunces', serif;
+      font-size: 1.75rem;
+      line-height: 1.05;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: auto;
+      letter-spacing: -0.02em;
+    }
+    .kw-card .tip-btn {
+      margin-top: 1.25rem;
+      padding: 0.5rem 0 0.1rem;
+      background: transparent;
+      border: none;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.78rem;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .kw-card .tip-btn:hover { color: var(--accent-warm); }
+
+    .kw-card .tip {
+      display: none;
+      margin-top: 0.7rem;
+      padding-top: 0.7rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.85rem;
+    }
+    .kw-card.revealed .tip { display: block; animation: fadeIn 0.3s; }
+
+    .kw-card .tip .q {
+      font-family: 'Fraunces', serif;
+      color: var(--text);
+      font-style: italic;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.25;
+    }
+    .kw-card .tip .a {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .kw-card .tip .a::before { content: '— '; color: var(--accent); font-weight: 700; }
+
+    /* TEIL 2 TOPIC */
+    .topic-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 600px) { .topic-card { padding: 1.5rem; } }
+
+    .src-badge {
+      display: inline-block; margin-bottom: 1rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--bg); background: var(--accent-cool);
+      padding: 0.28rem 0.6rem;
+    }
+
+    .topic-card::before {
+      content: 'THEMA';
+      position: absolute;
+      top: 0.85rem;
+      right: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      color: var(--text-faint);
+      letter-spacing: 0.2em;
+    }
+    .topic-card h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      font-weight: 500;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      max-width: 22ch;
+    }
+    .topic-card .subpoints {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      list-style: none;
+      padding: 0;
+    }
+    @media (max-width: 600px) { .topic-card .subpoints { grid-template-columns: 1fr; } }
+
+    .topic-card .subpoints li {
+      padding: 0.85rem 1rem;
+      background: var(--surface-alt);
+      border-left: 2px solid var(--accent);
+      font-size: 0.98rem;
+      color: var(--text);
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+    }
+
+    /* DRAWER */
+    details.drawer {
+      margin-top: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    details.drawer summary {
+      padding: 0.95rem 1.25rem;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.15s;
+    }
+    details.drawer summary:hover { color: var(--text); }
+    details.drawer summary::-webkit-details-marker { display: none; }
+    details.drawer summary::after {
+      content: '+';
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      color: var(--text-dim);
+      font-weight: 300;
+      line-height: 1;
+    }
+    details.drawer[open] summary::after { content: '−'; color: var(--accent); }
+    details.drawer[open] summary { color: var(--text); border-bottom: 1px solid var(--border); }
+
+    details.drawer .drawer-body { padding: 1.1rem 1.25rem; font-size: 0.92rem; }
+    details.drawer .drawer-body ul { list-style: none; padding-left: 0; }
+    details.drawer .drawer-body ul li {
+      padding: 0.4rem 0;
+      color: var(--text-dim);
+      border-bottom: 1px dashed var(--border);
+    }
+    details.drawer .drawer-body ul li:last-child { border-bottom: none; }
+    details.drawer .drawer-body ul li::before {
+      content: '→ ';
+      color: var(--accent);
+      margin-right: 0.25rem;
+      font-weight: 700;
+    }
+
+    /* TEIL 2 — Beispiel-Monologe (Variant-Switcher) */
+    .var-switch { display: inline-flex; border: 1px solid var(--border-strong); margin-bottom: 1rem; }
+    .var-switch .var-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0.85rem;
+      min-height: 44px;
+      background: transparent;
+      color: var(--text-dim);
+      border: none;
+      cursor: pointer;
+    }
+    .var-switch .var-btn + .var-btn { border-left: 1px solid var(--border-strong); }
+    .var-switch .var-btn.active { background: var(--accent); color: var(--bg); }
+    .var-persona {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 0.6rem;
+    }
+    .var-text {
+      font-family: 'Fraunces', serif;
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: var(--text);
+      padding: 0.5rem 0 0.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .var-text p { margin: 0; }
+
+    /* TEIL 3 */
+    .situation-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1.75rem;
+      align-items: center;
+    }
+    @media (max-width: 600px) {
+      .situation-card { flex-direction: column; align-items: flex-start; gap: 0.75rem; padding: 1.5rem; }
+    }
+    .situation-card .situation-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      min-width: 95px;
+      flex-shrink: 0;
+    }
+    .situation-card .situation-text {
+      font-family: 'Fraunces', serif;
+      font-size: 1.35rem;
+      line-height: 1.3;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .schedules {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 800px) { .schedules { grid-template-columns: 1fr; } }
+    /* 360px: Wochenplan (1 + 5 Spalten) scrollt statt zu quetschen; Tagesplan passt auch so */
+    @media (max-width: 600px) { .schedule { overflow-x: auto; } .schedule.week table { min-width: 430px; } }
+
+    .schedule {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+    }
+    .schedule h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.15rem;
+      margin-bottom: 0.9rem;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+    .schedule h3 .kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      margin-left: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+    .schedule-day {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 0.7rem;
+    }
+    .schedule table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 4px;
+      font-size: 0.82rem;
+      table-layout: fixed;
+    }
+    .schedule table th, .schedule table td {
+      padding: 0.5rem 0.6rem;
+      border: none;
+      text-align: left;
+    }
+    .schedule table thead th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      font-weight: 400;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border-strong);
+    }
+    .schedule table tbody th, .schedule table tbody td {
+      background: var(--surface-alt);
+      vertical-align: middle;
+    }
+    .schedule table thead th:first-child, .schedule table tbody th { width: 5.2rem; }
+    .schedule.week table thead th:first-child, .schedule.week table tbody th { width: 5.6rem; }
+    .schedule table tbody th {
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      border-radius: 8px 0 0 8px;
+    }
+    .schedule table tbody td:last-child { border-radius: 0 8px 8px 0; }
+    /* statische Zeilenhöhe (2 Zeilen) — Inhalt kann sie nicht verändern, alles vertikal zentriert */
+    .schedule table td .cell {
+      display: flex;
+      align-items: center;
+      min-height: 2.1rem;
+    }
+    .schedule table td .cell > span {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.25;
+    }
+    .schedule table td.frei {
+      color: var(--accent-cool);
+      font-weight: 700;
+      font-style: normal;
+    }
+    .schedule table td.busy { color: var(--text-dim); }
+    .schedule.week table { font-size: 0.74rem; border-spacing: 0 3px; }
+    .schedule.week table th, .schedule.week table td { padding: 0.35rem 0.45rem; }
+
+    /* TEIL 3 — Modus-Umschalter */
+    .t3-mode { display: inline-flex; border: 1px solid var(--border-strong); }
+    .t3-mode .mode-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0.85rem;
+      min-height: 44px;
+      background: transparent;
+      color: var(--text-dim);
+      border: none;
+      cursor: pointer;
+    }
+    .t3-mode .mode-btn + .mode-btn { border-left: 1px solid var(--border-strong); }
+    .t3-mode .mode-btn.active { background: var(--accent); color: var(--bg); }
+
+    /* TEIL 3 — Modus B: Planungskarten */
+    .plan-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 800px) { .plan-cards { grid-template-columns: 1fr; } }
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+    }
+    .plan-card h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.15rem;
+      margin-bottom: 0.4rem;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+    .plan-card h3 .kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      margin-left: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+    .plan-topic {
+      font-family: 'Fraunces', serif;
+      font-size: 1.5rem;
+      text-align: center;
+      color: var(--accent-warm);
+      padding: 0.55rem 0;
+      margin: 0.6rem 0 1rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .plan-bubbles { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+    .plan-bubble {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.88rem;
+      padding: 0.38rem 0.8rem;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+    .plan-bubble.own { color: var(--accent-cool); font-style: italic; border-style: dashed; }
+    .t3-plan-hint { font-size: 0.85rem; color: var(--text-dim); font-style: italic; }
+
+    /* FOOTER */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      letter-spacing: 0.02em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer .keys { display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; }
+    footer kbd {
+      font-family: inherit;
+      color: var(--accent-warm);
+      background: var(--surface);
+      padding: 0.15em 0.45em;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+    }
+
+    .placeholder {
+      padding: 3.5rem 2rem;
+      text-align: center;
+      border: 1px dashed var(--border);
+      color: var(--text-dim);
+      font-style: italic;
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+    }
+    .placeholder .big-arrow {
+      font-family: 'Fraunces', serif;
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.75rem;
+      font-style: normal;
+    }
+
+    /* Scrollbar */
+
+    .module-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.75rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .module-nav a.disabled { color: var(--text-faint); pointer-events: none; }
+
+    .strat-link { display: inline-block; margin-top: 0.5rem; color: var(--accent-cool); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.02em; }
+    .strat-link:hover { text-decoration: underline; }
+
+    /* Highlight common free slot (для подсветки общего окна — опционально) */
+    .schedule td.match { box-shadow: inset 0 0 0 2px var(--accent-warm); }
+
+    .t3-hint-bar {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      background: var(--surface-alt);
+      border: 1px dashed var(--border-strong);
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+    .t3-hint-bar .t3-reveal-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .t3-hint-bar .t3-reveal-info b { color: var(--accent-warm); }
+
+  </style>
+  <link rel="stylesheet" href="assets/progress.css">
+</head>
+<body>
+  <div class="container">
+        <header>
+      <div class="brand">
+        <b><span class="b-num">A2</span><span class="b-cap"><span>Goethe-Zertifikat</span><span>Deutsch</span></span></b>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <span class="brand-tag">Sprechen</span>
+        <span class="flag" aria-label="Deutschland"><span></span><span></span><span></span></span>
+      </div>
+      <div class="counter"><span id="counter-label"></span><button type="button" class="reset-progress" id="reset-progress" title="Fortschritt in diesem Modul zur&uuml;cksetzen">&#8634; Reset</button></div>
+    </header>
+
+    <nav class="module-nav">
+      <a href="index.html">A2</a>
+      <a href="lesen.html">Lesen</a>
+      <a href="hoeren.html">Hören</a>
+      <a href="schreiben.html">Schreiben</a>
+      <a href="sprechen.html" class="current">Sprechen</a>
+      <a href="hilfen.html">Hilfen</a>
+    </nav>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="t1">
+        <span class="tab-num">TEIL 01</span>
+        <span class="tab-title">Fragen stellen</span>
+        <span class="tab-sub">4 Karten, kurze Fragen</span>
+      </button>
+      <button class="tab" data-tab="t2">
+        <span class="tab-num">TEIL 02</span>
+        <span class="tab-title">Monolog</span>
+        <span class="tab-sub">Über sich erzählen, 3 Minuten</span>
+      </button>
+      <button class="tab" data-tab="t3">
+        <span class="tab-num">TEIL 03</span>
+        <span class="tab-title">Planen</span>
+        <span class="tab-sub">Gemeinsam einen Termin finden</span>
+      </button>
+    </nav>
+
+    <!-- TEIL 1 -->
+    <section class="section active" id="t1">
+      <div class="section-header">
+        <div class="big-num">01</div>
+        <div class="section-meta">
+          <h1>Fragen zur Person <em>— stellen und beantworten</em></h1>
+          <p class="hint">Vier Schlagwörter werden gezogen. Formulieren Sie zu jedem eine <strong>Frage</strong>. Ihr Partner antwortet in 1–2 Sätzen, dann tauschen Sie die Rollen.</p>
+          <a class="strat-link" href="hilfen.html#sprechen-t1">→ Strategie · Fragen stellen und beantworten</a>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="t1-draw">→ Neue Karten ziehen</button>
+        <button class="btn btn-ghost" id="t1-reveal-all">Alle Tipps zeigen</button>
+      </div>
+
+      <div class="cards-grid" id="t1-cards">
+        <div class="placeholder" style="grid-column: 1 / -1;">
+          <span class="big-arrow">↓</span>
+          Drücken Sie <strong>„Neue Karten ziehen"</strong> — Sie bekommen 4 zufällige Stichwörter.
+        </div>
+      </div>
+    </section>
+
+    <!-- TEIL 2 -->
+    <section class="section" id="t2">
+      <div class="section-header">
+        <div class="big-num">02</div>
+        <div class="section-meta">
+          <h1>Etwas über sich <em>— erzählen</em></h1>
+          <p class="hint">Eine Karte mit <strong>Frage und Stichpunkten</strong> — wie in der Prüfung. Sprechen Sie 3–4 Minuten frei. Die Stichpunkte sind Ihr Plan — fügen Sie Details aus Ihrem Leben hinzu.</p>
+          <a class="strat-link" href="hilfen.html#sprechen-t2">→ Redemittel &amp; Strategie · frei über ein Thema sprechen</a>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="t2-draw">→ Neue Aufgabe</button>
+        <div class="timer" id="t2-timer">
+          <span class="timer-display" id="t2-display">3:00</span>
+          <button data-action="start">▶ Start</button>
+          <button data-action="pause">Pause</button>
+          <button data-action="reset">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div id="t2-content">
+        <div class="placeholder">
+          <span class="big-arrow">↓</span>
+          Drücken Sie <strong>„Neue Aufgabe"</strong> — Sie bekommen eine Karte mit Frage und Stichpunkten.
+        </div>
+      </div>
+    </section>
+
+    <!-- TEIL 3 -->
+    <section class="section" id="t3">
+      <div class="section-header">
+        <div class="big-num">03</div>
+        <div class="section-meta">
+          <h1>Gemeinsam etwas <em>— planen</em></h1>
+          <p class="hint">Wählen Sie oben den Aufgabentyp. <strong>Termin finden</strong>: ein gemeinsames Zeitfenster im Tages- oder Wochenplan suchen. <strong>Etwas planen</strong>: alle Stichpunkte zusammen besprechen. Immer gilt: Vorschlag machen, ablehnen, Alternative anbieten, sich einigen.</p>
+          <a class="strat-link" href="hilfen.html#sprechen-t3">→ Redemittel · Vorschlagen, Ablehnen, Zustimmen</a>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="t3-mode" id="t3-mode">
+          <button type="button" class="mode-btn active" data-mode="termin">Termin finden</button>
+          <button type="button" class="mode-btn" data-mode="planen">Etwas planen</button>
+        </div>
+        <button class="btn" id="t3-draw">→ Neue Situation</button>
+        <div class="timer" id="t3-timer">
+          <span class="timer-display" id="t3-display">4:00</span>
+          <button data-action="start">▶ Start</button>
+          <button data-action="pause">Pause</button>
+          <button data-action="reset">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <div id="t3-content">
+        <div class="placeholder">
+          <span class="big-arrow">↓</span>
+          Drücken Sie <strong>„Neue Situation"</strong> — Sie bekommen eine Aufgabe für zwei Personen.
+        </div>
+      </div>
+
+    </section>
+
+    <footer>
+      <div>KI-generierte Aufgaben · 3 Teile · Paar/Solo-Übung</div>
+      <div class="keys">
+        <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> <span>— Teile</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <kbd>N</kbd> <span>— neu ziehen</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <kbd>Space</kbd> <span>— Timer</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <span>v1.0</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="assets/progress.js"></script>
+  <script src="assets/data/sprechen-tests.js"></script>
+
+  <script>
+    // ============ DATA ============
+    const T1_KEYWORDS = window.SPRECHEN_T1_KEYWORDS || [];
+
+    const T2_TOPICS = window.SPRECHEN_T2_TOPICS || [];
+
+    // Beispiel-Monologe für Teil 2 — drei Personen mit konstanten Profilen:
+    // V1 = Lukas (28, Berlin, IT, Single, Katze)
+    // V2 = Markus (40, Hamburg, Familie mit zwei Kindern)
+    const T2_EXAMPLES = {
+      "Mein Tagesablauf": {
+        v1: "Ich spreche über meinen Tagesablauf. Ich stehe um halb sieben auf und frühstücke schnell, meistens nur einen Kaffee. Am Vormittag und Nachmittag arbeite ich im Büro am Computer. Nach der Arbeit gehe ich oft ins Fitnessstudio. Am Abend koche ich etwas und sehe eine Serie. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Tag. Ich stehe früh auf, weil ich die Kinder für die Schule fertig mache. Danach fahre ich zur Arbeit und bin bis fünf Uhr dort. Am Nachmittag helfe ich den Kindern bei den Hausaufgaben. Am Abend essen wir alle zusammen. Das ist alles."
+      },
+      "Meine Wohnung": {
+        v1: "Ich spreche über meine Wohnung. Ich wohne allein in einer kleinen Wohnung in Berlin. Sie hat zwei Zimmer, eine Küche und ein Bad. Mir gefällt, dass sie zentral liegt und alles in der Nähe ist. Ein bisschen mehr Platz hätte ich gern. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Wohnung. Wir wohnen in einem Haus in Hamburg mit vier Zimmern. Dort wohnen wir mit unseren zwei Kindern. Mir gefällt der Garten am besten, dort spielen die Kinder. Die Wohnung ist groß genug für uns. Das ist alles."
+      },
+      "Meine Familie": {
+        v1: "Ich spreche über meine Familie. Meine Familie ist nicht groß: meine Eltern und eine jüngere Schwester. Sie wohnen in einer anderen Stadt, ungefähr zwei Stunden entfernt. Ich besuche sie ein paarmal im Jahr. Mit meiner Schwester verstehe ich mich am besten. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Familie. Meine Familie ist groß: meine Frau, zwei Kinder und meine Eltern in der Nähe. Wir sehen uns fast jede Woche. Am Wochenende essen wir oft alle zusammen. Die Familie ist das Wichtigste für mich. Das ist alles."
+      },
+      "Mein Wochenende": {
+        v1: "Ich spreche über mein Wochenende. Am Samstag schlafe ich lange und treffe danach Freunde. Wir gehen ins Café oder machen zusammen Sport. Am Sonntag jogge ich im Park und entspanne mich. Am liebsten mache ich nicht zu viele Pläne. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Wochenende. Am Samstag sind wir oft mit den Kindern unterwegs, zum Beispiel im Zoo. Am Sonntag besuchen uns die Großeltern und wir essen zusammen. Manchmal machen wir einen Spaziergang im Wald. Lange schlafen kann ich leider nicht. Das ist alles."
+      },
+      "Urlaub und Reisen": {
+        v1: "Ich spreche über Urlaub und Reisen. Ich reise sehr gern, meistens mit Freunden oder allein. Am liebsten fahre ich ans Meer, zum Beispiel nach Spanien. Ich bleibe ungefähr zwei Wochen und fliege meistens. Mein schönster Urlaub war eine Reise nach Portugal. Das war's von mir.",
+        v2: "Also, ich erzähle über Urlaub. Wir machen jedes Jahr mit der Familie Urlaub, meistens im Sommer. Wir fahren mit dem Auto nach Österreich oder Italien. Wir bleiben zwei oder drei Wochen. Die Kinder lieben den Strand und das Schwimmen. Das ist alles."
+      },
+      "Geburtstag feiern": {
+        v1: "Ich spreche über meinen Geburtstag. Ich feiere meinen Geburtstag meistens mit Freunden. Wir gehen zusammen essen oder machen eine kleine Party. Es gibt Pizza, Getränke und manchmal eine Torte. Über Geschenke freue ich mich, aber sie sind nicht so wichtig. Das war's von mir.",
+        v2: "Also, ich erzähle über Geburtstage. Wir feiern Geburtstage immer mit der ganzen Familie. Meine Frau backt einen Kuchen und wir laden die Großeltern ein. Die Kinder bekommen Geschenke und sind sehr glücklich. Wir feiern meistens zu Hause. Das ist alles."
+      },
+      "Kleidung": {
+        v1: "Ich spreche über Kleidung. In der Freizeit trage ich am liebsten Jeans und einen Pullover. Bei der Arbeit ziehe ich ein Hemd an, aber keinen Anzug. Ich mag bequeme und moderne Kleidung. Meine Kleidung kaufe ich meistens online. Das war's von mir.",
+        v2: "Also, ich erzähle über Kleidung. In der Freizeit trage ich praktische Sachen, weil ich viel mit den Kindern draußen bin. Bei der Arbeit brauche ich Arbeitskleidung. Sehr enge oder unbequeme Kleidung mag ich nicht. Oft kauft meine Frau die Kleidung. Das ist alles."
+      },
+      "Verkehrsmittel": {
+        v1: "Ich spreche über Verkehrsmittel. Zur Arbeit fahre ich meistens mit dem Fahrrad. In der Freizeit nehme ich die U-Bahn oder gehe zu Fuß. Im Urlaub fliege ich oder fahre mit dem Zug. Ein eigenes Auto habe ich nicht, in der Stadt brauche ich keins. Das war's von mir.",
+        v2: "Also, ich erzähle über Verkehrsmittel. Zur Arbeit fahre ich mit dem Auto, weil es schneller ist. In der Freizeit fahren wir mit der Familie oft Rad. Im Urlaub nehmen wir das Auto, das ist mit Kindern praktisch. Den Zug nutzen wir selten. Das ist alles."
+      },
+      "Geld und Einkaufen": {
+        v1: "Ich spreche über mein Geld. Das meiste Geld gebe ich für die Miete aus, sie ist in Berlin sehr teuer. Für Essen brauche ich ungefähr 250 Euro im Monat. Für Hobbys und Reisen gebe ich auch gern Geld aus. Trotzdem versuche ich, jeden Monat zu sparen. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Geld. Mit einer Familie haben wir viele Ausgaben, vor allem für Essen und die Kinder. Wir haben ein Haus, deshalb zahlen wir keine Miete. Für die Hobbys der Kinder geben wir gern Geld aus. Wir sparen für ihre Zukunft. Das ist alles."
+      },
+      "Meine Zukunft": {
+        v1: "Ich spreche über meine Zukunft. In meinem Beruf möchte ich mehr Verantwortung bekommen. Vielleicht ziehe ich in eine größere Wohnung. Eine eigene Familie kann ich mir später vorstellen. Außerdem möchte ich noch Spanisch lernen. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Zukunft. Ich wünsche mir, dass meine Kinder gesund und glücklich sind. Beruflich möchte ich gern so weiterarbeiten wie jetzt. Vielleicht renovieren wir bald unser Haus. Mein größter Wunsch ist eine schöne Zeit mit der Familie. Das ist alles."
+      },
+      "Sport": {
+        v1: "Ich spreche über Sport. Ich laufe und gehe ins Fitnessstudio, ungefähr drei- bis viermal pro Woche. Ich mache Sport am liebsten allein, weil ich dann flexibel bin. Ich trainiere im Park und im Studio in Berlin. Sport hilft mir, Stress abzubauen und fit zu bleiben. Das war's von mir.",
+        v2: "Also, ich erzähle über Sport. Ich habe wenig Zeit, aber am Wochenende spiele ich mit meinem Sohn Fußball. Manchmal gehe ich mit der Familie schwimmen. In einem Verein bin ich nicht. Ich würde gern wieder mehr Sport machen. Das ist alles."
+      },
+      "Kochen und Essen": {
+        v1: "Ich spreche über das Kochen. Ich koche ganz gern, aber meistens nur einfache Gerichte. Unter der Woche koche ich abends nach der Arbeit. Am Wochenende koche ich manchmal für Freunde. Mein Lieblingsgericht ist Pasta. Das war's von mir.",
+        v2: "Also, ich erzähle über das Kochen. Bei uns kocht meistens meine Frau, aber am Wochenende koche ich auch. Wir kochen fast jeden Tag frisch für die Familie. Mein Lieblingsgericht ist Gulasch mit Kartoffeln. Ins Restaurant gehen wir nur selten. Das ist alles."
+      },
+      "Einkaufen": {
+        v1: "Ich spreche über das Einkaufen. Ich kaufe meistens im Supermarkt um die Ecke ein. Einmal pro Woche kaufe ich groß ein, sonst nur kleine Sachen. Meistens gehe ich allein und kaufe Obst, Gemüse und Brot. Einkaufen ist für mich kein Hobby. Das war's von mir.",
+        v2: "Also, ich erzähle über das Einkaufen. Wir kaufen einmal pro Woche groß ein, weil wir viel brauchen. Meine Frau und ich gehen oft zusammen. Wir kaufen viel Obst, Gemüse und Sachen für die Kinder. Am Wochenende gehen wir meistens einkaufen. Das ist alles."
+      },
+      "Freunde treffen": {
+        v1: "Ich spreche über meine Freunde. Ich treffe meine Freunde oft, meistens am Wochenende. Wir treffen uns in einem Café oder bei jemandem zu Hause. Ich habe nicht viele, aber gute Freunde. Am liebsten kochen wir zusammen oder gehen aus. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Freunde. Ich habe wegen der Familie weniger Zeit für Freunde. Wir treffen uns manchmal mit anderen Familien. Dann spielen die Kinder zusammen und wir Erwachsenen reden. Am liebsten grillen wir im Sommer im Garten. Das ist alles."
+      },
+      "Deutsch lernen": {
+        v1: "Ich spreche über das Deutschlernen. Ich lerne Deutsch, weil ich in Deutschland lebe und arbeite. Ich lerne schon seit zwei Jahren, meistens in einem Kurs am Abend. Die Grammatik ist für mich am schwersten. Das Sprechen fällt mir leichter. Das war's von mir.",
+        v2: "Also, ich erzähle über das Deutschlernen. Deutsch ist meine Muttersprache, aber ich helfe meinen Kindern beim Lernen. Wir lesen zusammen und üben die Rechtschreibung. Für sie ist die Grammatik manchmal schwer. Lesen üben wir jeden Tag ein bisschen. Das ist alles."
+      },
+      "Internet und Handy": {
+        v1: "Ich spreche über Internet und Handy. Ich nutze mein Handy sehr oft, fast den ganzen Tag. Ich brauche es für die Arbeit, für Nachrichten und für Musik. Am meisten nutze ich Apps für Chat und soziale Medien. Eine Gefahr ist, dass man zu viel Zeit verliert. Das war's von mir.",
+        v2: "Also, ich erzähle über Internet und Handy. Ich nutze das Handy für Telefonate und für Fotos von den Kindern. So oft wie junge Leute brauche ich es nicht. Die Kinder dürfen das Handy nur kurz benutzen. Die größte Gefahr sehe ich für Kinder im Internet. Das ist alles."
+      },
+      "Fernsehen und Filme": {
+        v1: "Ich spreche über Fernsehen und Filme. Ich sehe nicht klassisch fern, sondern schaue Serien im Internet. Am liebsten mag ich Krimis und Science-Fiction. Ich schaue meistens allein am Abend. Mein Lieblingsfilm ist ein alter Science-Fiction-Film. Das war's von mir.",
+        v2: "Also, ich erzähle über Fernsehen und Filme. Wir sehen am Abend manchmal zusammen fern. Die Kinder mögen Zeichentrickfilme, ich mag Dokumentationen. Am Wochenende schauen wir oft einen Familienfilm. Ins Kino gehen wir selten. Das ist alles."
+      },
+      "Haustiere": {
+        v1: "Ich spreche über Haustiere. Ich habe eine Katze, weil sie gut zu meinem Leben passt. Ich habe sie seit drei Jahren. Sie macht nicht viel Arbeit, ich gebe ihr nur Futter und spiele mit ihr. Am Abend liegt sie oft bei mir auf dem Sofa. Das war's von mir.",
+        v2: "Also, ich erzähle über Haustiere. Wir haben einen Hund, das war der Wunsch der Kinder. Wir haben ihn seit zwei Jahren. Ein Hund macht viel Arbeit, aber die Kinder helfen mit. Wir gehen jeden Tag mit ihm spazieren. Das ist alles."
+      },
+      "Feste feiern": {
+        v1: "Ich spreche über Feste. Ich feiere am liebsten Silvester und Geburtstage. Meistens feiere ich mit Freunden. Wir essen, trinken und hören zusammen Musik. Geschenke gibt es bei mir nur zu Geburtstagen. Das war's von mir.",
+        v2: "Also, ich erzähle über Feste. Wir feiern alle Feste mit der Familie, vor allem Weihnachten und Ostern. Es gibt immer gutes Essen und die Kinder bekommen Geschenke. Wir laden auch die Großeltern ein. Solche Feste sind mir sehr wichtig. Das ist alles."
+      },
+      "Mein Lieblingsort": {
+        v1: "Ich spreche über meinen Lieblingsort. Mein Lieblingsort ist ein kleines Café in meiner Straße. Ich mag es, weil es dort ruhig und gemütlich ist. Ich gehe fast jeden Samstag dorthin. Meistens bin ich allein und lese ein Buch. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Lieblingsort. Mein Lieblingsort ist unser Garten zu Hause. Dort kann ich mich nach der Arbeit entspannen. Im Sommer bin ich fast jeden Tag dort. Wir grillen und die Kinder spielen. Das ist alles."
+      },
+      "Meine Heimatstadt": {
+        v1: "Ich spreche über meine Heimatstadt. Meine Heimatstadt liegt im Süden und ist nicht sehr groß. Es gibt dort einen schönen Marktplatz und viele alte Häuser. Manchmal vermisse ich die ruhige Atmosphäre. Meine Familie wohnt noch dort. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Heimatstadt. Ich komme aus einer kleinen Stadt in der Nähe von Hamburg. Dort gibt es viel Natur und einen Fluss. Ich vermisse manchmal meine alten Freunde. Aber jetzt ist Hamburg meine Heimat. Das ist alles."
+      },
+      "Mein bester Freund / meine beste Freundin": {
+        v1: "Ich spreche über meinen besten Freund. Mein bester Freund heißt Tom. Wir kennen uns schon seit der Schulzeit, also über zehn Jahre. Wir machen zusammen Sport und gehen aus. Ich schätze, dass ich ihm alles erzählen kann. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen besten Freund. Mein bester Freund heißt Stefan, wir kennen uns seit der Ausbildung. Wir sehen uns nicht so oft, weil wir beide Familie haben. Aber wir telefonieren regelmäßig. Ich schätze, dass er immer ehrlich ist. Das ist alles."
+      },
+      "Ein typischer Arbeitstag": {
+        v1: "Ich spreche über meinen Arbeitstag. Ich fange um acht Uhr im Büro in Berlin an. Den ganzen Tag arbeite ich an Projekten und schreibe E-Mails. Mittags mache ich eine Pause mit Kollegen. Um fünf Uhr bin ich meistens fertig. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Arbeitstag. Ich beginne um sieben Uhr, weil ich einen langen Weg habe. Ich arbeite als Techniker und repariere Maschinen. Meine Mittagspause ist um zwölf Uhr. Am Nachmittag bin ich oft müde, aber die Arbeit gefällt mir. Das ist alles."
+      },
+      "Sprachen lernen": {
+        v1: "Ich spreche über das Sprachenlernen. Ich spreche meine Muttersprache, Englisch und jetzt Deutsch. Ich lerne Sprachen, weil ich gern reise und im Ausland arbeite. Am besten lerne ich mit Apps und mit Serien. Die Aussprache finde ich manchmal schwer. Das war's von mir.",
+        v2: "Also, ich erzähle über das Sprachenlernen. In der Schule habe ich Englisch und Französisch gelernt. Heute lerne ich nicht mehr aktiv, aber ich übe mit den Kindern Englisch. Am besten lernt man eine Sprache im Land selbst. Französisch habe ich leider fast vergessen. Das ist alles."
+      },
+      "Technik in meinem Leben": {
+        v1: "Ich spreche über Technik in meinem Leben. Ich benutze viele Geräte: Handy, Laptop und eine Smartwatch. Die meiste Zeit verbringe ich am Computer, weil ich in der IT arbeite. Der Vorteil ist, dass vieles schneller geht. Ein Nachteil ist, dass man immer erreichbar ist. Das war's von mir.",
+        v2: "Also, ich erzähle über Technik. Ich nutze ein Handy und einen Computer, aber nicht so viele Geräte. Bei der Arbeit brauche ich Technik jeden Tag. Der Vorteil ist die schnelle Kommunikation. Ein Nachteil ist, dass die Kinder zu viel am Bildschirm sind. Das ist alles."
+      },
+      "Gesundheit und Sport": {
+        v1: "Ich spreche über Gesundheit und Sport. Für meine Gesundheit mache ich regelmäßig Sport, vor allem Laufen. Ich gehe drei- bis viermal pro Woche ins Studio. Ich achte auch auf gesundes Essen und genug Schlaf. Am wichtigsten ist für mich die Bewegung. Das war's von mir.",
+        v2: "Also, ich erzähle über Gesundheit und Sport. Ich habe wenig Zeit für Sport, aber ich gehe oft zu Fuß. Am Wochenende bewege ich mich mit den Kindern draußen. Ich versuche, gesund zu essen und nicht zu spät ins Bett zu gehen. Schlaf ist für mich am wichtigsten. Das ist alles."
+      },
+      "Meine schönste Jahreszeit": {
+        v1: "Ich spreche über meine schönste Jahreszeit. Meine Lieblingsjahreszeit ist der Sommer, weil es dann warm ist. Im Sommer bin ich viel draußen und fahre Rad. Ich treffe Freunde im Park und reise gern. Den Winter mag ich nicht so, weil es zu kalt ist. Das war's von mir.",
+        v2: "Also, ich erzähle über meine schönste Jahreszeit. Ich mag den Herbst am liebsten, weil die Farben so schön sind. Wir machen dann Spaziergänge im Wald mit den Kindern. Das Wetter ist nicht zu warm und nicht zu kalt. Den Sommer finde ich manchmal zu heiß. Das ist alles."
+      },
+      "Verkehr in meiner Stadt": {
+        v1: "Ich spreche über den Verkehr in meiner Stadt. In Berlin gibt es Busse, U-Bahn und viele Autos. Manchmal gibt es Probleme, vor allem morgens viel Verkehr. Ich fahre lieber mit dem Rad, dann stehe ich nicht im Stau. Mehr Radwege wären eine gute Verbesserung. Das war's von mir.",
+        v2: "Also, ich erzähle über den Verkehr in meiner Stadt. In Hamburg gibt es oft Stau, besonders morgens. Ich brauche manchmal lange mit dem Auto zur Arbeit. Die öffentlichen Verkehrsmittel sind eine gute Alternative. Bessere Busverbindungen würde ich mir wünschen. Das ist alles."
+      },
+      "Wohnen — Stadt oder Land?": {
+        v1: "Ich spreche über das Wohnen in der Stadt oder auf dem Land. Ich wohne in der Stadt und mag das sehr. Der Vorteil ist, dass alles in der Nähe ist. Auf dem Land ist es ruhiger und es gibt mehr Natur. Trotzdem möchte ich lieber in der Stadt bleiben. Das war's von mir.",
+        v2: "Also, ich erzähle über Stadt oder Land. Wir wohnen am Stadtrand, das ist ein guter Mittelweg. In der Stadt gibt es viele Geschäfte und Angebote. Auf dem Land hätten wir mehr Platz und Ruhe für die Kinder. Später möchten wir vielleicht aufs Land ziehen. Das ist alles."
+      },
+      "Meine Nachbarn": {
+        v1: "Ich spreche über meine Nachbarn. Ich kenne meine Nachbarn nur ein bisschen. Wir grüßen uns, aber wir haben nicht viel Kontakt. Probleme gibt es zum Glück keine. Mehr Kontakt fände ich aber schön. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Nachbarn. Wir kennen unsere Nachbarn gut und haben oft Kontakt. Wir helfen uns, zum Beispiel beim Einkaufen oder mit den Kindern. Manchmal trinken wir zusammen einen Kaffee. Gute Nachbarn sind viel wert. Das ist alles."
+      },
+      "Wenn ich krank bin": {
+        v1: "Ich spreche darüber, was ich mache, wenn ich krank bin. Wenn ich krank bin, bleibe ich zu Hause und ruhe mich aus. Bei einer leichten Erkältung gehe ich nicht zum Arzt. Wenn es schlimmer ist, gehe ich zum Arzt. Ich nehme nicht gern Medikamente. Das war's von mir.",
+        v2: "Also, ich erzähle über das Kranksein. Wenn ich krank bin, muss ich trotzdem oft für die Familie da sein. Meine Frau kümmert sich dann um mich. Bei den Kindern gehen wir schnell zum Arzt. Medikamente nehmen wir nur, wenn es nötig ist. Das ist alles."
+      },
+      "Telefonieren und Nachrichten": {
+        v1: "Ich spreche über das Telefonieren. Ich telefoniere nicht so oft, ich schreibe lieber Nachrichten. Mit meiner Familie telefoniere ich am Wochenende. Kurze Sachen schreibe ich schnell per Chat. Lange Telefonate mag ich nicht so. Das war's von mir.",
+        v2: "Also, ich erzähle über das Telefonieren. Ich telefoniere oft mit meinen Eltern und mit der Arbeit. Mit meiner Frau schreibe ich tagsüber kurze Nachrichten. Am Abend rufe ich lieber an, das ist persönlicher. Lange telefoniere ich aber selten. Das ist alles."
+      },
+      "Ein Tag in der Natur": {
+        v1: "Ich spreche über einen Tag in der Natur. Am liebsten gehe ich in einen Park oder an einen See. Meistens gehe ich mit Freunden, manchmal allein. Dort gehe ich spazieren oder mache ein Picknick. In der Natur kann ich gut entspannen. Das war's von mir.",
+        v2: "Also, ich erzähle über einen Tag in der Natur. Wir fahren mit den Kindern oft in den Wald oder an einen See. Die Kinder spielen, und wir machen ein Picknick. So einen Tag machen wir fast jedes Wochenende. Frische Luft tut der ganzen Familie gut. Das ist alles."
+      },
+      "Geschenke machen": {
+        v1: "Ich spreche über das Schenken. Ich mache Geschenke für meine Familie und für gute Freunde. Meistens schenke ich Bücher, Wein oder kleine Sachen aus dem Urlaub. Ich schenke zu Geburtstagen und zu Weihnachten. Geschenke suche ich gern aus, aber manchmal ist es stressig. Das war's von mir.",
+        v2: "Also, ich erzähle über das Schenken. Ich mache am liebsten den Kindern und meiner Frau Geschenke. Zu Geburtstagen und Weihnachten überlege ich lange. Die Kinder basteln manchmal selbst ein Geschenk. Über selbst gemachte Geschenke freue ich mich am meisten. Das ist alles."
+      },
+      "Hausarbeit zu Hause": {
+        v1: "Ich spreche über die Hausarbeit. Ich wohne allein, deshalb muss ich alles selbst machen. Ich putze meine Wohnung meistens am Samstag, weil ich unter der Woche keine Zeit habe. Kochen mag ich gern, aber das Spülen finde ich langweilig. Die Wäsche mache ich einmal pro Woche. Das war's von mir.",
+        v2: "Also, ich erzähle über die Hausarbeit bei uns zu Hause. Wir sind vier Personen, deshalb gibt es viel zu tun. Meine Frau und ich teilen die Arbeit: Sie kocht oft und ich putze das Bad. Wir haben eine Spülmaschine, das hilft uns sehr. Auch die Kinder räumen ihre Zimmer auf. Das ist alles."
+      },
+      "Fahrradfahren in der Stadt": {
+        v1: "Ich spreche über das Fahrradfahren. Ich habe ein gutes Fahrrad und fahre fast jeden Tag damit zur Arbeit. In Berlin gibt es viele Radwege, deshalb ist es ziemlich sicher. Im Sommer fahre ich auch in der Freizeit, zum Beispiel zum See. Im Winter fahre ich seltener, weil es zu kalt ist. Das war's von mir.",
+        v2: "Also, ich erzähle über das Radfahren in unserer Stadt. Ich habe ein Fahrrad, aber ich fahre nicht so oft. Mit den Kindern mache ich am Wochenende Ausflüge mit dem Rad. In Hamburg sind manche Straßen gefährlich, deshalb passe ich gut auf. Im Winter lasse ich das Fahrrad lieber im Keller. Das ist alles."
+      },
+      "Mein Lieblingsfach in der Schule": {
+        v1: "Ich erzähle über mein Lieblingsfach in der Schule. Mein Lieblingsfach war Mathematik, weil ich gern mit Zahlen arbeite. Der Lehrer war sehr nett und hat alles gut erklärt. In Mathe hatte ich meistens gute Noten. Deutsch fand ich dagegen schwer. Heute arbeite ich in der IT, deshalb war Mathe sehr nützlich. Das war's von mir.",
+        v2: "Also, ich spreche über mein Lieblingsfach. In der Schule mochte ich Sport am liebsten, weil ich mich gern bewege. Wir haben Fußball und Basketball gespielt, das hat Spaß gemacht. Unser Sportlehrer war streng, aber fair. Meine Noten in Sport waren immer gut. Mathematik fand ich dagegen schwer. Das ist alles."
+      },
+      "Das beste Geburtstagsgeschenk": {
+        v1: "Ich spreche über mein bestes Geburtstagsgeschenk. Zu meinem 25. Geburtstag habe ich von meinen Eltern eine Reise nach Spanien bekommen. Ich habe mich sehr gefreut, weil ich Spanien immer sehen wollte. Die Reise war wunderschön und ich habe viele Fotos gemacht. Solche Geschenke finde ich besser als Sachen. Das war's von mir.",
+        v2: "Also, ich erzähle über mein bestes Geschenk. Meine Frau hat mir vor zwei Jahren eine schöne Uhr geschenkt. Ich trage sie noch jeden Tag, weil sie sehr praktisch ist. Die Kinder haben eine Karte selbst gemalt, das hat mich gerührt. Geschenke von der Familie mag ich am meisten. Das ist alles."
+      },
+      "Mein erster Job": {
+        v1: "Ich spreche über meinen ersten Job. Mein erster Job war in einem Supermarkt, da war ich 17 Jahre alt. Ich habe Regale eingeräumt und an der Kasse gearbeitet. Viel verdient habe ich nicht, aber das Geld war für mich wichtig. Ich habe gelernt, pünktlich und freundlich zu sein. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen ersten Job. Mit 18 habe ich in einem Restaurant als Kellner gearbeitet. Die Arbeit war anstrengend, weil ich oft am Abend gearbeitet habe. Ich habe gutes Geld mit Trinkgeld verdient. Dort habe ich gelernt, mit Menschen zu reden. Das ist alles."
+      },
+      "Ein Tag ohne Handy": {
+        v1: "Ich spreche über einen Tag ohne Handy. Für mich wäre das ziemlich schwer, weil ich das Handy für die Arbeit brauche. An einem freien Tag könnte ich es aber probieren. Dann würde ich lesen, spazieren gehen oder Freunde direkt treffen. Die Nachrichten und die Musik würden mir am meisten fehlen. Das war's von mir.",
+        v2: "Also, ich erzähle über einen Tag ohne Handy. Ich nutze mein Handy nicht so viel, deshalb wäre ein Tag ohne kein großes Problem. Am Wochenende lege ich es oft zur Seite und spiele mit den Kindern. Telefonieren würde mir vielleicht fehlen, falls etwas passiert. Ohne Handy hat man mehr Zeit für die Familie. Das ist alles."
+      },
+      "Gute Nachbarschaft": {
+        v1: "Ich spreche über meine Nachbarn. Ich kenne meine Nachbarn ein bisschen, aber wir haben nicht viel Kontakt. Wir grüßen uns im Treppenhaus und reden manchmal kurz. Einmal hat eine Nachbarin ein Paket für mich angenommen, das war nett. Probleme gibt es zum Glück keine. Das war's von mir.",
+        v2: "Also, ich erzähle über unsere Nachbarn. Wir kennen unsere Nachbarn gut, weil wir schon lange in dem Haus wohnen. Wir helfen uns oft, zum Beispiel beim Einkaufen oder im Garten. Die Kinder spielen zusammen auf der Straße. Im Sommer grillen wir manchmal zusammen. Das ist alles."
+      },
+      "Mein Lieblingsessen": {
+        v1: "Ich spreche über mein Lieblingsessen. Mein Lieblingsessen ist Pizza, weil sie einfach lecker ist. Ich esse sie oft am Wochenende mit Freunden. Manchmal koche ich selbst, aber meistens bestelle ich sie. Im Restaurant um die Ecke schmeckt sie am besten. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Lieblingsessen. Mein Lieblingsessen ist Gulasch mit Kartoffeln, das kocht meine Frau am besten. Wir essen es oft am Sonntag mit der ganzen Familie. Es schmeckt warm und es macht satt. Ich kann es auch selbst kochen, aber nicht so gut. Das ist alles."
+      },
+      "Hobbys von früher": {
+        v1: "Ich spreche über meine Hobbys von früher. Als Kind habe ich viele Jahre Gitarre gespielt. Ich war ungefähr zehn Jahre alt, als ich angefangen habe. Leider habe ich später aufgehört, weil ich für die Schule lernen musste. Manchmal vermisse ich es. Vielleicht fange ich bald wieder damit an. Das war's von mir.",
+        v2: "Also, ich erzähle über ein Hobby von früher. Früher habe ich im Verein Fußball gespielt, das war meine große Leidenschaft. Mit 25 habe ich aufgehört, weil ich angefangen habe zu arbeiten. Heute habe ich wegen der Familie weniger Zeit. Aber ich schaue noch gern Fußball im Fernsehen. Das ist alles."
+      },
+      "Ein Tier in der Familie": {
+        v1: "Ich spreche über Haustiere. Ich habe eine Katze, sie heißt Mia. Eine Katze passt gut zu mir, weil ich viel arbeite und sie allein bleiben kann. Ich gebe ihr Futter und spiele abends mit ihr. Viel Arbeit macht sie nicht. Sie ist eine gute Gesellschaft für mich. Das war's von mir.",
+        v2: "Also, ich erzähle über unser Haustier. Wir haben einen Hund, das war ein Wunsch von den Kindern. Ein Hund macht viel Arbeit: Man muss dreimal am Tag mit ihm spazieren gehen. Meine Frau und die Kinder kümmern sich zusammen um ihn. Der Hund gehört jetzt zur Familie. Das ist alles."
+      },
+      "Fremdsprachen lernen": {
+        v1: "Ich spreche über Fremdsprachen. Ich lerne im Moment Deutsch, weil ich in Deutschland arbeite. Englisch spreche ich schon ziemlich gut, das hilft mir bei der Arbeit. Am liebsten lerne ich mit Apps und mit Serien. Die Grammatik finde ich manchmal schwer. Später möchte ich auch Spanisch lernen. Das war's von mir.",
+        v2: "Also, ich erzähle über Fremdsprachen. In der Schule habe ich Englisch und ein bisschen Französisch gelernt. Heute lerne ich Deutsch besser, weil ich es für die Arbeit brauche. Ich lerne am liebsten im Kurs, weil ich dann sprechen kann. Sprachen lernen ist für mich nicht leicht. Das ist alles."
+      },
+      "Online einkaufen": {
+        v1: "Ich spreche über das Online-Einkaufen. Ich kaufe sehr oft online ein, weil das praktisch und schnell ist. Meistens bestelle ich Kleidung, Bücher und Technik. Der Vorteil ist, dass ich keine Zeit verliere. Ein Nachteil ist, dass die Sachen manchmal nicht passen. Trotzdem mag ich es. Das war's von mir.",
+        v2: "Also, ich erzähle über das Online-Einkaufen. Wir kaufen manchmal online ein, vor allem große Sachen für die Wohnung. Lebensmittel kaufe ich aber lieber im Geschäft, weil ich sie sehen möchte. Der Vorteil ist die große Auswahl. Ein Nachteil ist, dass man auf das Paket warten muss. Das ist alles."
+      },
+      "Im Restaurant essen": {
+        v1: "Ich spreche über das Essen im Restaurant. Ich gehe ziemlich oft ins Restaurant, meistens mit Freunden oder Kollegen. Am liebsten esse ich italienisch oder asiatisch. In Berlin gibt es viele gute Restaurants. Meistens zahlt jeder für sich selbst. Das war's von mir.",
+        v2: "Also, ich erzähle über das Essen im Restaurant. Mit der Familie gehen wir nicht so oft essen, weil es mit Kindern teuer ist. Wenn wir gehen, dann zu einem Italiener, weil die Kinder Pizza lieben. An besonderen Tagen essen wir auswärts. Ich zahle meistens für alle. Das ist alles."
+      },
+      "Reisen mit der Familie": {
+        v1: "Ich spreche über das Reisen. Ich reise meistens allein oder mit Freunden, weil ich keine eigene Familie habe. Aber als Kind bin ich oft mit meinen Eltern in den Urlaub gefahren. Wir sind ans Meer oder in die Berge gefahren. Diese Reisen waren immer schön. Das war's von mir.",
+        v2: "Also, ich erzähle über das Reisen mit der Familie. Wir reisen jeden Sommer zusammen, meistens nach Österreich oder Italien. Wir fahren mit dem Auto, weil das mit Kindern praktischer ist. Wir bleiben ungefähr zwei Wochen. Die Kinder lieben das Meer und den Strand. Das ist alles."
+      },
+      "Mein freier Tag": {
+        v1: "Ich spreche über meinen freien Tag. An einem freien Tag schlafe ich zuerst lange, weil ich unter der Woche früh aufstehe. Danach gehe ich ins Fitnessstudio oder treffe Freunde. Mittags sitze ich gern in einem Café. Am Abend koche ich oder schaue einen Film. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen freien Tag. An einem freien Tag bin ich meistens mit der Familie zusammen. Am Morgen frühstücken wir in Ruhe. Danach machen wir einen Ausflug, zum Beispiel in den Park oder in den Zoo. Am Nachmittag spiele ich mit den Kindern. Das ist alles."
+      },
+      "Bücher lesen": {
+        v1: "Ich spreche über das Lesen. Ich lese ziemlich gern, besonders Krimis und Bücher über Technik. Meistens lese ich abends im Bett oder im Zug zur Arbeit. Im Moment lese ich einen Roman aus Schweden. Am liebsten lese ich auf dem Sofa mit einer Tasse Tee. Das war's von mir.",
+        v2: "Also, ich erzähle über das Lesen. Ich habe leider wenig Zeit zum Lesen, weil die Arbeit und die Familie viel Zeit kosten. Am liebsten lese ich die Zeitung am Sonntagmorgen. Manchmal lese ich auch ein Buch über Geschichte. Den Kindern lese ich abends Geschichten vor. Das ist alles."
+      },
+      "Musik hören": {
+        v1: "Ich spreche über Musik. Ich höre sehr gern Musik, fast den ganzen Tag. Am liebsten höre ich Rock und elektronische Musik. Mit Kopfhörern höre ich Musik im Zug und beim Sport. Manchmal gehe ich auch auf Konzerte. Musik macht mir gute Laune. Das war's von mir.",
+        v2: "Also, ich erzähle über Musik. Ich höre Musik gern im Auto, wenn ich zur Arbeit fahre. Am liebsten mag ich alte Rockmusik aus den 80er Jahren. Zu Hause hören wir oft zusammen Musik und tanzen mit den Kindern. Beim Sport höre ich keine Musik. Das ist alles."
+      },
+      "Filme und Serien": {
+        v1: "Ich spreche über Filme und Serien. Ich schaue sehr gern Serien, meistens am Abend nach der Arbeit. Am liebsten mag ich Krimis und Science-Fiction. Ich schaue alles zu Hause auf dem Laptop, meistens allein. Im Moment schaue ich eine spannende Serie aus den USA. Das war's von mir.",
+        v2: "Also, ich erzähle über Filme und Serien. Wir schauen am Wochenende oft zusammen einen Film. Die Kinder mögen Zeichentrickfilme, meine Frau mag Komödien. Ich selbst schaue gern Filme über die Natur. Wir gehen selten ins Kino, meistens schauen wir zu Hause. Das ist alles."
+      },
+      "Fotos machen": {
+        v1: "Ich spreche über das Fotografieren. Ich mache sehr gern Fotos, meistens mit meinem Handy. Am liebsten fotografiere ich Gebäude und die Stadt bei Nacht. Meine Fotos speichere ich in der Cloud. Drucken tue ich sie fast nie. Wenn ich reise, mache ich besonders viele Fotos. Das war's von mir.",
+        v2: "Also, ich erzähle über das Fotografieren. Ich fotografiere am liebsten meine Kinder und unsere Ausflüge. Ich benutze dafür mein Handy, eine Kamera habe ich nicht. Die schönsten Fotos drucke ich aus und hänge sie an die Wand. So haben wir viele Erinnerungen. Das ist alles."
+      },
+      "Lieblings-Tageszeit": {
+        v1: "Ich spreche über meine Lieblings-Tageszeit. Meine Lieblingszeit ist der Abend, weil ich dann frei habe. Nach der Arbeit treffe ich Freunde oder mache Sport. Am Abend bin ich ruhiger und entspannter. Der Morgen gefällt mir nicht so, weil ich früh aufstehen muss. Ich bin eher ein Abendmensch. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Lieblings-Tageszeit. Ich mag den Morgen am liebsten, weil dann alles noch ruhig ist. Ich trinke einen Kaffee, bevor die Kinder aufstehen. Diese ruhige Zeit brauche ich für den Tag. Am Abend bin ich oft müde. Ich bin also ein Morgenmensch. Das ist alles."
+      },
+      "Mein Arbeitsweg": {
+        v1: "Ich spreche über meinen Arbeitsweg. Ich fahre jeden Morgen mit dem Fahrrad zur Arbeit. Der Weg dauert ungefähr 20 Minuten. Ich fahre gern Rad, weil ich dann gleich ein bisschen Sport mache. Bei Regen nehme ich die U-Bahn. Mein Arbeitsweg ist nicht lang, das finde ich gut. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Arbeitsweg. Ich fahre mit dem Auto zur Arbeit, weil die Firma weit weg ist. Der Weg dauert fast eine Stunde, und morgens gibt es oft Stau. Im Auto höre ich Radio oder einen Podcast. Ich würde gern näher an der Arbeit wohnen. Das ist alles."
+      },
+      "Geld sparen": {
+        v1: "Ich spreche über das Geldsparen. Ich versuche, jeden Monat ein bisschen Geld zu sparen. Im Moment spare ich für eine große Reise nach Asien. Ich spare ungefähr 200 Euro pro Monat. Sparen ist für mich nicht so schwer, weil ich allein lebe. Das war's von mir.",
+        v2: "Also, ich erzähle über das Sparen. Mit einer Familie ist Sparen nicht leicht, weil wir viele Ausgaben haben. Wir sparen für die Ausbildung unserer Kinder. Jeden Monat legen wir etwas Geld zur Seite. Im Urlaub geben wir aber auch gern Geld aus. Das ist alles."
+      },
+      "Lieblingsfest": {
+        v1: "Ich spreche über mein Lieblingsfest. Mein Lieblingsfest ist Silvester, weil ich es mit Freunden feiere. Wir machen eine Party und sehen das Feuerwerk. Wir essen und trinken zusammen bis spät in die Nacht. Geschenke gibt es an Silvester nicht. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Lieblingsfest. Mein Lieblingsfest ist Weihnachten, weil dann die ganze Familie zusammen ist. Wir essen am Abend zusammen und die Kinder bekommen Geschenke. Wir schmücken den Baum und singen Lieder. Es gibt einen Gänsebraten, das ist Tradition. Das ist alles."
+      },
+      "Fit bleiben": {
+        v1: "Ich spreche darüber, wie ich fit bleibe. Ich gehe dreimal pro Woche ins Fitnessstudio. Dort mache ich Krafttraining und laufe auf dem Laufband. Ich mache lieber allein Sport, weil ich dann flexibel bin. Außerdem achte ich auf gesundes Essen und schlafe genug. Das war's von mir.",
+        v2: "Also, ich erzähle, wie ich fit bleibe. Ich habe nicht viel Zeit für Sport, aber ich fahre Rad und gehe spazieren. Am Wochenende spiele ich mit den Kindern Fußball. Im Verein bin ich nicht mehr. Für die Gesundheit esse ich auch viel Gemüse. Das ist alles."
+      },
+      "Mein Lieblingsplatz in der Stadt": {
+        v1: "Ich spreche über meinen Lieblingsplatz in der Stadt. Mein Lieblingsplatz ist ein großer Park im Zentrum. Ich gehe gern dorthin, weil es dort ruhig und grün ist. Meistens bin ich allein dort und lese oder höre Musik. Ich gehe fast jedes Wochenende hin. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Lieblingsplatz. Mein Lieblingsplatz ist der Hafen in Hamburg. Dort gehe ich oft mit der Familie spazieren. Den Kindern gefallen die großen Schiffe. Wir essen dort manchmal ein Fischbrötchen. Wir sind ungefähr zweimal im Monat dort. Das ist alles."
+      },
+      "Computer und Internet": {
+        v1: "Ich spreche über Computer und Internet. Ich arbeite den ganzen Tag am Computer, weil ich in der IT bin. Auch zu Hause nutze ich oft den Laptop für Spiele und Filme. Ich verbringe viel Zeit online, vielleicht zu viel. Manchmal gibt es Probleme mit dem Internet. Das war's von mir.",
+        v2: "Also, ich erzähle über Computer und Internet. Ich nutze den Computer vor allem für die Arbeit und für E-Mails. Zu Hause schaue ich Nachrichten und kaufe manchmal etwas online. Die Kinder spielen auch am Computer, aber nicht zu lange. Das Internet ist heute sehr wichtig. Das ist alles."
+      },
+      "Ein neues Land bereisen": {
+        v1: "Ich spreche über ein Land, das ich gern bereisen möchte. Ich möchte gern nach Japan reisen, weil mich die Kultur interessiert. Ich würde allein oder mit einem Freund fahren. Ich möchte mindestens drei Wochen bleiben. Dort möchte ich die Städte und das Essen kennenlernen. Das war's von mir.",
+        v2: "Also, ich erzähle über ein neues Land. Ich möchte gern mit der Familie nach Kanada reisen, weil die Natur dort schön ist. Wir würden zusammen fahren und zwei Wochen bleiben. Die Kinder möchten Tiere und Berge sehen. Eine so weite Reise kostet aber viel Geld. Das ist alles."
+      },
+      "Im Café sitzen": {
+        v1: "Ich spreche über das Café. Ich sitze sehr gern im Café, meistens am Wochenende. Am liebsten trinke ich einen Cappuccino und esse ein Stück Kuchen. Oft gehe ich mit Freunden, manchmal auch allein mit einem Buch. Im Café kann ich gut entspannen. Das war's von mir.",
+        v2: "Also, ich erzähle über das Café. Ich gehe nicht so oft ins Café, weil ich wenig Zeit habe. Manchmal trinke ich am Samstag einen Kaffee mit meiner Frau. Die Kinder bekommen dann einen Kakao. Ein Café ist ein netter Ort für die Familie. Das ist alles."
+      },
+      "Schöne Kleidung": {
+        v1: "Ich spreche über Kleidung. Ich mag moderne und bequeme Kleidung, vor allem Jeans und Pullover. Ich kaufe meine Kleidung meistens online, weil das praktisch ist. Für die Arbeit brauche ich keinen Anzug. Für besondere Anlässe habe ich ein schönes Hemd. Das war's von mir.",
+        v2: "Also, ich erzähle über Kleidung. Ich trage am liebsten praktische Kleidung, weil ich mit den Kindern viel draußen bin. Meine Kleidung kaufe ich im Geschäft, oft kauft auch meine Frau für mich. Ich gebe nicht viel Geld dafür aus. Für Feste habe ich einen Anzug. Das ist alles."
+      },
+      "Im Park": {
+        v1: "Ich spreche über den Park. In meiner Nähe gibt es einen großen Park, dorthin gehe ich oft. Meistens gehe ich am Wochenende allein joggen oder lesen. Manchmal treffe ich dort auch Freunde zum Picknick. Im Park ist die Luft frisch und es ist ruhig. Das war's von mir.",
+        v2: "Also, ich erzähle über den Park. Wir haben einen schönen Park in der Nähe, dorthin gehen wir oft mit den Kindern. Die Kinder spielen auf dem Spielplatz und fahren Rad. Wir machen manchmal ein Picknick auf der Wiese. Im Park kann sich die ganze Familie erholen. Das ist alles."
+      },
+      "Studium und Lernen": {
+        v1: "Ich spreche über das Lernen. Ich habe Informatik studiert, weil mich Computer immer interessiert haben. Ich habe an einer Universität in Berlin studiert. Manche Fächer waren schwer, vor allem Mathematik. Jetzt lerne ich im Job immer Neues dazu. Das war's von mir.",
+        v2: "Also, ich erzähle über das Lernen. Ich habe nicht studiert, sondern eine Ausbildung als Techniker gemacht. Das Lernen in der Firma war praktisch und interessant. Schwer war für mich am Anfang die Theorie. Heute lerne ich noch neue Maschinen kennen. Das ist alles."
+      },
+      "Im Krankenhaus": {
+        v1: "Ich spreche über das Krankenhaus. Ich war einmal im Krankenhaus, weil ich mir beim Fußball das Bein gebrochen habe. Ich musste drei Tage dort bleiben. Die Ärzte und Schwestern waren sehr nett. Es war nicht schön, aber alles ist gut gegangen. Das war's von mir.",
+        v2: "Also, ich erzähle über das Krankenhaus. Ich war zum Glück selten krank, aber bei der Geburt meiner Kinder war ich im Krankenhaus dabei. Das waren sehr schöne Tage. Meine Frau musste jeweils ein paar Tage bleiben. Die Pflege war gut. Das ist alles."
+      },
+      "Das Wetter": {
+        v1: "Ich spreche über das Wetter. Ich mag warmes und sonniges Wetter am liebsten, weil ich dann draußen bin. Regen und Kälte mag ich nicht so gern. Im Sommer fahre ich Rad und treffe Freunde im Park. Im Winter bleibe ich oft zu Hause. Das war's von mir.",
+        v2: "Also, ich erzähle über das Wetter. Ich mag den Sommer am liebsten, weil wir dann mit den Kindern an die See fahren. Bei Regen spielen wir zu Hause oder gehen ins Museum. Im Winter macht Schnee den Kindern Spaß. In Hamburg regnet es leider oft. Das ist alles."
+      },
+      "Sehenswürdigkeiten": {
+        v1: "Ich spreche über Sehenswürdigkeiten. In Berlin gibt es viele Sehenswürdigkeiten, zum Beispiel das Brandenburger Tor. Ich zeige sie gern meinen Freunden, wenn sie zu Besuch kommen. Auf Reisen besuche ich auch gern berühmte Orte. Den Eiffelturm in Paris habe ich schon gesehen. Das war's von mir.",
+        v2: "Also, ich erzähle über Sehenswürdigkeiten. In Hamburg ist die Elbphilharmonie sehr bekannt, dort waren wir mit der Familie. Auf Reisen besuchen wir auch gern alte Schlösser. Den Kindern gefallen besonders große Türme. Ich möchte gern einmal Rom sehen. Das ist alles."
+      },
+      "Im Kino": {
+        v1: "Ich spreche über das Kino. Ich gehe ungefähr einmal im Monat ins Kino, meistens mit Freunden. Am liebsten sehe ich Actionfilme auf der großen Leinwand. Zu Hause schaue ich auch viel mit Streaming. Aber das Kino ist ein besonderes Erlebnis. Das war's von mir.",
+        v2: "Also, ich erzähle über das Kino. Mit der Familie gehen wir manchmal in einen Kinderfilm. Die Kinder freuen sich immer sehr darauf. Wir kaufen Popcorn und sitzen alle zusammen. Allein gehe ich fast nie ins Kino. Das ist alles."
+      },
+      "Lieblings-Hobby": {
+        v1: "Ich spreche über mein Lieblingshobby. Mein Lieblingshobby ist Klettern, das mache ich schon seit fünf Jahren. Ich gehe einmal pro Woche in eine Kletterhalle. Meistens klettere ich mit einem Freund zusammen. Klettern ist Sport und Entspannung für mich. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Lieblingshobby. Mein Lieblingshobby ist Gartenarbeit, das macht mir viel Freude. Ich mache es schon seit vielen Jahren. Am Wochenende habe ich Zeit dafür. Manchmal helfen mir die Kinder im Garten. Das ist alles."
+      },
+      "Ein Konzert besuchen": {
+        v1: "Ich spreche über Konzerte. Ich war schon auf vielen Konzerten, weil ich Rockmusik liebe. Letztes Jahr war ich auf einem großen Konzert in Berlin. Ich war mit zwei Freunden dort, die Stimmung war super. Wir haben die Karten im Internet gekauft. Das war's von mir.",
+        v2: "Also, ich erzähle über ein Konzert. Ich gehe selten auf Konzerte, aber einmal war ich mit meiner Frau bei einem Konzert. Es war Musik aus den 80er Jahren, das hat uns gefallen. Wir hatten einen schönen Abend ohne die Kinder. Die Karten waren ziemlich teuer. Das ist alles."
+      },
+      "Geschwister": {
+        v1: "Ich spreche über meine Geschwister. Ich habe eine jüngere Schwester. Sie wohnt in Hamburg und studiert dort. Wir verstehen uns sehr gut und telefonieren oft. Früher haben wir uns manchmal gestritten, aber das ist vorbei. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Geschwister. Ich habe einen älteren Bruder und eine Schwester. Wir sind zusammen aufgewachsen und verstehen uns gut. Mein Bruder wohnt in der Nähe, deshalb sehen wir uns oft. An Festen sind wir alle zusammen. Das ist alles."
+      },
+      "Wohnen im Stadtzentrum": {
+        v1: "Ich spreche über das Wohnen im Stadtzentrum. Ich wohne gern im Zentrum, weil alles in der Nähe ist. Die Geschäfte, die Arbeit und die Cafés sind schnell erreichbar. Ein Nachteil ist der Lärm am Abend. Aber für mich überwiegen die Vorteile. Das war's von mir.",
+        v2: "Also, ich erzähle über das Wohnen im Stadtzentrum. Ich möchte nicht im Zentrum wohnen, weil es dort zu laut ist. Mit Kindern ist es am Stadtrand schöner und ruhiger. Wir haben hier einen Garten und frische Luft. Im Zentrum gibt es zwar mehr Angebote. Das ist alles."
+      },
+      "Ferienjob": {
+        v1: "Ich spreche über Ferienjobs. In den Sommerferien habe ich als Student in einem Büro gearbeitet. Ich habe E-Mails sortiert und am Computer geholfen. Ich habe ein bisschen Geld verdient und Erfahrung gesammelt. Diesen Job würde ich wieder machen. Das war's von mir.",
+        v2: "Also, ich erzähle über einen Ferienjob. Als junger Mann habe ich in den Ferien auf dem Bau gearbeitet. Die Arbeit war hart, aber das Geld war gut. Ich habe gelernt, früh aufzustehen und fleißig zu sein. Vielleicht machen bald meine Kinder einen Ferienjob. Das ist alles."
+      },
+      "Lieblingsgemüse": {
+        v1: "Ich spreche über mein Lieblingsgemüse. Mein Lieblingsgemüse ist Brokkoli, weil er gesund ist und gut schmeckt. Ich brate ihn kurz in der Pfanne mit etwas Öl. Ich esse ihn ungefähr zweimal pro Woche. Bio-Gemüse kaufe ich, wenn es nicht zu teuer ist. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Lieblingsgemüse. Mein Lieblingsgemüse sind Karotten, die mögen auch die Kinder. Meine Frau kocht oft eine Suppe damit. Wir essen fast jeden Tag Gemüse, weil es gesund ist. Im Sommer kaufen wir es gern auf dem Markt. Das ist alles."
+      },
+      "Im Supermarkt": {
+        v1: "Ich spreche über den Supermarkt. Ich gehe ungefähr zweimal pro Woche in den Supermarkt. Ich kaufe vor allem Obst, Brot und etwas zum Kochen. Eine Einkaufsliste schreibe ich selten, weil ich allein lebe. Ich gehe meistens nach der Arbeit einkaufen. Das war's von mir.",
+        v2: "Also, ich erzähle über den Supermarkt. Wir gehen einmal pro Woche groß einkaufen, weil wir viel brauchen. Meine Frau schreibt immer eine Einkaufsliste. Oft gehen wir zusammen, manchmal kommen die Kinder mit. Wir kaufen Lebensmittel für die ganze Woche. Das ist alles."
+      },
+      "Lieblings-Spielzeug als Kind": {
+        v1: "Ich spreche über mein Lieblingsspielzeug als Kind. Als Kind habe ich am liebsten mit Lego gespielt. Ich war ungefähr sechs Jahre alt und habe ganze Städte gebaut. Meistens habe ich mit meiner Schwester gespielt. Ein paar Steine habe ich heute noch. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Lieblingsspielzeug. Als Kind hatte ich eine kleine Eisenbahn, die war mein liebstes Spielzeug. Ich habe oft mit meinem Bruder damit gespielt. Leider habe ich sie nicht mehr. Heute spielen meine Kinder mit ähnlichem Spielzeug. Das ist alles."
+      },
+      "Eine fremde Sprache verstehen": {
+        v1: "Ich spreche darüber, eine fremde Sprache zu verstehen. Neben Deutsch verstehe ich gut Englisch. Ich habe es in der Schule und durch Filme gelernt. Englisch finde ich nicht so schwer, weil ich es oft benutze. Es hilft mir auch beim Deutschlernen. Das war's von mir.",
+        v2: "Also, ich erzähle über eine fremde Sprache. Ich verstehe ein bisschen Englisch, aber nicht perfekt. Ich habe es vor langer Zeit in der Schule gelernt. Manchmal ist es schwer, schnelle Gespräche zu verstehen. Englisch hilft mir aber im Urlaub. Das ist alles."
+      },
+      "Im Schwimmbad": {
+        v1: "Ich spreche über das Schwimmbad. Ich gehe im Sommer ungefähr einmal pro Woche schwimmen. Ich gehe in ein großes Schwimmbad in der Nähe. Meistens gehe ich mit Freunden, manchmal auch allein. Ich kann gut schwimmen, weil ich es als Kind gelernt habe. Das war's von mir.",
+        v2: "Also, ich erzähle über das Schwimmbad. Wir gehen oft mit den Kindern ins Schwimmbad, besonders im Sommer. Die Kinder lieben die Rutsche und das warme Wasser. Meine Tochter geht in einen Schwimmkurs. Ich passe immer gut auf die Kinder auf. Das ist alles."
+      },
+      "Pflanzen zu Hause": {
+        v1: "Ich spreche über Pflanzen. Ich habe ein paar Pflanzen in meiner Wohnung, zum Beispiel einen Kaktus. Pflanzen machen die Wohnung schöner und grüner. Ich gieße sie einmal pro Woche. Viel Arbeit machen sie nicht. Das war's von mir.",
+        v2: "Also, ich erzähle über Pflanzen. Wir haben viele Pflanzen, drinnen und auf dem Balkon. Meine Frau kümmert sich am meisten darum. Im Sommer haben wir auch Tomaten auf dem Balkon. Die Kinder gießen gern die Blumen. Das ist alles."
+      },
+      "Im Theater": {
+        v1: "Ich spreche über das Theater. Ich war erst zweimal im Theater, weil es nicht mein Lieblingshobby ist. Einmal habe ich ein modernes Stück gesehen, das war interessant. Ich war mit einer Freundin dort. Es hat mir besser gefallen als erwartet. Das war's von mir.",
+        v2: "Also, ich erzähle über das Theater. Mit der Familie gehen wir manchmal in ein Kindertheater. Die Kinder finden die Geschichten und die Kostüme toll. Wir waren letztes Jahr in einem Märchenstück. Es hat allen gut gefallen. Das ist alles."
+      },
+      "Öffentliche Verkehrsmittel in Ihrer Stadt": {
+        v1: "Ich spreche über die öffentlichen Verkehrsmittel. In Berlin gibt es U-Bahn, Bus und Tram. Ich nutze sie oft, besonders bei schlechtem Wetter. Eine Monatskarte ist nicht billig, aber praktisch. Meistens sind die Bahnen pünktlich. Das war's von mir.",
+        v2: "Also, ich erzähle über die öffentlichen Verkehrsmittel. In Hamburg gibt es Busse, U-Bahn und S-Bahn. Ich fahre meistens mit dem Auto, aber die Kinder nehmen den Bus zur Schule. Die Tickets sind ziemlich teuer. Leider sind die Busse nicht immer pünktlich. Das ist alles."
+      },
+      "Eine Hochzeit besuchen": {
+        v1: "Ich spreche über eine Hochzeit. Letztes Jahr war ich auf der Hochzeit von einem guten Freund. Ich habe einen schönen Anzug angezogen. Als Geschenk habe ich Geld in einer Karte gegeben. Die Feier war wunderschön und wir haben viel getanzt. Das war's von mir.",
+        v2: "Also, ich erzähle über eine Hochzeit. Vor zwei Jahren haben wir die Hochzeit meiner Schwester besucht. Die ganze Familie war dabei, auch die Kinder. Meine Frau und ich haben uns schick angezogen. Wir haben dem Paar Geld für die Reise geschenkt. Das ist alles."
+      },
+      "Meine Lieblingsmusik": {
+        v1: "Ich spreche über meine Lieblingsmusik. Meine Lieblingsmusik ist Rock, weil sie viel Energie hat. Ich höre sie oft beim Sport und im Zug. Im Auto fahre ich selten, deshalb höre ich dort wenig. Am liebsten höre ich Musik live auf Konzerten. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Lieblingsmusik. Ich höre am liebsten alte Popmusik, die kenne ich seit meiner Jugend. Im Auto höre ich sie jeden Tag. Beim Sport höre ich keine Musik. Live war ich schon lange nicht mehr, meistens höre ich zu Hause. Das ist alles."
+      },
+      "Erste Hilfe": {
+        v1: "Ich spreche über Erste Hilfe. Ich habe einen Erste-Hilfe-Kurs für den Führerschein gemacht. Anwenden musste ich es zum Glück noch nie. Ich finde Erste Hilfe sehr wichtig, weil man Leben retten kann. Jeder Mensch sollte das lernen. Das war's von mir.",
+        v2: "Also, ich erzähle über Erste Hilfe. Ich habe in der Firma einen Erste-Hilfe-Kurs gemacht. Einmal habe ich einem Kollegen geholfen, der sich verletzt hat. Ich finde das besonders wichtig, weil wir Kinder haben. Eltern sollten Erste Hilfe können. Das ist alles."
+      },
+      "Lieblingskuchen": {
+        v1: "Ich spreche über meinen Lieblingskuchen. Mein Lieblingskuchen ist Käsekuchen, weil er nicht zu süß ist. Backen kann ich nicht gut, deshalb kaufe ich ihn. Meistens esse ich Kuchen am Wochenende im Café. Mit Sahne schmeckt er noch besser. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Lieblingskuchen. Mein Lieblingskuchen ist Apfelkuchen, den backt meine Frau am besten. Es gibt ihn oft am Sonntag oder an Geburtstagen. Die Kinder helfen manchmal beim Backen. Mit Sahne mag ich ihn besonders gern. Das ist alles."
+      },
+      "Sehen ohne Brille": {
+        v1: "Ich spreche über das Thema Brille. Ich trage seit zwei Jahren eine Brille, weil ich am Computer arbeite. Ohne Brille sehe ich in der Ferne nicht gut. Kontaktlinsen habe ich auch, aber ich trage sie selten. Mit der Brille habe ich keine Probleme mehr. Das war's von mir.",
+        v2: "Also, ich erzähle über das Thema Brille. Ich trage seit ungefähr fünf Jahren eine Brille zum Lesen. Früher hatte ich keine Probleme mit den Augen. Kontaktlinsen mag ich nicht, deshalb trage ich nur die Brille. Beim Autofahren brauche ich sie nicht. Das ist alles."
+      },
+      "Lieblings-Smartphone-App": {
+        v1: "Ich spreche über meine Lieblings-App. Meine Lieblings-App ist eine Musik-App, weil ich viel Musik höre. Ich nutze sie jeden Tag, im Zug und beim Sport. Sie ist einfach und hat eine große Auswahl. Ich würde sie meinen Freunden empfehlen. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Lieblings-App. Meine Lieblings-App ist eine Karten-App für die Navigation. Ich nutze sie oft im Auto, wenn ich einen neuen Weg suche. Sie hilft mir, Stau zu vermeiden. Auch im Urlaub ist sie sehr praktisch. Das ist alles."
+      },
+      "Im Garten arbeiten": {
+        v1: "Ich spreche über die Gartenarbeit. Ich habe keinen eigenen Garten, weil ich in einer Wohnung lebe. Aber ich habe ein paar Pflanzen auf dem Balkon. Ich gieße sie und freue mich über die Blumen. Einen richtigen Garten hätte ich aber gern. Das war's von mir.",
+        v2: "Also, ich erzähle über die Gartenarbeit. Wir haben einen Garten am Haus, dort arbeite ich gern. Es wachsen Tomaten, Kräuter und ein paar Blumen. Im Sommer arbeite ich fast jedes Wochenende dort. Die Kinder helfen mir manchmal beim Gießen. Das ist alles."
+      },
+      "Eine Sprachreise machen": {
+        v1: "Ich spreche über eine Sprachreise. Ich möchte gern eine Sprachreise nach Spanien machen. Ich würde drei Wochen bleiben und allein fahren. Am Vormittag möchte ich in die Sprachschule gehen und am Nachmittag die Stadt sehen. So lernt man die Sprache am schnellsten. Das war's von mir.",
+        v2: "Also, ich erzähle über eine Sprachreise. Eine Sprachreise wäre für mich schwer, weil ich eine Familie habe. Aber vielleicht macht mein Sohn später eine Reise nach England. Dort könnte er sein Englisch verbessern. Drei oder vier Wochen wären gut. Das ist alles."
+      },
+      "Lieblings-Tier": {
+        v1: "Ich spreche über mein Lieblingstier. Mein Lieblingstier ist der Hund, weil Hunde treu und freundlich sind. Selbst habe ich aber eine Katze, weil ich viel arbeite. Im Zoo schaue ich gern die großen Tiere an. Ein Hund passt im Moment nicht zu meinem Leben. Das war's von mir.",
+        v2: "Also, ich erzähle über mein Lieblingstier. Mein Lieblingstier ist das Pferd, ich finde Pferde sehr schön. Als Kind hatte ich aber nie eins. Mit den Kindern war ich schon oft im Zoo und auf dem Bauernhof. Die Kinder lieben alle Tiere. Das ist alles."
+      },
+      "Ein Buch empfehlen": {
+        v1: "Ich spreche über ein Buch, das ich empfehlen möchte. Ich empfehle gern einen Krimi, den ich letztes Jahr gelesen habe. Das Buch ist sehr spannend und man kann nicht aufhören zu lesen. Ich empfehle es allen, die Krimis mögen. Mir hat es sehr gut gefallen. Das war's von mir.",
+        v2: "Also, ich erzähle über ein Buch. Ich möchte ein Buch über Geschichte empfehlen, das ich interessant fand. Man lernt viel über das alte Deutschland. Ich empfehle es Freunden, die gern Sachbücher lesen. Es ist nicht zu schwer geschrieben. Das ist alles."
+      },
+      "Meine Sammlung": {
+        v1: "Ich spreche über meine Sammlung. Ich sammle Sneaker, also besondere Schuhe. Ich sammle sie schon seit ungefähr fünf Jahren. Im Moment habe ich über zwanzig Paare. Ich bewahre sie in Kartons im Schrank auf. Das war's von mir.",
+        v2: "Also, ich erzähle über meine Sammlung. Ich sammle alte Münzen, das habe ich von meinem Vater. Ich sammle sie schon seit meiner Kindheit. Ich habe vielleicht hundert Münzen aus vielen Ländern. Ich bewahre sie in einem kleinen Album auf. Das ist alles."
+      },
+      "Ein neues Möbelstück kaufen": {
+        v1: "Ich spreche über ein neues Möbelstück. Ich brauche bald ein neues Sofa für mein Wohnzimmer. Ich schaue zuerst online, weil es dort viel Auswahl gibt. Aber ein Sofa möchte ich vorher im Geschäft ausprobieren. Es darf nicht zu teuer sein. Das war's von mir.",
+        v2: "Also, ich erzähle über ein neues Möbelstück. Wir brauchen einen größeren Esstisch, weil die Familie wächst. Wir kaufen ihn lieber im Möbelhaus, weil wir ihn sehen wollen. Der Tisch soll stabil und nicht zu teuer sein. Vielleicht fahren wir am Wochenende hin. Das ist alles."
+      },
+      "Verkehrsregeln": {
+        v1: "Ich spreche über Verkehrsregeln. Für mich ist die wichtigste Regel, an der roten Ampel zu halten. Ich halte mich fast immer an die Regeln. Eine Strafe musste ich noch nie zahlen. Auch für Fahrräder gibt es klare Regeln. Das war's von mir.",
+        v2: "Also, ich erzähle über Verkehrsregeln. Die wichtigste Regel ist für mich, nicht zu schnell zu fahren, besonders bei einer Schule. Einmal musste ich leider ein Bußgeld zahlen, weil ich zu schnell war. Seitdem fahre ich vorsichtiger. Meinen Kindern erkläre ich die Regeln genau. Das ist alles."
+      },
+      "Im Urlaub krank werden": {
+        v1: "Ich spreche darüber, im Urlaub krank zu werden. Einmal bin ich in Italien krank geworden, ich hatte eine Erkältung. Ich war in der Apotheke und habe Medikamente gekauft. Zum Glück hatte ich eine Reiseversicherung. Nach zwei Tagen ging es mir wieder besser. Das war's von mir.",
+        v2: "Also, ich erzähle über Krankheit im Urlaub. Einmal ist mein Sohn im Urlaub krank geworden. Wir sind mit ihm zu einem Arzt gegangen. Die Versicherung hat die Kosten bezahlt. Danach haben wir den Urlaub ruhiger gemacht. Das ist alles."
+      },
+      "Schöne Wohnung einrichten": {
+        v1: "Ich spreche über das Einrichten einer Wohnung. Ich mag helle Farben und moderne Möbel. Mein Wohnzimmer ist einfach, aber gemütlich. Ich richte alles selbst ein, weil ich gern Ordnung habe. Bei schweren Möbeln hilft mir ein Freund. Das war's von mir.",
+        v2: "Also, ich erzähle über das Einrichten. Bei uns muss die Wohnung praktisch und kinderfreundlich sein. Wir mögen warme Farben und stabile Möbel. Meine Frau hat ein gutes Auge für die Einrichtung. Wir machen vieles selbst, manchmal mit Hilfe. Das ist alles."
+      },
+      "Mit dem Auto fahren": {
+        v1: "Ich spreche über das Autofahren. Ich habe einen Führerschein, aber kein eigenes Auto. In der Stadt brauche ich keins, weil ich Rad und Bahn fahre. Für längere Reisen leihe ich mir ein Auto. Lange Strecken fahre ich eigentlich gern. Das war's von mir.",
+        v2: "Also, ich erzähle über das Autofahren. Ich habe einen Führerschein und ein eigenes Auto. Ich fahre jeden Tag zur Arbeit und am Wochenende mit der Familie. Lange Strecken in den Urlaub fahre ich gern. Das Auto ist für die Familie sehr praktisch. Das ist alles."
+      },
+      "Frühlingsanfang": {
+        v1: "Ich spreche über den Frühlingsanfang. Im Frühling freue ich mich, weil es wärmer wird. Ich bin dann mehr draußen und fahre wieder Rad. Mit Freunden treffe ich mich oft im Park. Einen großen Frühjahrsputz mache ich auch in der Wohnung. Das war's von mir.",
+        v2: "Also, ich erzähle über den Frühlingsanfang. Im Frühling gehen wir mit den Kindern viel nach draußen. Wir pflanzen Blumen im Garten und auf dem Balkon. Auch einen Frühjahrsputz machen wir jedes Jahr. Die ganze Familie hilft dabei. Das ist alles."
+      },
+      "Lieblings-Wochentag": {
+        v1: "Ich spreche über meinen Lieblings-Wochentag. Mein Lieblingstag ist der Freitag, weil dann das Wochenende beginnt. Nach der Arbeit treffe ich oft Freunde. Wir gehen essen oder in eine Bar. Am Freitag bin ich besonders gut gelaunt. Das war's von mir.",
+        v2: "Also, ich erzähle über meinen Lieblings-Wochentag. Mein Lieblingstag ist der Samstag, weil dann die ganze Familie zu Hause ist. Wir machen einen Ausflug oder arbeiten im Garten. Am Abend essen wir alle zusammen. Diesen Tag genieße ich am meisten. Das ist alles."
+      }
+    };
+    const T3_SITUATIONS = window.SPRECHEN_T3_SITUATIONS || [];
+
+    // Tages-Tätigkeiten für belegte Zeitfenster (kein "frei" — freie Fenster setzt der Generator)
+    const ACTIVITIES = [
+      "Arbeiten", "Arbeiten", "Deutschkurs", "Arzttermin",
+      "Sport / Fitness", "Familie besuchen", "Großeinkauf", "Friseur",
+      "Freunde treffen", "Mittagessen", "Wohnung putzen",
+      "Hund ausführen", "Schwimmen", "Wäsche waschen", "Eltern anrufen"
+    ];
+
+    // Teil 3: EIN Tag, 2-Stunden-Bloecke 07-21 Uhr (Übungs-Tagesplan für die Termin-Aufgabe)
+    const TIME_BLOCKS = ["07\u201309 Uhr", "09\u201311 Uhr", "11\u201313 Uhr", "13\u201315 Uhr", "15\u201317 Uhr", "17\u201319 Uhr", "19\u201321 Uhr"];
+    const T3_DAYS = ["Samstag", "Sonntag"];
+    const T3_WEEKDAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
+    // Wochenplan-Zeilen: Tageszeit — mal als Wort, mal als Uhrzeit
+    const T3_DAYPARTS = [
+      { part: "Morgen", time: "07\u201309 Uhr" },
+      { part: "Vormittag", time: "09\u201311 Uhr" },
+      { part: "Mittag", time: "11\u201313 Uhr" },
+      { part: "Nachmittag", time: "15\u201317 Uhr" },
+      { part: "Abend", time: "19\u201321 Uhr" }
+    ];
+
+    // Teil 3 Modus B: gemeinsam etwas planen (Stichwortkarten-Format)
+    const T3_PLAN_TASKS = window.SPRECHEN_T3_PLAN_TASKS || [];
+
+    // ============ STATE ============
+    // Stable IDs для T2 (по title) и T3 (по text/scenario). T1 — рандом, не считаем.
+    T2_TOPICS.forEach(t => { t._id = 't2:' + Progress.slug(t.title); });
+    T3_SITUATIONS.forEach(s => {
+      if (typeof s === 'string') return; // строки оставим без _id, не считаем
+      s._id = 't3:term:' + Progress.slug(s.text);
+    });
+    T3_PLAN_TASKS.forEach(p => { p._id = 't3:plan:' + Progress.slug(p.scenario); });
+    const SPRECHEN_TOTAL = T2_TOPICS.length
+      + T3_SITUATIONS.filter(s => typeof s !== 'string').length
+      + T3_PLAN_TASKS.length;
+    Progress.setTotal('sprechen', SPRECHEN_TOTAL);
+
+    let rounds = 0;
+    function updateSprechenCounter() {
+      const done = Progress.count('sprechen');
+      const label = document.getElementById('counter-label');
+      if (label) label.innerHTML = '<b>' + done + '</b> <span class="ps-sep">/</span> <span class="ps-total">' + SPRECHEN_TOTAL + '</span> erledigt';
+    }
+    function incrementRounds() { rounds++; updateSprechenCounter(); }
+    Progress.subscribe(m => { if (m === 'sprechen') updateSprechenCounter(); });
+
+    // ====== Fortschritt-Reset (nur dieses Modul) ======
+    (function () {
+      const rp = document.getElementById('reset-progress');
+      if (!rp) return;
+      function sync() { rp.disabled = (Progress.count('sprechen') === 0); }
+      rp.addEventListener('click', () => {
+        if (Progress.count('sprechen') === 0) return;
+        if (confirm('Den Fortschritt im Modul „Sprechen“ wirklich zurücksetzen?')) Progress.reset('sprechen');
+      });
+      Progress.subscribe(sync);
+      sync();
+    })();
+    updateSprechenCounter();
+
+    // ============ TABS ============
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === btn));
+        document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === id));
+      });
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      if (e.target.matches('input, textarea, select, button, summary')) return;
+      if (e.key === '1') { document.querySelector('[data-tab="t1"]').click(); e.preventDefault(); }
+      else if (e.key === '2') { document.querySelector('[data-tab="t2"]').click(); e.preventDefault(); }
+      else if (e.key === '3') { document.querySelector('[data-tab="t3"]').click(); e.preventDefault(); }
+      else if (e.key.toLowerCase() === 'n') {
+        const active = document.querySelector('.section.active').id;
+        document.getElementById(active + '-draw').click();
+        e.preventDefault();
+      } else if (e.key === ' ') {
+        const active = document.querySelector('.section.active').id;
+        if (active === 't2' || active === 't3') {
+          const t = timers[active];
+          if (t.interval) pauseTimer(active);
+          else startTimer(active);
+          e.preventDefault();
+        }
+      }
+    });
+
+    // ============ UTILS ============
+    function sample(arr, n) {
+      const copy = [...arr];
+      const out = [];
+      for (let i = 0; i < n && copy.length; i++) {
+        const idx = Math.floor(Math.random() * copy.length);
+        out.push(copy.splice(idx, 1)[0]);
+      }
+      return out;
+    }
+    // pick() и escapeHtml() теперь общие — см. assets/progress.js
+
+    // ============ TEIL 1 ============
+    const t1CardsEl = document.getElementById('t1-cards');
+
+    document.getElementById('t1-draw').addEventListener('click', () => {
+      const drawn = sample(T1_KEYWORDS, 4);
+      t1CardsEl.innerHTML = drawn.map((c, i) => `
+        <div class="kw-card">
+          <div class="num">KARTE ${String(i + 1).padStart(2, '0')}</div>
+          <div class="kw">${escapeHtml(c.kw)}</div>
+          <button class="tip-btn">Tipp anzeigen →</button>
+          <div class="tip">
+            <div class="q">„${escapeHtml(c.q)}"</div>
+            <div class="a">${escapeHtml(c.a)}</div>
+          </div>
+        </div>
+      `).join('');
+
+      t1CardsEl.querySelectorAll('.tip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.parentElement;
+          card.classList.toggle('revealed');
+          btn.textContent = card.classList.contains('revealed') ? 'Tipp verstecken' : 'Tipp anzeigen →';
+        });
+      });
+      incrementRounds();
+    });
+
+    document.getElementById('t1-reveal-all').addEventListener('click', () => {
+      t1CardsEl.querySelectorAll('.kw-card').forEach(card => {
+        card.classList.add('revealed');
+        const btn = card.querySelector('.tip-btn');
+        if (btn) btn.textContent = 'Tipp verstecken';
+      });
+    });
+
+    // ============ TEIL 2 ============
+    const t2Content = document.getElementById('t2-content');
+
+    document.getElementById('t2-draw').addEventListener('click', () => {
+      const topic = pick(T2_TOPICS);
+      const t2Badge = topic.source
+        ? `<div class="src-badge">★ Original · ${escapeHtml(topic.source)}</div>`
+        : '';
+      const t2Followup = (topic.followup && topic.followup.length)
+        ? `<details class="drawer">
+          <summary><span>Mögliche Fragen vom Prüfer</span></summary>
+          <div class="drawer-body">
+            <ul>${topic.followup.map(q => `<li>${escapeHtml(q)}</li>`).join('')}</ul>
+          </div>
+        </details>`
+        : '';
+      const examples = T2_EXAMPLES[topic.title];
+      const personas = {
+        v1: "Lukas · 28 · Berlin · IT, Single",
+        v2: "Markus · 40 · Hamburg · Familie, zwei Kinder"
+      };
+      const t2Examples = examples
+        ? `<details class="drawer">
+          <summary><span>2 Beispiel-Monologe (Spickzettel)</span></summary>
+          <div class="drawer-body">
+            <div class="var-switch" role="tablist">
+              <button type="button" class="var-btn active" data-v="v1">Variante 1</button>
+              <button type="button" class="var-btn" data-v="v2">Variante 2</button>
+            </div>
+            <div class="var-persona" id="t2-var-persona">${escapeHtml(personas.v1)}</div>
+            <div class="var-text" id="t2-var-text"><p>${escapeHtml(examples.v1)}</p></div>
+          </div>
+        </details>`
+        : '';
+      t2Content.innerHTML = `
+        <div class="topic-card">
+          ${t2Badge}
+          <h2>${escapeHtml(topic.q || topic.title)}</h2>
+          <ul class="subpoints">
+            ${topic.subs.map(s => `<li>${escapeHtml(s)}</li>`).join('')}
+          </ul>
+        </div>
+        ${t2Followup}
+        ${t2Examples}
+      `;
+      if (examples) {
+        const btns = t2Content.querySelectorAll('.var-btn');
+        const textEl = t2Content.querySelector('#t2-var-text');
+        const personaEl = t2Content.querySelector('#t2-var-persona');
+        btns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            btns.forEach(b => b.classList.toggle('active', b === btn));
+            const key = btn.dataset.v;
+            personaEl.textContent = personas[key];
+            textEl.innerHTML = `<p>${escapeHtml(examples[key])}</p>`;
+          });
+        });
+      }
+      Progress.placeDoneButton(document.querySelector('#t2 .controls'), topic._id ? {
+        module: 'sprechen', taskId: topic._id,
+        label: 'Diese Aufgabe als erledigt markieren'
+      } : null);
+      resetTimer('t2', 180);
+      incrementRounds();
+    });
+
+    // ============ TEIL 3 ============
+    const t3Content = document.getElementById('t3-content');
+    let t3Mode = 'termin';
+
+    function generateSchedulePair(days, times) {
+      // Genau EIN gemeinsames freies Fenster.
+      // Frei-Fenster pro Person (inkl. gemeinsamem): Wochenende 2–3, Woche 3–5.
+      // Private Frei-Fenster liegen nie zur gleichen Zeit wie beim Partner.
+      const n = times.length;
+      const minFrei = days.length === 1 ? 2 : 3;
+      const maxFrei = days.length === 1 ? 3 : 5;
+      const want = () => minFrei + Math.floor(Math.random() * (maxFrei - minFrei + 1));
+      const commonDay = Math.floor(Math.random() * days.length);
+      const commonIdx = Math.floor(Math.random() * n);
+      const key = (d, i) => d * n + i;
+      const commonKey = key(commonDay, commonIdx);
+      const freeA = new Set([commonKey]);
+      const freeB = new Set([commonKey]);
+      [[freeA, want(), freeB], [freeB, want(), freeA]].forEach(([mine, count, other]) => {
+        for (let t = 0; t < 200 && mine.size < count; t++) {
+          const k = key(Math.floor(Math.random() * days.length), Math.floor(Math.random() * n));
+          if (k === commonKey || other.has(k) || mine.has(k)) continue;
+          mine.add(k);
+        }
+      });
+      function build(free) {
+        return days.map((day, d) => times.map((time, i) => ({
+          time, act: free.has(key(d, i)) ? 'frei' : pick(ACTIVITIES)
+        })));
+      }
+      return { days, a: build(freeA), b: build(freeB), commonDay, commonIdx };
+    }
+
+    function renderSchedule(name, label, day, slots) {
+      return `
+        <div class="schedule">
+          <h3>${escapeHtml(name)} <span class="kbd">${escapeHtml(label)}</span></h3>
+          <div class="schedule-day">${escapeHtml(day)}</div>
+          <table>
+            <thead>
+              <tr><th>Zeit</th><th>Aktivit\u00e4t</th></tr>
+            </thead>
+            <tbody>
+              ${slots.map((s, i) => {
+                const cls = s.act === 'frei' ? 'frei' : 'busy';
+                return `<tr data-idx="${i}"><th>${escapeHtml(s.time)}</th><td class="${cls}"><span class="cell"><span>${escapeHtml(s.act)}</span></span></td></tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderWeekSchedule(name, label, days, grid, rowLabels) {
+      return `
+        <div class="schedule week">
+          <h3>${escapeHtml(name)} <span class="kbd">${escapeHtml(label)}</span></h3>
+          <div class="schedule-day">Montag \u2013 Freitag</div>
+          <table>
+            <thead>
+              <tr><th>Zeit</th>${days.map(d => `<th>${escapeHtml(d.slice(0, 2))}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+              ${rowLabels.map((t, i) => `<tr><th>${escapeHtml(t)}</th>${days.map((d, di) => {
+                const s = grid[di][i];
+                return `<td data-day="${di}" data-idx="${i}" class="${s.act === 'frei' ? 'frei' : 'busy'}"><span class="cell"><span>${escapeHtml(s.act)}</span></span></td>`;
+              }).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderTerminTask() {
+      const raw = pick(T3_SITUATIONS);
+      const situation = typeof raw === 'string' ? raw : raw.text;
+      const src = (typeof raw === 'string') ? null : raw.source;
+      const week = Math.random() < 0.5;
+      const days = week ? T3_WEEKDAYS : [pick(T3_DAYS)];
+      // Wochenplan: ganze Tabelle entweder in Uhrzeiten oder in Tageszeit-Wörtern (50/50)
+      const rowLabels = week
+        ? (Math.random() < 0.5 ? T3_DAYPARTS.map(p => p.part) : T3_DAYPARTS.map(p => p.time))
+        : TIME_BLOCKS;
+      const pair = generateSchedulePair(days, rowLabels);
+      const t3Badge = src
+        ? `<div class="src-badge">★ Original · ${escapeHtml(src)}</div>`
+        : '';
+      t3Content.innerHTML = `
+        ${t3Badge}
+        <div class="situation-card">
+          <div class="situation-label">Situation</div>
+          <div class="situation-text">${escapeHtml(situation)}</div>
+        </div>
+        <div class="schedules">
+          ${week
+            ? renderWeekSchedule('Kandidat A', 'Sie', days, pair.a, rowLabels)
+              + renderWeekSchedule('Kandidat B', 'Ihr Freund', days, pair.b, rowLabels)
+            : renderSchedule('Kandidat A', 'Sie', days[0], pair.a[0])
+              + renderSchedule('Kandidat B', 'Ihr Freund', days[0], pair.b[0])}
+        </div>
+        <div class="t3-hint-bar">
+          <button class="btn btn-ghost t3-reveal" type="button">Gemeinsames Zeitfenster zeigen</button>
+          <span class="t3-reveal-info" style="display:none">
+            Ihr seid beide frei: <b class="t3-common-slots"></b>
+          </span>
+        </div>
+      `;
+      const revealBtn = t3Content.querySelector('.t3-reveal');
+      const revealInfo = t3Content.querySelector('.t3-reveal-info');
+      const commonLabel = t3Content.querySelector('.t3-common-slots');
+      const cellSel = week
+        ? `td[data-day="${pair.commonDay}"][data-idx="${pair.commonIdx}"]`
+        : `tbody tr[data-idx="${pair.commonIdx}"] td`;
+      revealBtn.addEventListener('click', () => {
+        t3Content.querySelectorAll('.schedule ' + cellSel).forEach(td => td.classList.add('match'));
+        commonLabel.textContent = week
+          ? days[pair.commonDay] + ', ' + rowLabels[pair.commonIdx]
+          : TIME_BLOCKS[pair.commonIdx];
+        revealInfo.style.display = '';
+        revealBtn.style.display = 'none';
+      });
+      Progress.placeDoneButton(document.querySelector('#t3 .controls'), (raw && raw._id) ? {
+        module: 'sprechen', taskId: raw._id,
+        label: 'Diese Situation als erledigt markieren'
+      } : null);
+    }
+
+    // --- Modus B: gemeinsam etwas planen (Stichwortkarten) ---
+    function renderPlanCard(name, label, topic, bubbles) {
+      const pills = bubbles.map(x => `<span class="plan-bubble">${escapeHtml(x)}</span>`).join('')
+        + `<span class="plan-bubble own">… ?</span>`;
+      return `
+        <div class="plan-card">
+          <h3>${escapeHtml(name)} <span class="kbd">${escapeHtml(label)}</span></h3>
+          <div class="plan-topic">${escapeHtml(topic)}</div>
+          <div class="plan-bubbles">${pills}</div>
+        </div>
+      `;
+    }
+
+    function renderPlanTask() {
+      const task = pick(T3_PLAN_TASKS);
+      const planBadge = task.source
+        ? `<div class="src-badge">★ Original · ${escapeHtml(task.source)}</div>`
+        : '';
+      t3Content.innerHTML = `
+        ${planBadge}
+        <div class="situation-card">
+          <div class="situation-label">Aufgabe</div>
+          <div class="situation-text">${escapeHtml(task.scenario)}</div>
+        </div>
+        <div class="plan-cards">
+          ${renderPlanCard('Kandidat A', 'Sie', task.topic, task.a)}
+          ${renderPlanCard('Kandidat B', 'Ihr Partner', task.topic, task.b)}
+        </div>
+        <div class="t3-hint-bar">
+          <span class="t3-plan-hint">Besprechen Sie jeden Stichpunkt: Vorschlag machen · nachfragen · zustimmen oder ablehnen · sich einigen.</span>
+        </div>
+      `;
+      Progress.placeDoneButton(document.querySelector('#t3 .controls'), task._id ? {
+        module: 'sprechen', taskId: task._id,
+        label: 'Diese Aufgabe als erledigt markieren'
+      } : null);
+    }
+
+    // --- Modus-Umschalter ---
+    document.querySelectorAll('#t3-mode .mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        t3Mode = btn.dataset.mode;
+        document.querySelectorAll('#t3-mode .mode-btn').forEach(x => x.classList.toggle('active', x === btn));
+        document.getElementById('t3-draw').click();
+      });
+    });
+
+    document.getElementById('t3-draw').addEventListener('click', () => {
+      if (t3Mode === 'planen') renderPlanTask();
+      else renderTerminTask();
+      resetTimer('t3', 240);
+      incrementRounds();
+    });
+
+    // ============ TIMERS ============
+    const timers = {
+      t2: { total: 180, remaining: 180, interval: null, displayEl: null, rootEl: null },
+      t3: { total: 240, remaining: 240, interval: null, displayEl: null, rootEl: null }
+    };
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updateDisplay(key) {
+      timers[key].displayEl.textContent = formatTime(Math.max(0, timers[key].remaining));
+    }
+
+    function startTimer(key) {
+      const t = timers[key];
+      if (t.interval || t.remaining <= 0) return;
+      t.rootEl.classList.add('running');
+      t.rootEl.classList.remove('done');
+      t.interval = setInterval(() => {
+        t.remaining--;
+        updateDisplay(key);
+        if (t.remaining <= 0) {
+          clearInterval(t.interval);
+          t.interval = null;
+          t.rootEl.classList.remove('running');
+          t.rootEl.classList.add('done');
+        }
+      }, 1000);
+    }
+
+    function pauseTimer(key) {
+      const t = timers[key];
+      if (t.interval) {
+        clearInterval(t.interval);
+        t.interval = null;
+        t.rootEl.classList.remove('running');
+      }
+    }
+
+    function resetTimer(key, total) {
+      const t = timers[key];
+      if (t.interval) clearInterval(t.interval);
+      t.interval = null;
+      if (total) t.total = total;
+      t.remaining = t.total;
+      t.rootEl.classList.remove('running', 'done');
+      updateDisplay(key);
+    }
+
+    ['t2', 't3'].forEach(key => {
+      const root = document.getElementById(key + '-timer');
+      const disp = document.getElementById(key + '-display');
+      timers[key].rootEl = root;
+      timers[key].displayEl = disp;
+      updateDisplay(key);
+      root.querySelectorAll('button').forEach(btn => {
+        const act = btn.dataset.action;
+        btn.addEventListener('click', () => {
+          if (act === 'start') startTimer(key);
+          else if (act === 'pause') pauseTimer(key);
+          else if (act === 'reset') resetTimer(key);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

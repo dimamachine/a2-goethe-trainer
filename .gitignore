@@ -1,0 +1,23 @@
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+
+# Sample audio outputs (dev voice comparison — not part of the site)
+audio_samples/
+
+# NB: assets/audio/ and assets/images/ are now committed so the site can be
+# deployed (Vercel) without users downloading the project. ~263 MB total.
+
+# Build / temp
+node_modules/
+dist/
+.cache/
+__pycache__/
+*.pyc
+
+# Quarantined Teil-2 images from review passes (kept locally, not part of the site)
+tools/_discarded_t2/

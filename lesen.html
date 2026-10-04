@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Crect width='3' height='1' y='0' fill='%23000000'/%3E%3Crect width='3' height='1' y='1' fill='%23DD0000'/%3E%3Crect width='3' height='1' y='2' fill='%23FFCE00'/%3E%3C/svg%3E">
+  <title>A2 Lesen — Praxis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/base.css">
+  <style>
+
+    @media (max-width: 600px) { .container { padding: 1rem; } }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+
+    .counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* TABS */
+    nav.tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    @media (max-width: 860px) { nav.tabs { flex-direction: column; } }
+
+    .tab {
+      flex: 1;
+      padding: 1.1rem 1.25rem;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      text-align: left;
+      position: relative;
+      font-family: inherit;
+    }
+    @media (max-width: 860px) {
+      .tab { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+    .tab:last-child { border-right: none; border-bottom: none; }
+    .tab:hover { color: var(--text); background: var(--surface-alt); }
+    .tab.active { color: var(--text); background: var(--surface-alt); }
+    .tab.active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--accent);
+    }
+    @media (max-width: 860px) {
+      .tab.active::before { width: 2px; height: 100%; }
+    }
+    .tab .tab-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .tab.active .tab-num { color: var(--accent); }
+    .tab .tab-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+    .tab .tab-sub {
+      font-size: 0.78rem;
+      color: var(--text-faint);
+      line-height: 1.3;
+    }
+
+    /* SECTION */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 600px) {
+      .section-header { grid-template-columns: 1fr; gap: 0.75rem; }
+    }
+    .big-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 300;
+      font-size: clamp(5.5rem, 13vw, 10rem);
+      line-height: 0.82;
+      color: var(--accent);
+      font-variation-settings: "opsz" 144, "SOFT" 60;
+      letter-spacing: -0.05em;
+    }
+    @media (max-width: 600px) { .big-num { font-size: 4.5rem; } }
+    .section-meta h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: clamp(1.4rem, 2.8vw, 2.25rem);
+      line-height: 1.1;
+      margin-bottom: 0.65rem;
+      letter-spacing: -0.015em;
+    }
+    .section-meta h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-dim);
+    }
+    .section-meta .hint {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      max-width: 62ch;
+    }
+    .section-meta .hint strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: stretch;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .score-badge { align-self: center; }
+    .btn {
+      padding: 0.85rem 1.4rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.2s;
+      letter-spacing: -0.005em;
+    }
+    .btn:hover {
+      background: #FF7055;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--text);
+    }
+    .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--text); }
+    .btn:disabled {
+      background: var(--border-strong);
+      color: var(--text-faint);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-check {
+      background: var(--accent-cool);
+      color: var(--bg);
+    }
+    .btn-check:hover { background: #97BBAC; }
+    .btn-done { background: transparent; color: var(--accent-cool); border: 1px solid var(--accent-cool); display: inline-flex; align-items: center; gap: 0.4rem; transition: background 0.15s, color 0.15s, filter 0.15s; }
+    .btn-done:hover:not(:disabled) { background: rgba(127,163,148,0.22); color: var(--text); transform: none; box-shadow: none; }
+    .btn-done:disabled { color: var(--text-faint); border-color: var(--border-strong); cursor: not-allowed; }
+    .btn-done.is-done { background: var(--accent-cool); color: var(--bg); border-color: var(--accent-cool); font-weight: 700; }
+    .btn-done.is-done:hover:not(:disabled) { background: var(--accent-cool); color: var(--bg); filter: brightness(1.08); transform: none; box-shadow: none; }
+    .strat-link { display: inline-block; margin-top: 0.5rem; color: var(--accent-cool); text-decoration: none; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.02em; }
+    .strat-link:hover { text-decoration: underline; }
+
+    /* TIMER */
+    .timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .timer-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 5ch;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.3s;
+    }
+    .timer.running .timer-display { color: var(--accent-warm); }
+    .timer.done .timer-display { color: var(--accent); animation: pulse 1s infinite; }
+    .timer.warning .timer-display { color: var(--accent); }
+    @keyframes pulse { 50% { opacity: 0.4; } }
+    .timer button {
+      padding: 0.3rem 0.65rem;
+      font-size: 0.7rem;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-dim);
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .timer button:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    /* PLACEHOLDER */
+    .placeholder {
+      padding: 3.5rem 2rem;
+      text-align: center;
+      border: 1px dashed var(--border);
+      color: var(--text-dim);
+      font-style: italic;
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+    }
+    .placeholder .big-arrow {
+      font-family: 'Fraunces', serif;
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.75rem;
+      font-style: normal;
+    }
+
+    /* ========== LESEN SPECIFIC ========== */
+
+    /* Reading layout */
+    .lesen-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .lesen-grid { grid-template-columns: 1fr; } }
+
+    .reading-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem 2.25rem;
+      position: relative;
+    }
+    @media (max-width: 600px) { .reading-panel { padding: 1.5rem 1.25rem; } }
+    .reading-panel::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 0.85rem;
+      right: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      color: var(--text-faint);
+      letter-spacing: 0.2em;
+    }
+    .reading-panel .text-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.015em;
+      max-width: 30ch;
+    }
+    .reading-panel .text-subtitle {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+    }
+    .reading-text {
+      font-family: 'Fraunces', serif;
+      font-weight: 400;
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: var(--text);
+    }
+    .reading-text p {
+      margin-bottom: 0.85rem;
+    }
+    .reading-text p:last-child { margin-bottom: 0; }
+    .reading-text .sent {
+      transition: background 0.4s, outline 0.4s;
+      padding: 0 0.1em;
+      border-radius: 2px;
+    }
+    .reading-text .sent.highlight {
+      background: rgba(229, 193, 88, 0.22);
+      outline: 1px solid rgba(229, 193, 88, 0.5);
+    }
+
+    /* E-Mail look */
+    .email-header {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+    .email-header .row { display: flex; gap: 0.5rem; }
+    .email-header .row .label { color: var(--text-faint); min-width: 3.5ch; }
+    .email-header .row .val { color: var(--text); }
+
+    /* Informationstafel */
+    .info-board {
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      padding: 0;
+      overflow: hidden;
+    }
+    .info-board .board-title {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 0.9rem 1.25rem;
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+    }
+    .info-board .board-floor {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.2rem;
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      align-items: baseline;
+    }
+    .info-board .board-floor:first-of-type { border-top: none; }
+    .info-board .board-floor .floor-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      white-space: nowrap;
+    }
+    .info-board .board-floor .floor-content {
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .info-board .board-floor .floor-content strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Questions */
+    .questions-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .question {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.1rem 1.2rem;
+      transition: border-color 0.25s;
+    }
+    .question.correct { border-color: var(--success); }
+    .question.incorrect { border-color: var(--error); }
+
+    .q-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+    }
+    .q-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .q-text {
+      font-family: 'Fraunces', serif;
+      font-size: 1.02rem;
+      line-height: 1.3;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .option {
+      display: flex;
+      gap: 0.65rem;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 0.92rem;
+      line-height: 1.35;
+      align-items: flex-start;
+    }
+    .option:hover { border-color: var(--border-strong); }
+    .option.selected {
+      border-color: var(--accent);
+      background: rgba(232, 93, 68, 0.08);
+    }
+    .option.mark-correct {
+      border-color: var(--success);
+      background: rgba(127, 163, 148, 0.12);
+    }
+    .option.mark-incorrect {
+      border-color: var(--error);
+      background: rgba(232, 93, 68, 0.10);
+    }
+    .option-letter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      min-width: 1.5ch;
+      padding-top: 0.1rem;
+    }
+    .option.selected .option-letter { color: var(--accent); }
+    .option.mark-correct .option-letter { color: var(--success); }
+    .option.mark-incorrect .option-letter { color: var(--error); }
+    .option-text {
+      color: var(--text);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      flex: 1;
+    }
+    .option input[type="radio"] { display: none; }
+
+    /* Explanation */
+    .explanation {
+      display: none;
+      margin-top: 0.85rem;
+      padding: 0.85rem 1rem;
+      background: var(--bg);
+      border-left: 2px solid var(--accent-warm);
+      font-size: 0.88rem;
+    }
+    .question.revealed .explanation { display: block; }
+    .explanation .verdict {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      color: var(--accent-warm);
+    }
+    .question.correct .explanation .verdict { color: var(--success); }
+    .question.incorrect .explanation .verdict { color: var(--error); }
+    .explanation .de {
+      color: var(--text);
+      margin-bottom: 0.45rem;
+      line-height: 1.5;
+    }
+    .explanation .de strong { color: var(--accent-warm); font-weight: 600; }
+    .explanation .ru {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      line-height: 1.45;
+      font-style: italic;
+      padding-top: 0.45rem;
+      border-top: 1px dashed var(--border);
+    }
+    .explanation .in-text-btn {
+      margin-top: 0.55rem;
+      padding: 0.25rem 0.55rem;
+      min-height: 44px; display: inline-flex; align-items: center;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .explanation .in-text-btn:hover {
+      color: var(--accent-warm);
+      border-color: var(--accent-warm);
+    }
+
+    /* Score badge */
+    .score-badge {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .score-badge b {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+      color: var(--accent-warm);
+    }
+    .score-badge.good b { color: var(--success); }
+    .score-badge.bad b { color: var(--error); }
+
+    /* Teil 4 — Anzeigen */
+    .anzeigen-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) { .anzeigen-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .anzeigen-grid { grid-template-columns: 1fr; } }
+
+    .anzeige {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.1rem 1.15rem 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      transition: border-color 0.2s;
+    }
+    .anzeige:hover { border-color: var(--border-strong); }
+    .anzeige .az-head {
+      display: grid;
+      grid-template-columns: 1.6rem 1fr;
+      gap: 0.7rem;
+      align-items: baseline;
+      margin-bottom: 0.6rem;
+    }
+    .anzeige .az-letter {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.9rem;
+      line-height: 1;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    .anzeige .az-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 1rem;
+      line-height: 1.25;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .anzeige .az-body {
+      color: var(--text-dim);
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
+    .anzeige .az-body strong { color: var(--text); font-weight: 600; }
+    .anzeige .az-meta {
+      margin-top: 0.6rem;
+      padding-top: 0.55rem;
+      border-top: 1px dashed var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: var(--text-faint);
+    }
+
+    .task {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1rem 1.15rem;
+      margin-bottom: 0.75rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+    @media (max-width: 640px) {
+      .task { grid-template-columns: 1fr; gap: 0.6rem; }
+    }
+    .task.correct { border-color: var(--success); }
+    .task.incorrect { border-color: var(--error); }
+
+    .task-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .task-desc {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      line-height: 1.3;
+      color: var(--text);
+    }
+    .task-select {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      padding: 0.55rem 2rem 0.55rem 0.8rem;
+      background-color: var(--surface-alt);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23E5C158' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem center;
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 0;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: border-color 0.15s;
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    }
+    .task-select:hover, .task-select:focus {
+      border-color: var(--accent);
+    }
+    .task.correct .task-select { border-color: var(--success); }
+    .task.incorrect .task-select { border-color: var(--error); }
+    .task-explanation {
+      grid-column: 1 / -1;
+      margin-top: 0.7rem;
+      padding: 0.7rem 0.9rem;
+      background: var(--bg);
+      border-left: 2px solid var(--accent-warm);
+      font-size: 0.85rem;
+      display: none;
+    }
+    .task.revealed .task-explanation { display: block; }
+    .task-explanation .verdict {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 0.35rem;
+    }
+    .task.correct .task-explanation .verdict { color: var(--success); }
+    .task.incorrect .task-explanation .verdict { color: var(--error); }
+    .task-explanation .de { color: var(--text); margin-bottom: 0.35rem; }
+    .task-explanation .de strong { color: var(--accent-warm); }
+    .task-explanation .ru {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      font-style: italic;
+      padding-top: 0.35rem;
+      border-top: 1px dashed var(--border);
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      letter-spacing: 0.02em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    footer .keys { display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; }
+    footer kbd {
+      font-family: inherit;
+      color: var(--accent-warm);
+      background: var(--surface);
+      padding: 0.15em 0.45em;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+    }
+
+    .module-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.75rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .module-nav a.disabled { color: var(--text-faint); pointer-events: none; }
+
+    /* ORIGINAL GOETHE EXAM SETS (inline in each Teil) */
+    .exam-badge {
+      display: inline-block; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.69rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent-cool); border: 1px solid var(--accent-cool);
+      padding: 0.32rem 0.65rem; margin-bottom: 1rem;
+    }
+    .exam-hint {
+      font-size: 0.85rem; color: var(--text-dim); margin: 0 0 1rem;
+      border-left: 2px solid var(--accent-cool); padding-left: 0.8rem;
+    }
+    .exam-sheet img {
+      width: 100%; max-width: 780px; display: block; margin: 0 auto 0.7rem;
+      border: 1px solid var(--border-strong); background: #fff;
+    }
+    .exam-set .questions-panel { margin-top: 1.3rem; }
+
+  </style>
+  <link rel="stylesheet" href="assets/progress.css">
+</head>
+<body>
+  <div class="container">
+        <header>
+      <div class="brand">
+        <b><span class="b-num">A2</span><span class="b-cap"><span>Goethe-Zertifikat</span><span>Deutsch</span></span></b>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <span class="brand-tag">Lesen</span>
+        <span class="flag" aria-label="Deutschland"><span></span><span></span><span></span></span>
+      </div>
+      <div class="counter"><span id="counter-label"></span><button type="button" class="reset-progress" id="reset-progress" title="Fortschritt in diesem Modul zur&uuml;cksetzen">&#8634; Reset</button></div>
+    </header>
+
+    <nav class="module-nav">
+      <a href="index.html">A2</a>
+      <a href="lesen.html" class="current">Lesen</a>
+      <a href="hoeren.html">Hören</a>
+      <a href="schreiben.html">Schreiben</a>
+      <a href="sprechen.html">Sprechen</a>
+      <a href="hilfen.html">Hilfen</a>
+    </nav>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="t1">
+        <span class="tab-num">TEIL 01</span>
+        <span class="tab-title">Zeitungsartikel</span>
+        <span class="tab-sub">Auswahl a/b/c · 5 Fragen · ~7 Min</span>
+      </button>
+      <button class="tab" data-tab="t2">
+        <span class="tab-num">TEIL 02</span>
+        <span class="tab-title">Informationstafel</span>
+        <span class="tab-sub">Auswahl a/b/c · 5 Fragen · ~6 Min</span>
+      </button>
+      <button class="tab" data-tab="t3">
+        <span class="tab-num">TEIL 03</span>
+        <span class="tab-title">E-Mail</span>
+        <span class="tab-sub">Auswahl a/b/c · 5 Fragen · ~7 Min</span>
+      </button>
+      <button class="tab" data-tab="t4">
+        <span class="tab-num">TEIL 04</span>
+        <span class="tab-title">Anzeigen zuordnen</span>
+        <span class="tab-sub">Zuordnen · 5 Aufgaben · ~10 Min</span>
+      </button>
+    </nav>
+
+    <!-- TEIL 1 -->
+    <section class="section active" id="t1">
+          <div class="section-header">
+        <div class="big-num">01</div>
+        <div class="section-meta">
+          <h1>Zeitungsartikel <em>— verstehen</em></h1>
+          <p class="hint">Ein kurzer Artikel aus der Zeitung, ca. 250 Wörter. Lies den Text und beantworte <strong>5 Auswahlfragen</strong> (a, b oder c). Bei jeder Frage gibt es nur eine richtige Lösung.</p>
+          <a class="strat-link" href="hilfen.html#lesen-t1">→ Strategie · Zeitungstext verstehen</a>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="t1-draw">→ Neuer Text</button>
+        <button class="btn btn-check" id="t1-check" disabled>Lösungen prüfen</button>
+        <div class="timer" id="t1-timer">
+          <span class="timer-display" id="t1-display">7:00</span>
+          <button data-action="start">▶ Start</button>
+          <button data-action="pause">Pause</button>
+          <button data-action="reset">Zurücksetzen</button>
+        </div>
+        <span class="score-badge" id="t1-score" style="display:none;"><span>Score:</span> <b id="t1-score-val">0/5</b></span>
+        <button class="btn btn-done" id="t1-done" type="button" disabled>○ Erledigt</button>
+      </div>
+      <div id="t1-content">
+        <div class="placeholder">
+          <span class="big-arrow">↓</span>
+          Drücke <strong>„Neuer Text"</strong> — du bekommst einen Artikel mit 5 Fragen.
+        </div>
+      </div>
+    </section>
+
+    <!-- TEIL 2 -->
+    <section class="section" id="t2">
+          <div class="section-header">
+        <div class="big-num">02</div>
+        <div class="section-meta">
+          <h1>Informationstafel <em>— orientieren</em></h1>
+          <p class="hint">Eine <strong>Informationstafel</strong> (Kaufhaus, Messe, Programm). Zu 5 Situationen entscheidest du: wohin gehen, was passt? <strong>Achtung:</strong> manchmal steht die richtige Antwort nicht zur Auswahl &mdash; dann w&auml;hlst du <b>c</b> (&bdquo;anderer Stock&ldquo; / &bdquo;anderer Bereich&ldquo;), wie in der Pr&uuml;fung.</p>
+          <a class="strat-link" href="hilfen.html#lesen-t2">→ Strategie · Informationen zuordnen</a>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="t2-draw">→ Neuer Text</button>
+        <button class="btn btn-check" id="t2-check" disabled>Lösungen prüfen</button>
+        <div class="timer" id="t2-timer">
+          <span class="timer-display" id="t2-display">6:00</span>
+          <button data-action="start">▶ Start</button>
+          <button data-action="pause">Pause</button>
+          <button data-action="reset">Zurücksetzen</button>
+        </div>
+        <span class="score-badge" id="t2-score" style="display:none;"><span>Score:</span> <b id="t2-score-val">0/5</b></span>
+        <button class="btn btn-done" id="t2-done" type="button" disabled>○ Erledigt</button>
+      </div>
+      <div id="t2-content">
+        <div class="placeholder">
+          <span class="big-arrow">↓</span>
+          Drücke <strong>„Neuer Text"</strong> — du bekommst eine Informationstafel mit 5 Aufgaben.
+        </div>
+      </div>
+    </section>
+
+    <!-- TEIL 3 -->
+    <section class="section" id="t3">
+          <div class="section-header">
+        <div class="big-num">03</div>
+        <div class="section-meta">
+          <h1>Eine E-Mail <em>— verstehen</em></h1>
+          <p class="hint">Eine persönliche <strong>E-Mail von einem Freund</strong>, ca. 250 Wörter. Beantworte 5 Fragen (a, b oder c) zum Inhalt des Briefes.</p>
+          <a class="strat-link" href="hilfen.html#lesen-t3">→ Strategie · eine E-Mail genau lesen</a>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="t3-draw">→ Neue E-Mail</button>
+        <button class="btn btn-check" id="t3-check" disabled>Lösungen prüfen</button>
+        <div class="timer" id="t3-timer">
+          <span class="timer-display" id="t3-display">7:00</span>
+          <button data-action="start">▶ Start</button>
+          <button data-action="pause">Pause</button>
+          <button data-action="reset">Zurücksetzen</button>
+        </div>
+        <span class="score-badge" id="t3-score" style="display:none;"><span>Score:</span> <b id="t3-score-val">0/5</b></span>
+        <button class="btn btn-done" id="t3-done" type="button" disabled>○ Erledigt</button>
+      </div>
+      <div id="t3-content">
+        <div class="placeholder">
+          <span class="big-arrow">↓</span>
+          Drücke <strong>„Neue E-Mail"</strong> — du bekommst einen Brief mit 5 Fragen.
+        </div>
+      </div>
+    </section>
+
+    <!-- TEIL 4 -->
+    <section class="section" id="t4">
+          <div class="section-header">
+        <div class="big-num">04</div>
+        <div class="section-meta">
+          <h1>Anzeigen <em>— zuordnen</em></h1>
+          <p class="hint">6 Anzeigen (a–f) und 5 Personen mit Wünschen. Welche Anzeige passt zu welcher Person? <strong>Achtung:</strong> eine Person hat <em>keine</em> passende Anzeige — dann wählst du <b>X</b>.</p>
+          <a class="strat-link" href="hilfen.html#lesen-t4">→ Strategie · Anzeigen den Personen zuordnen</a>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="t4-draw">→ Neue Aufgabe</button>
+        <button class="btn btn-check" id="t4-check" disabled>Lösungen prüfen</button>
+        <div class="timer" id="t4-timer">
+          <span class="timer-display" id="t4-display">10:00</span>
+          <button data-action="start">▶ Start</button>
+          <button data-action="pause">Pause</button>
+          <button data-action="reset">Zurücksetzen</button>
+        </div>
+        <span class="score-badge" id="t4-score" style="display:none;"><span>Score:</span> <b id="t4-score-val">0/5</b></span>
+        <button class="btn btn-done" id="t4-done" type="button" disabled>○ Erledigt</button>
+      </div>
+      <div id="t4-content">
+        <div class="placeholder">
+          <span class="big-arrow">↓</span>
+          Drücke <strong>„Neue Aufgabe"</strong> — du bekommst 6 Anzeigen und 5 Personen.
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>KI-generierte Aufgaben · 4 Teile</div>
+      <div class="keys">
+        <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> <span>— Teile</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <kbd>N</kbd> <span>— neues Set</span>
+        <span style="margin: 0 0.3rem">·</span>
+        <span>v1.0</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="assets/progress.js"></script>
+  <!-- Lesen-Daten: kein fetter Block mehr — pro Teil (~350 KB) lazy beim ersten Ziehen -->
+
+  <script>
+    // ============================================================
+    // DATA — TEIL 1 (Zeitungsartikel)
+    // ============================================================
+    let T1_SETS = null; // befüllt lazy via ensureSets('t1')
+
+    // ============================================================
+    // DATA — TEIL 2 (Informationstafel)
+    // ============================================================
+    let T2_SETS = null; // befüllt lazy via ensureSets('t2')
+
+    // ============================================================
+    // DATA — TEIL 3 (E-Mail)
+    // ============================================================
+    let T3_SETS = null; // befüllt lazy via ensureSets('t3')
+
+    // ============================================================
+    // DATA — TEIL 4 (Anzeigen zuordnen)
+    // ============================================================
+    let T4_SETS = null; // befüllt lazy via ensureSets('t4')
+
+    // ============================================================
+    // STATE & HELPERS
+    // ============================================================
+    // Stabile IDs для всех 4 наборов (через source для official, через индекс для AI)
+    function assignIds(arr, prefix) {
+      arr.forEach((s, i) => {
+        s._id = prefix + ':' + (s.source ? Progress.slug(s.source) : 'ai-' + i);
+      });
+    }
+    // Lazy-Loader: genau ein Teil-File (~350 KB) beim ersten Ziehen; danach Cache.
+    // Der aktive Tab (t1) lädt im Hintergrund schon beim Seitenstart.
+    const SETS_CACHE = { t1: null, t2: null, t3: null, t4: null };
+    const _setsLoading = {};
+    let lesenKnown = 0; // Summe bereits geladener Sets (Zähler-Nenner)
+    function ensureSets(key) {
+      if (SETS_CACHE[key]) return Promise.resolve(SETS_CACHE[key]);
+      if (!_setsLoading[key]) _setsLoading[key] = new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'assets/data/lesen-' + key + '.js';
+        s.onload = () => {
+          const arr = window['LESEN_' + key.toUpperCase() + '_SETS'] || [];
+          assignIds(arr, key);
+          SETS_CACHE[key] = arr;
+          if (key === 't1') T1_SETS = arr;
+          if (key === 't2') T2_SETS = arr;
+          if (key === 't3') T3_SETS = arr;
+          if (key === 't4') T4_SETS = arr;
+          lesenKnown += arr.length;
+          Progress.setTotal('lesen', lesenKnown);
+          updateLesenCounter();
+          res(arr);
+        };
+        s.onerror = () => rej(new Error('lesen-' + key));
+        document.head.appendChild(s);
+      });
+      return _setsLoading[key];
+    }
+    ensureSets('t1').catch(() => {});
+
+    const LESEN_TOTAL = () => lesenKnown;
+    Progress.setTotal('lesen', 0);
+
+    let rounds = 0;
+    function updateLesenCounter() {
+      const done = Progress.count('lesen');
+      const label = document.getElementById('counter-label');
+      if (label) label.innerHTML = '<b>' + done + '</b> <span class="ps-sep">/</span> <span class="ps-total">' + LESEN_TOTAL() + '</span> erledigt';
+    }
+    function incrementRounds() { rounds++; updateLesenCounter(); }
+    Progress.subscribe(m => { if (m === 'lesen') updateLesenCounter(); });
+
+    // ====== Fortschritt-Reset (nur dieses Modul) ======
+    (function () {
+      const rp = document.getElementById('reset-progress');
+      if (!rp) return;
+      function sync() { rp.disabled = (Progress.count('lesen') === 0); }
+      rp.addEventListener('click', () => {
+        if (Progress.count('lesen') === 0) return;
+        if (confirm('Den Fortschritt im Modul „Lesen“ wirklich zurücksetzen?')) {
+          Progress.reset('lesen');
+          ['t1', 't2', 't3', 't4'].forEach(refreshDone);
+        }
+      });
+      Progress.subscribe(sync);
+      sync();
+    })();
+    updateLesenCounter();
+
+    // pick() и escapeHtml() теперь общие — см. assets/progress.js
+
+    const currentSets = { t1: null, t2: null, t3: null, t4: null };
+    const userAnswers = { t1: {}, t2: {}, t3: {}, t4: {} };
+
+    // ============ TABS ============
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === btn));
+        document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === id));
+      });
+    });
+
+    // ============ KEYBOARD ============
+    document.addEventListener('keydown', e => {
+      if (e.target.matches('input, textarea, summary, select, button')) return;
+      if (e.key >= '1' && e.key <= '4') {
+        document.querySelector(`[data-tab="t${e.key}"]`).click();
+        e.preventDefault();
+      } else if (e.key.toLowerCase() === 'n') {
+        const active = document.querySelector('.section.active').id;
+        const drawBtn = document.getElementById(active + '-draw');
+        if (drawBtn && !drawBtn.disabled) drawBtn.click();
+        e.preventDefault();
+      } else if (e.key.toLowerCase() === 'c') {
+        const active = document.querySelector('.section.active').id;
+        const checkBtn = document.getElementById(active + '-check');
+        if (checkBtn && !checkBtn.disabled) checkBtn.click();
+        e.preventDefault();
+      } else if (e.key === ' ') {
+        const active = document.querySelector('.section.active').id;
+        const t = timers[active];
+        if (t && t.rootEl) {
+          if (t.interval) pauseTimer(active);
+          else startTimer(active);
+          e.preventDefault();
+        }
+      }
+    });
+
+    // ============ RENDER: Original Goethe-Prüfungssätze ============
+    function renderOfficialMC(set) {
+      const imgs = set.imgs.map(s =>
+        `<img src="${s}" alt="Original-Prüfungsseite" loading="lazy">`).join('');
+      let q = '<div class="questions-panel">';
+      set.questions.forEach((qq, qi) => {
+        q += `<div class="question" data-q="${qi}">
+          <div class="q-head">
+            <span class="q-num">${String(set.startNum + qi).padStart(2,'0')}</span>
+            <span class="q-text">Aufgabe ${set.startNum + qi}: wähle a, b oder c — die Frage steht oben im Bild.</span>
+          </div>
+          <ul class="options">
+            ${['a','b','c'].map((l, oi) => `
+              <li class="option" data-opt="${oi}">
+                <span class="option-letter">${l}</span>
+                <span class="option-text">Antwort ${l}</span>
+              </li>`).join('')}
+          </ul>
+          <div class="explanation"><div class="verdict"></div></div>
+        </div>`;
+      });
+      q += '</div>';
+      return `<div class="exam-set">
+        <div class="exam-badge">★ Original · ${escapeHtml(set.source)}</div>
+        <p class="exam-hint">KI-generierte Aufgabe im A2-Format.</p>
+        <div class="exam-sheet">${imgs}</div>
+        ${q}
+      </div>`;
+    }
+
+    function renderOfficialMatch(set) {
+      const imgs = set.imgs.map(s =>
+        `<img src="${s}" alt="Original-Prüfungsseite" loading="lazy">`).join('');
+      let t = '';
+      set.tasks.forEach((tt, ti) => {
+        t += `<div class="task" data-task="${ti}">
+          <span class="task-num">${String(set.startNum + ti).padStart(2,'0')}</span>
+          <span class="task-desc">Aufgabe ${set.startNum + ti}: wähle die passende Anzeige (Aufgabe oben im Bild).</span>
+          <select class="task-select">
+            <option value="">—</option>
+            ${['a','b','c','d','e','f','X'].map(l => `<option value="${l}">${l}</option>`).join('')}
+          </select>
+          <div class="task-explanation"><div class="verdict"></div></div>
+        </div>`;
+      });
+      return `<div class="exam-set">
+        <div class="exam-badge">★ Original · ${escapeHtml(set.source)}</div>
+        <p class="exam-hint">Sechs Anzeigen (a–f), fünf Personen — eine Person hat keine passende Anzeige (X).</p>
+        <div class="exam-sheet">${imgs}</div>
+        <div>${t}</div>
+      </div>`;
+    }
+
+    // ============ RENDER: Teil 1 & 3 (Text + MC) ============
+    function renderTextPart(key, set, isEmail) {
+      if (set.official) return renderOfficialMC(set);
+      let textHTML = '';
+      if (isEmail) {
+        textHTML += `<div class="email-header">
+          <div class="row"><span class="label">Von:</span><span class="val">${escapeHtml(set.from)}</span></div>
+          <div class="row"><span class="label">An:</span><span class="val">${escapeHtml(set.to)}</span></div>
+          <div class="row"><span class="label">Betr:</span><span class="val">${escapeHtml(set.subject)}</span></div>
+        </div>`;
+      }
+      textHTML += `<div class="reading-text">`;
+      if (isEmail) textHTML += `<p>${escapeHtml(set.greeting)}</p>`;
+      set.paragraphs.forEach(paraIdxs => {
+        textHTML += '<p>' + paraIdxs.map(i =>
+          `<span class="sent" data-sent="${i}">${escapeHtml(set.sentences[i])}</span>`
+        ).join(' ') + '</p>';
+      });
+      if (isEmail) textHTML += `<p style="margin-top:1.2rem;font-style:italic;color:var(--text-dim);">${escapeHtml(set.closing)}</p>`;
+      textHTML += `</div>`;
+
+      let questionsHTML = `<div class="questions-panel">`;
+      set.questions.forEach((q, qi) => {
+        questionsHTML += `<div class="question" data-q="${qi}">
+          <div class="q-head">
+            <span class="q-num">${String(qi+1).padStart(2,'0')}</span>
+            <span class="q-text">${escapeHtml(q.q)}</span>
+          </div>
+          <ul class="options">
+            ${q.opts.map((opt, oi) => `
+              <li class="option" data-opt="${oi}">
+                <span class="option-letter">${String.fromCharCode(97+oi)}</span>
+                <span class="option-text">${escapeHtml(opt)}</span>
+              </li>
+            `).join('')}
+          </ul>
+          <div class="explanation">
+            <div class="verdict"></div>
+            <div class="de">${q.de}</div>
+            <div class="ru">${escapeHtml(q.ru)}</div>
+            <button class="in-text-btn" data-hint="${q.hint}">→ Im Text zeigen</button>
+          </div>
+        </div>`;
+      });
+      questionsHTML += `</div>`;
+
+      return `<div class="lesen-grid">
+        <div class="reading-panel" data-label="${isEmail ? 'E-MAIL' : 'ARTIKEL'}">
+          ${set.title ? `<div class="text-title">${escapeHtml(set.title)}</div>` : ''}
+          ${set.subtitle ? `<div class="text-subtitle">${escapeHtml(set.subtitle)}</div>` : ''}
+          ${textHTML}
+        </div>
+        <div>${questionsHTML}</div>
+      </div>`;
+    }
+
+    // ============ RENDER: Teil 2 (Informationstafel) ============
+    function renderInfoBoard(key, set) {
+      if (set.official) return renderOfficialMC(set);
+      let boardHTML = `<div class="info-board">
+        <div class="board-title">${escapeHtml(set.boardTitle)}</div>
+        ${set.sections.map((s, i) => `
+          <div class="board-floor" data-sent="${i}">
+            <div class="floor-label">${escapeHtml(s.label)}</div>
+            <div class="floor-content">${s.content}</div>
+          </div>
+        `).join('')}
+      </div>`;
+
+      let questionsHTML = `<div class="questions-panel">`;
+      set.questions.forEach((q, qi) => {
+        questionsHTML += `<div class="question" data-q="${qi}">
+          <div class="q-head">
+            <span class="q-num">${String(qi+1).padStart(2,'0')}</span>
+            <span class="q-text">${escapeHtml(q.q)}</span>
+          </div>
+          <ul class="options">
+            ${q.opts.map((opt, oi) => `
+              <li class="option" data-opt="${oi}">
+                <span class="option-letter">${String.fromCharCode(97+oi)}</span>
+                <span class="option-text">${escapeHtml(opt)}</span>
+              </li>
+            `).join('')}
+          </ul>
+          <div class="explanation">
+            <div class="verdict"></div>
+            <div class="de">${q.de}</div>
+            <div class="ru">${escapeHtml(q.ru)}</div>
+            <button class="in-text-btn" data-hint="${q.hint}">→ Auf der Tafel zeigen</button>
+          </div>
+        </div>`;
+      });
+      questionsHTML += `</div>`;
+
+      return `<div class="lesen-grid">
+        <div>${boardHTML}</div>
+        <div>${questionsHTML}</div>
+      </div>`;
+    }
+
+    // ============ RENDER: Teil 4 (Anzeigen) ============
+    function renderAnzeigen(key, set) {
+      if (set.official) return renderOfficialMatch(set);
+      let anzeigenHTML = `<div class="anzeigen-grid">
+        ${set.anzeigen.map(a => `
+          <div class="anzeige">
+            <div class="az-head">
+              <span class="az-letter">${a.letter}</span>
+              <span class="az-title">${escapeHtml(a.title)}</span>
+            </div>
+            <div class="az-body">${a.body}</div>
+            <div class="az-meta">${escapeHtml(a.meta)}</div>
+          </div>
+        `).join('')}
+      </div>`;
+
+      let tasksHTML = '';
+      set.tasks.forEach((t, ti) => {
+        tasksHTML += `<div class="task" data-task="${ti}">
+          <span class="task-num">${String(ti+1).padStart(2,'0')}</span>
+          <span class="task-desc">${escapeHtml(t.desc)}</span>
+          <select class="task-select">
+            <option value="">—</option>
+            ${['a','b','c','d','e','f','X'].map(l => `<option value="${l}">${l}</option>`).join('')}
+          </select>
+          <div class="task-explanation">
+            <div class="verdict"></div>
+            <div class="de">${t.de}</div>
+            <div class="ru">${escapeHtml(t.ru)}</div>
+          </div>
+        </div>`;
+      });
+
+      return `<div style="margin-bottom: 0.6rem; color: var(--text-dim); font-size: 0.88rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">Thema: ${escapeHtml(set.theme)}</div>
+        ${anzeigenHTML}
+        <div>${tasksHTML}</div>`;
+    }
+
+    // ============ HANDLERS ============
+    function attachMCHandlers(contentEl, key) {
+      contentEl.querySelectorAll('.question').forEach(qEl => {
+        const qi = qEl.dataset.q;
+        qEl.querySelectorAll('.option').forEach(optEl => {
+          optEl.addEventListener('click', () => {
+            qEl.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            optEl.classList.add('selected');
+            if (!userAnswers[key]) userAnswers[key] = {};
+            userAnswers[key][qi] = parseInt(optEl.dataset.opt);
+            document.getElementById(key + '-check').disabled = false;
+          });
+        });
+      });
+      contentEl.querySelectorAll('.in-text-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.dataset.hint;
+          contentEl.querySelectorAll('.sent.highlight, .board-floor.highlight').forEach(el => el.classList.remove('highlight'));
+          const target = contentEl.querySelector(`[data-sent="${idx}"]`);
+          if (target) {
+            target.classList.add('highlight');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => target.classList.remove('highlight'), 3500);
+          }
+        });
+      });
+    }
+
+    function attachT4Handlers(contentEl) {
+      contentEl.querySelectorAll('.task').forEach(taskEl => {
+        const ti = taskEl.dataset.task;
+        taskEl.querySelector('.task-select').addEventListener('change', (e) => {
+          if (!userAnswers.t4) userAnswers.t4 = {};
+          userAnswers.t4[ti] = e.target.value;
+          const allFilled = Array.from(contentEl.querySelectorAll('.task-select')).every(s => s.value !== '');
+          document.getElementById('t4-check').disabled = !allFilled;
+        });
+      });
+    }
+
+    // ============ CHECK ============
+    function checkMC(key, set) {
+      let correctCount = 0;
+      const contentEl = document.getElementById(key + '-content');
+      set.questions.forEach((q, qi) => {
+        const qEl = contentEl.querySelector(`.question[data-q="${qi}"]`);
+        const userAns = userAnswers[key][qi];
+        const isCorrect = userAns === q.correct;
+        if (isCorrect) correctCount++;
+        qEl.classList.add('revealed', isCorrect ? 'correct' : 'incorrect');
+        qEl.querySelector('.verdict').textContent = isCorrect ? '✓ Richtig' : '✗ Falsch';
+        qEl.querySelectorAll('.option').forEach(o => {
+          const oi = parseInt(o.dataset.opt);
+          if (oi === q.correct) o.classList.add('mark-correct');
+          else if (oi === userAns && !isCorrect) o.classList.add('mark-incorrect');
+        });
+      });
+      const scoreEl = document.getElementById(key + '-score');
+      scoreEl.style.display = 'inline-flex';
+      document.getElementById(key + '-score-val').textContent = `${correctCount}/5`;
+      scoreEl.classList.toggle('good', correctCount >= 4);
+      scoreEl.classList.toggle('bad', correctCount <= 2);
+      document.getElementById(key + '-check').disabled = true;
+      return correctCount;
+    }
+
+    function checkT4(set) {
+      let correctCount = 0;
+      const contentEl = document.getElementById('t4-content');
+      set.tasks.forEach((t, ti) => {
+        const taskEl = contentEl.querySelector(`.task[data-task="${ti}"]`);
+        const userAns = userAnswers.t4[ti];
+        const isCorrect = userAns === t.correct;
+        if (isCorrect) correctCount++;
+        taskEl.classList.add('revealed', isCorrect ? 'correct' : 'incorrect');
+        taskEl.querySelector('.verdict').textContent = isCorrect
+          ? `✓ Richtig — Antwort: ${t.correct}`
+          : `✗ Falsch — richtige Antwort: ${t.correct}`;
+      });
+      const scoreEl = document.getElementById('t4-score');
+      scoreEl.style.display = 'inline-flex';
+      document.getElementById('t4-score-val').textContent = `${correctCount}/5`;
+      scoreEl.classList.toggle('good', correctCount >= 4);
+      scoreEl.classList.toggle('bad', correctCount <= 2);
+      document.getElementById('t4-check').disabled = true;
+      return correctCount;
+    }
+
+    // ============ DRAW ============
+    function setupPart(key, sets, renderFn, isEmail) {
+      document.getElementById(key + '-draw').addEventListener('click', async () => {
+        const btn = document.getElementById(key + '-draw');
+        const oldLabel = btn.textContent;
+        let arr = SETS_CACHE[key];
+        if (!arr) {
+          btn.disabled = true; btn.textContent = '… Lädt';
+          try { arr = await ensureSets(key); }
+          catch (_) { btn.disabled = false; btn.textContent = oldLabel; return; }
+          btn.disabled = false; btn.textContent = oldLabel;
+        }
+        const set = pick(arr);
+        currentSets[key] = set;
+        userAnswers[key] = {};
+        const contentEl = document.getElementById(key + '-content');
+        contentEl.innerHTML = renderFn(key, set, isEmail);
+        if (key === 't4') attachT4Handlers(contentEl);
+        else attachMCHandlers(contentEl, key);
+        document.getElementById(key + '-check').disabled = true;
+        document.getElementById(key + '-score').style.display = 'none';
+        refreshDone(key);
+        resetTimer(key);
+        incrementRounds();
+      });
+      document.getElementById(key + '-check').addEventListener('click', () => {
+        if (!currentSets[key]) return;
+        if (key === 't4') checkT4(currentSets[key]);
+        else checkMC(key, currentSets[key]);
+        // Automatisch als erledigt markieren
+        if (currentSets[key]._id) Progress.set('lesen', currentSets[key]._id, true);
+        refreshDone(key);
+      });
+      const doneBtn = document.getElementById(key + '-done');
+      if (doneBtn) doneBtn.addEventListener('click', () => {
+        const s = currentSets[key];
+        if (!s || !s._id) return;
+        Progress.toggle('lesen', s._id);
+        refreshDone(key);
+      });
+    }
+
+    // Reflect the current set's done-state on the prominent control-bar button.
+    function refreshDone(key) {
+      const b = document.getElementById(key + '-done');
+      if (!b) return;
+      const s = currentSets[key];
+      if (!s || !s._id) { b.disabled = true; b.classList.remove('is-done'); b.textContent = '○ Erledigt'; return; }
+      b.disabled = false;
+      const done = Progress.is('lesen', s._id);
+      b.classList.toggle('is-done', done);
+      b.textContent = done ? '✓ Erledigt' : '○ Als erledigt';
+    }
+
+    setupPart('t1', T1_SETS, renderTextPart, false);
+    setupPart('t2', T2_SETS, renderInfoBoard, false);
+    setupPart('t3', T3_SETS, renderTextPart, true);
+    setupPart('t4', T4_SETS, renderAnzeigen, false);
+
+    // ============ TIMERS ============
+    const timers = {
+      t1: { total: 420, remaining: 420, interval: null },
+      t2: { total: 360, remaining: 360, interval: null },
+      t3: { total: 420, remaining: 420, interval: null },
+      t4: { total: 600, remaining: 600, interval: null }
+    };
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+    function updateDisplay(key) {
+      if (!timers[key].displayEl) return;
+      timers[key].displayEl.textContent = formatTime(Math.max(0, timers[key].remaining));
+      if (timers[key].remaining <= 60 && timers[key].remaining > 0) {
+        timers[key].rootEl.classList.add('warning');
+      } else {
+        timers[key].rootEl.classList.remove('warning');
+      }
+    }
+    function startTimer(key) {
+      const t = timers[key];
+      if (!t.rootEl) return;
+      if (t.interval || t.remaining <= 0) return;
+      t.rootEl.classList.add('running');
+      t.rootEl.classList.remove('done');
+      t.interval = setInterval(() => {
+        t.remaining--;
+        updateDisplay(key);
+        if (t.remaining <= 0) {
+          clearInterval(t.interval);
+          t.interval = null;
+          t.rootEl.classList.remove('running');
+          t.rootEl.classList.add('done');
+        }
+      }, 1000);
+    }
+    function pauseTimer(key) {
+      const t = timers[key];
+      if (!t) return;
+      if (t.interval) {
+        clearInterval(t.interval);
+        t.interval = null;
+        if (t.rootEl) t.rootEl.classList.remove('running');
+      }
+    }
+    function resetTimer(key, total) {
+      const t = timers[key];
+      if (!t) return;
+      if (t.interval) clearInterval(t.interval);
+      t.interval = null;
+      if (total) t.total = total;
+      t.remaining = t.total;
+      if (t.rootEl) t.rootEl.classList.remove('running', 'done', 'warning');
+      updateDisplay(key);
+    }
+
+    ['t1','t2','t3','t4'].forEach(key => {
+      const root = document.getElementById(key + '-timer');
+      const disp = document.getElementById(key + '-display');
+      if (!root || !disp) return;
+      timers[key].rootEl = root;
+      timers[key].displayEl = disp;
+      updateDisplay(key);
+      root.querySelectorAll('button').forEach(btn => {
+        const act = btn.dataset.action;
+        if (!act) return;
+        btn.addEventListener('click', () => {
+          if (act === 'start') startTimer(key);
+          else if (act === 'pause') pauseTimer(key);
+          else if (act === 'reset') resetTimer(key);
+        });
+      });
+    });
+
+  </script>
+</body>
+</html>

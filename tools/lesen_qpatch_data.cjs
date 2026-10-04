@@ -1,0 +1,76 @@
+// Satzergänzung conversion data. Overwritten fresh each batch.
+module.exports = {
+  T1: {},
+  T3: {
+    90: {
+      0: { q: "Bei der Familie wohnt jetzt …", opts: ["eine Schülerin aus Spanien.","eine Lehrerin aus Madrid.","eine Studentin aus Italien."] },
+      1: { q: "Sofia ist in Deutschland …", opts: ["für einen Job.","für einen langen Urlaub.","für einen Schüleraustausch."] },
+      2: { q: "Deutsch spricht Sofia …", opts: ["gar nicht.","schon ganz gut, mit kleinen Fehlern.","perfekt, ohne Fehler."] },
+      3: { q: "Im Haushalt …", opts: ["macht Sofia gar nichts.","kocht Sofia jeden Tag das Abendessen.","deckt Sofia den Tisch und räumt den Geschirrspüler ein."] },
+      4: { q: "Für die Familie ist Sofia …", opts: ["wie eine zusätzliche Tochter.","wie eine fremde Person.","wie eine Angestellte."] },
+    },
+    91: {
+      0: { q: "Lukas macht ein Praktikum …", opts: ["in einem Tierheim.","in einem Zoo.","in einer Tierarztpraxis."] },
+      1: { q: "Dort ist Lukas …", opts: ["jeden Tag.","drei Tage pro Woche, je vier Stunden.","nur am Wochenende."] },
+      2: { q: "Zu seinen Aufgaben gehört: …", opts: ["nur Büroarbeit.","Tiere zu operieren.","füttern, sauber machen und mit den Hunden spazieren."] },
+      3: { q: "Letzte Woche ist passiert: …", opts: ["Ein Welpe kam ins Tierheim, gefunden in einem Wald.","Ein Hund ist weggelaufen.","Eine Katze wurde adoptiert."] },
+      4: { q: "Lukas nimmt den Welpen nicht, weil …", opts: ["er keine Hunde mag.","seine Wohnung zu klein ist.","der Welpe zu teuer ist."] },
+    },
+    92: {
+      0: { q: "Yvonne lernt …", opts: ["Spanisch.","Deutsch.","„Argentinisch“."] },
+      1: { q: "Der Kurs findet statt …", opts: ["an einer Universität.","an der Volkshochschule.","online zu Hause."] },
+      2: { q: "Ihr eigenes Niveau schätzt Yvonne so ein: …", opts: ["Sie ist schon sehr gut.","Sie spricht perfekt.","Sie ist noch eher am Anfang."] },
+      3: { q: "Außer Grammatik machen sie im Unterricht …", opts: ["Konversation und kleine Rollenspiele.","nur Vokabeln auswendig lernen.","Filme schauen."] },
+      4: { q: "Im September plant Yvonne, …", opts: ["eine Prüfung zu machen.","mit dem Kurs aufzuhören.","nach Argentinien zu einer Freundin zu reisen."] },
+    },
+    93: {
+      0: { q: "In der E-Mail teilt Georg mit: …", opts: ["ein Rezept für Bratkartoffeln.","eine Einladung zum Essen.","ein Rezept für Kuchen."] },
+      1: { q: "Die Kartoffeln soll man kochen …", opts: ["direkt vor dem Braten.","schon am Tag davor.","gar nicht."] },
+      2: { q: "Zuerst brät man in der Pfanne …", opts: ["die Kartoffeln.","die Zwiebeln.","den Speck."] },
+      3: { q: "Die Kartoffeln brät man …", opts: ["etwa 15 Minuten.","eine ganze Stunde.","nur 2 Minuten."] },
+      4: { q: "Serviert wird das Gericht …", opts: ["mit Reis.","mit Spiegelei und einem Salat.","mit Brot."] },
+    },
+    94: {
+      0: { q: "Seit drei Monaten …", opts: ["kauft Sabine nur noch Bio-Lebensmittel.","isst Sabine gar nichts mehr.","kocht Sabine nicht mehr selbst."] },
+      1: { q: "Die Entscheidung hat ausgelöst: …", opts: ["ein Gespräch mit dem Arzt.","ein Dokumentarfilm über die Landwirtschaft.","ein Buch über Sport."] },
+      2: { q: "Jetzt kauft Sabine ein …", opts: ["im Supermarkt.","nur online.","auf dem Bauernmarkt."] },
+      3: { q: "Der Fleischkonsum hat sich so verändert: …", opts: ["Sie isst jetzt weniger Fleisch als früher.","Sie isst jetzt mehr Fleisch.","Sie isst gar kein Fleisch mehr."] },
+      4: { q: "Ihr Mann …", opts: ["ist dagegen.","unterstützt es voll.","interessiert sich nicht dafür."] },
+    },
+    95: {
+      0: { q: "Kitesurfen probiert hat Lars …", opts: ["letztes Jahr im Sommerurlaub an der Ostsee.","vor vielen Jahren als Kind.","erst diesen Winter."] },
+      1: { q: "Am Anfang fühlte sich Lars …", opts: ["voller Begeisterung.","skeptisch und ängstlich.","gelangweilt."] },
+      2: { q: "Nach dem Kurs konnte Lars …", opts: ["noch gar nichts.","schon lange Strecken fahren.","kurze Strecken fahren."] },
+      3: { q: "Gekauft hat Lars …", opts: ["eine eigene Ausrüstung für 2.500 Euro.","ein neues Auto.","nichts — er leiht alles."] },
+      4: { q: "Zum Kitesurfen fährt Lars jetzt …", opts: ["nie mehr.","jedes Wochenende an die Küste.","nur einmal im Jahr."] },
+    },
+    96: {
+      0: { q: "In zwei Monaten …", opts: ["heiratet Uli Sven.","zieht Uli um.","feiert Uli Geburtstag."] },
+      1: { q: "Die Hochzeit wird …", opts: ["sehr groß, mit über 100 Gästen.","klein, mit nur 30 Gästen.","nur zu zweit gefeiert."] },
+      2: { q: "Gefeiert wird …", opts: ["zu Hause.","in einem Schloss.","in einem Restaurant am Meer."] },
+      3: { q: "Das Essen für die Feier macht …", opts: ["das Restaurant selbst — ein 4-Gänge-Menü.","ein Catering-Service.","die Familie."] },
+      4: { q: "Nach dem Essen …", opts: ["fährt das Paar gleich nach Hause.","tanzt das Paar auf der Terrasse.","sieht das Paar einen Film."] },
+    },
+    97: {
+      0: { q: "Der Workshop war …", opts: ["ein Online-Workshop über Porträt-Fotografie.","ein Kochkurs.","ein Präsenzkurs im Studio."] },
+      1: { q: "Die Lehrerin war …", opts: ["eine blutige Anfängerin.","eine bekannte deutsche Fotografin.","eine gute Freundin."] },
+      2: { q: "Es gab … Teilnehmer.", opts: ["nur drei","99","50 aus verschiedenen Ländern"] },
+      3: { q: "Die Teilnehmer mussten …", opts: ["eigene Fotos machen und teilen.","nur zuhören.","eine schriftliche Prüfung ablegen."] },
+      4: { q: "Für Fred hat sich geändert: …", opts: ["Er fotografiert gar nicht mehr.","Er fotografiert jetzt bewusster und geduldiger.","Nichts."] },
+    },
+    98: {
+      0: { q: "Katja hat … gestartet.", opts: ["ein kleines Gartenprojekt im Hinterhof","ein großes Bauprojekt für ein Haus","ein Café"] },
+      1: { q: "Vorher sah die Fläche aus …", opts: ["wie ein schöner Garten.","wie eine Fläche mit nur Schotter und Unkraut.","wie ein Parkplatz."] },
+      2: { q: "Bei dem Projekt machen mit: …", opts: ["nur Katja allein.","eine Gärtnerfirma.","die Nachbarn — jeder hat ein eigenes Beet."] },
+      3: { q: "Selbst pflanzt Katja …", opts: ["Tomaten, Zucchini und Kräuter.","nur Blumen.","Erdbeeren und Salat."] },
+      4: { q: "Samstags …", opts: ["arbeitet jeder allein.","treffen sie sich, arbeiten und grillen manchmal.","verkaufen sie ihr Gemüse."] },
+    },
+    99: {
+      0: { q: "Ronja hat …", opts: ["die Sprachschule gewechselt.","mit dem Lernen aufgehört.","die Stadt gewechselt."] },
+      1: { q: "Das Problem an der alten Schule war: …", opts: ["Sie war viel zu teuer.","Es waren zu viele Schüler pro Kurs.","Sie war zu weit weg."] },
+      2: { q: "Die neue Schule ist …", opts: ["größer und billiger.","genauso wie die alte.","kleiner und teurer, aber mit besserer Qualität."] },
+      3: { q: "Der neue Lehrer …", opts: ["gibt jedem einzelnen Feedback.","kommt oft zu spät.","ignoriert die Schüler."] },
+      4: { q: "Die Atmosphäre ist jetzt …", opts: ["kalt und unpersönlich.","besser — sie sind eine echte Gruppe.","unverändert schlecht."] },
+    },
+  },
+};

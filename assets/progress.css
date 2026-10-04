@@ -1,0 +1,44 @@
+/* Маленький счётчик прогресса (в шапке модуля или в хабе) */
+.progress-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim, #a89e8e);
+}
+.progress-stat b {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.15rem;
+  color: var(--accent-cool, #7FA394);
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.progress-stat .ps-sep { color: var(--text-faint, #6b6256); }
+.progress-stat .ps-total {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-faint, #6b6256);
+  text-transform: none;
+}
+
+/* Прогресс-бар для index.html */
+.progress-bar {
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: var(--surface-alt, #1c1915);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.progress-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--accent-cool, #7FA394);
+  transition: width 0.3s ease;
+}

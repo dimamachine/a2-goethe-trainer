@@ -1,0 +1,163 @@
+/* ============================================================
+   base.css — общая «оболочка» темы для всех страниц A2-сайта.
+   Подключается в каждой HTML до её собственного <style>.
+   Сюда вынесено только то, что идентично на всех страницах:
+   токены темы, фон, контейнер, шапка-бренд, флаг, ссылки навигации.
+   Различающиеся правила (header/counter/module-nav-отступы для
+   index/hilfen, footer, @media) остаются inline на своих страницах.
+   ============================================================ */
+
+:root {
+  --bg: #14120E;
+  --surface: #1F1C16;
+  --surface-alt: #27231C;
+  --border: #2D2A23;
+  --border-strong: #453F31;
+  --text: #F5EDDC;
+  --text-dim: #918876;
+  --text-faint: #88806F; /* TYPESET: dunkler als dim (Hierarchie text 16 > dim 5.3 > faint 4.8), ≥4.5:1 auf bg */
+  --accent: #E85D44;
+  --accent-warm: #E5C158;
+  --accent-cool: #7FA394;
+  --error: #E85D44;
+  --success: #7FA394;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; scrollbar-gutter: stable; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at top left, rgba(232, 93, 68, 0.05), transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(229, 193, 88, 0.04), transparent 55%);
+  background-attachment: fixed;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  pointer-events: none;
+  opacity: 0.12;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+::selection { background: var(--accent); color: var(--bg); }
+
+/* BRAND (шапка) */
+.brand {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.brand b {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  transform: none;
+  opacity: 1;
+}
+.brand b .b-num {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-style: normal;
+  font-size: 2.4rem;
+  line-height: 0.9;
+  color: var(--accent);
+  letter-spacing: -0.025em;
+}
+.brand b .b-cap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+.brand b .b-cap span:first-child { color: var(--text); font-style: normal; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.69rem; }
+.brand-sep { display: inline-block; width: 1px; height: 1.6rem; background: var(--border-strong); opacity: 0.7; margin: 0 0.2rem; }
+.brand-tag { font-family: 'Fraunces', serif; font-style: normal; font-weight: 500; font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text); }
+
+/* FLAG */
+.flag { display: inline-flex; flex-direction: column; width: 20px; height: 14px; margin-left: 0.25rem; border: 1px solid var(--border-strong); }
+.flag span { flex: 1; display: block; }
+.flag span:nth-child(1) { background: #1a1a1a; }
+.flag span:nth-child(2) { background: #DD0000; }
+.flag span:nth-child(3) { background: #FFCE00; }
+
+.counter b { color: var(--accent); font-weight: 700; }
+
+/* HEADER: единая высота на всех страницах (паддинги шапки везде 1rem+2rem,
+   контентная зона не ниже 44px-тапа Reset). Иначе линии шапки прыгают
+   при переходах Модуль ↔ A2/Hilfen, где кнопки Reset нет. */
+header { min-height: calc(3rem + 44px); }
+/* Fortschritt-Reset pro Modul (in der Kopfzeile, neben dem Zähler) */
+.reset-progress { margin-left: 0.7rem; background: transparent; border: 1px solid var(--border-strong); color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.69rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; min-height: 44px; display: inline-flex; align-items: center; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+.reset-progress:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+.reset-progress:disabled { opacity: 0.4; cursor: default; }
+
+/* MODULE-NAV: ссылки (контейнер-отступ отличается у index/hilfen и остаётся inline) */
+.module-nav a {
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.module-nav a:hover { color: var(--text); }
+.module-nav a.current { color: var(--accent); border-bottom-color: var(--accent); }
+.module-nav::-webkit-scrollbar { display: none; }
+
+/* HARDEN: sichtbares Fokus-Ring für alle interaktiven Elemente (a11y).
+   outline:none steht nirgends mehr — dieser Ring ist der einzige Indikator. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* POLISH: Respekt für reduzierte Bewegung — Sektions-Fade, Timer-Puls,
+   Smooth-Scroll und Hover-Übergänge werden instant. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
